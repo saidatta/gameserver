@@ -77,12 +77,18 @@ public class TerritoryService {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		if (territoryCreator.getTerritory() == null || territoryCreator.getTerritory().getId() == null) {
-			Territory territory = new Territory();
+		Territory territory = territoryCreator.getTerritory();
+		if (territory == null || territory.getId() == null) {
+			territory = new Territory();
 			if (campaignId != null) {
 				territory.setCampaignId(campaignId);
 			}
 			territoryCreator.setTerritory(territory);
+		} else if (territory.getParentId() != null){
+			Territory parent = findOneTerritory(territory.getParentId());
+			if (parent != null) {
+				territory.setParentName(parent.getName());
+			}
 		}
 		List<Territory> territories = territoryRepository.findAllByKeyValue("campaignId", campaignId);
 		territoryCreator.setTerritoriesInCampaign(territories);

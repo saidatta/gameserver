@@ -1,6 +1,7 @@
 package org.softwarewolf.gameserver.base.controller;
 
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.PathParam;
 
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
@@ -601,6 +602,31 @@ public class GamemasterController {
 			Territory territory = territoryCreator.getTerritory();
 			territory.setId(territoryId);
 			territory = territoryService.findOneTerritory(territory.getId());
+		}
+		territoryService.initTerritoryCreator(territoryCreator, campaignId, forwardingUrl);
+		territoryCreator.setForwardingUrl(forwardingUrl);
+		territoryService.initTerritoryTypeCreator(new TerritoryType(), territoryTypeCreator, campaignId, forwardingUrl);
+		return forwardingUrl;
+	}
+	
+	@RequestMapping(value = "/getTerritory", method = RequestMethod.POST)
+	@Secured({"GAMEMASTER"})
+	public String editTerritoryId(HttpSession session, final TerritoryCreator territoryCreator, 
+			final TerritoryTypeCreator territoryTypeCreator, final OrganizationCreator organizationCreator,
+			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return USER_MENU;
+		}
+		
+		String forwardingUrl = "/gamemaster/editTerritory";
+		// In this case, the territory object just has the id and name, we need everything here.
+		String territoryId = territoryCreator.getTerritory().getId();
+		if (territoryId != null && territoryId != "") {
+			Territory territory = territoryService.findOneTerritory(territoryId);
+			territoryCreator.setTerritory(territory);
+		} else {
+			territoryCreator.setTerritory(null);
 		}
 		territoryService.initTerritoryCreator(territoryCreator, campaignId, forwardingUrl);
 		territoryCreator.setForwardingUrl(forwardingUrl);

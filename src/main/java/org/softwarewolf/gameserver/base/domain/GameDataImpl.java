@@ -19,6 +19,8 @@ public class GameDataImpl implements GameData, Serializable {
 	private String gameDataTypeName;
 	private String campaignId;
 	private String parentId;
+	@Transient
+	private String parentName;
 	private List<String> childrenIdList;
 	@Transient
 	private String displayName;
@@ -94,6 +96,14 @@ public class GameDataImpl implements GameData, Serializable {
 			return false;
 		}
 		return true;
+	}
+	
+	public String getParentName() {
+		return parentName;
+	}
+	
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
 	}
 	
 	public List<String> getChildrenIdList() {

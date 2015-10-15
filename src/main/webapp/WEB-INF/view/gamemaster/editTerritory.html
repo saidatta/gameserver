@@ -163,6 +163,7 @@
 		});
 		
 		$(".selectTerritory").click(function(event) {
+			event.preventDefault();
 			var target = $(event.target);
 			var id = $(target).attr('id');
 			var name = $(target).text();
@@ -171,11 +172,11 @@
 				$("#territoryId").val(null);
 			} else {
 				$("#territoryName").val(name);
+				$("#hiddenTerritoryId").val(id);
 			}
-     		var form = $("#getTerritoryForm");
-			var action = form.attr("action");
-			action += "/"+id;
-			form.submit();
+     		var form = $("#editTerritoryForm");
+     		form.attr("action", "/gameserver/gamemaster/getTerritory");
+     		form.submit();
 		});
 	});		
 </script>
@@ -206,7 +207,6 @@
 			</div>
 		</div>
 		<br></br>
-		<form id="getTerritoryForm" th:object="${territoryCreator}" action="#" th:action="@{/gamemaster/editTerritory}" method="get"></form>
 		<form id="editTerritoryForm" th:object="${territoryCreator}" action="#" th:action="@{/gamemaster/editTerritory}" method="post">
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
 			<input id="campaignId" type="hidden" th:field="*{territory.campaignId}"></input>
@@ -214,6 +214,7 @@
 			<input id="territoryTypeName" type="hidden" th:field="*{territory.gameDataTypeName}"></input>
 			<input id="territoryTreeJson" type="hidden" th:field="*{territoryTreeJson}"></input>
 			<input id="hiddenParentId" type="hidden" th:field="*{territory.parentId}"></input>
+			<input id="hiddenTerritoryId" type="hidden" th:field="*{territory.id}"></input>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-9">
@@ -250,7 +251,7 @@
 					<label class="input-margin" th:text="#{createTerritory.territoryName}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input class="input-margin" th:field="*{territory.name}"></input>
+					<input id="territoryName" class="input-margin" th:field="*{territory.name}"></input>
 				</div>
 			</div>
 			<div class="row">
@@ -259,7 +260,7 @@
 					<label class="input-margin" th:text="#{createTerritory.parentTerritory}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input id="territoryParentName" class="input-margin" disabled="disabled"></input>
+					<input id="territoryParentName" class="input-margin" th:field="*{territory.parentName}" disabled="disabled"></input>
 				</div>
 			</div>
 			<div class="row">
