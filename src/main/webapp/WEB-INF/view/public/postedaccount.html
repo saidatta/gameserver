@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    <title th:text="#{postedAccount.thankYou}">Title</title>
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+	
+	<br></br>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-2">
+			<div class="boxed">
+				<table>
+					<tr>
+						<td>
+							<i class="fa fa-check fa-2x"></i>
+						</td>
+						<td>
+							<h4 th:text="#{postedAccount.thankYou}">Text</h4>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			You will be contacted via email when your account submission request
+			has been approved.
+		</div>
+	</div>
+	<br></br>
+	<br></br>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			Return to <a href="/gameserver/login">login</a>
+		</div>
+	</div>
+</body>
+</html>

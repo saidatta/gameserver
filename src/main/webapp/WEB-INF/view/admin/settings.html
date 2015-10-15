@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+    <link href="/gameserver/resources/css/bootstrap.min.css" rel="stylesheet"></link>	
+    <link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<title th:text="#{settings.page.title}">Title</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js" type="text/javascript"></script>
+	<script	src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+
+	<br></br>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10"><h1 th:text="#{settings.page.title}">Title</h1></div>
+	</div>
+	<br></br><br></br>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<label th:text="#{settings.page.unused}"></label>
+			<input th:value="#{settings.page.nothingtoseehere}"></input>
+		</div>
+	</div>
+</body>
+</html>

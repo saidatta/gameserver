@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+<!--
+ 	<script src="/gameserver/resources/js/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <link href="/gameserver/resources/css/bootstrap.min.css" rel="stylesheet"></link>
+    <link href="/gameserver/resources/css/bootstrap-theme.min.css" rel="stylesheet"></link>	
+	<link href="/gameserver/resources/js/bootstrap.min.js" type="text/javascript"></link>
+ -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="/gameserver/resources/js/jquery.js" type="text/javascript"></script>
+	<script src="/gameserver/resources/js/jquery-ui.min.js" type="text/javascript"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+	<title th:text="#{deleteRoles.title}">Title</title>
+
+	<script th:inline="javascript">
+		$(document).ready(function() {
+
+			$("#postRolesForm").submit(function(event) {
+//				$("select[multiple] option").prop("selected", "selected");
+
+				var checked = $('#roles').find('input:checked');
+				$('#roles').find('input:checked').each(function() {
+					var id = $(this).prop('id');
+					var value = $(this).prop('value');
+					var selectedRoles = $("#selectedRoles");
+					var optionString = '<option value="' + value + '" selected="selected">' + id + "</option>";
+					selectedRoles.append(optionString);
+					console.log('id='+id);
+					console.log('value='+value);
+				});
+				return;
+			});
+
+		});
+		
+	</script>
+	<script th:inline="javascript">
+		function confirmDelete(form) {
+			if (form.deleteRoles.value == "....") {
+				return true;
+			}
+			var confirmMsg = "Do you really want to delete the role " + form.deleteRoles.value + "?";
+			return confirm(confirmMsg);
+		}
+		
+		function update_something(msg) {
+		//	placeholder;
+		}
+
+		function fnOpenNormalDialog() {
+		    $("#dialog-confirm").html("Confirm Dialog Box");
+
+		    // Define the Dialog and its properties.
+		    var theDialog = $("#dialog-confirm").dialog(opt);
+		    $("#dialog-confirm").dialog(opt).dialog({
+		        resizable: false,
+		        modal: true,
+		        title: "Modal",
+		        height: 250,
+		        width: 400,
+		        buttons: {
+		            "Yes": function () {
+		                $(this).dialog('close');
+		                callback(true);
+		            },
+		                "No": function () {
+		                $(this).dialog('close');
+		                callback(false);
+		            }
+		        }
+		    });
+		}
+
+		$('#btnOpenDialog').click(fnOpenNormalDialog);
+
+		function callback(value) {
+		    if (value) {
+		        alert("Confirmed");
+		    } else {
+		        alert("Rejected");
+		    }
+		}
+	</script>
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+	
+	<br></br>
+	<div class="row">
+	    <div class="col-md-1"></div>
+		<div class="col-md-10"><h1 th:text="#{deleteRoles.title}">Delete</h1></div>
+	</div>
+	<div class="row">
+	    <div class="col-md-1"></div>
+		<div class="col-md-10">Please use this functionality with caution. Deleting roles can make the application unusable and require that the database be re seeded.</div>
+	</div>
+	<form id="postRolesForm" th:object="${rolesData}" action="#" th:action="@{/admin/deleteRole}" method="post"> 
+		<select id="selectedRoles" class="select optional item-hide" multiple="multiple" th:field="*{selectedRoles}" size="1"></select>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<hr></hr>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-2">
+				<ul id="roles" class="no-bullets">
+					<li th:each="role : ${rolesData.allRoles}">
+						<input th:id="${role.key}" type="checkbox" class="margin-right-5" th:value="${role.value}" th:text="${role.key}"></input>
+					</li>
+				</ul>	
+			</div>
+		</div>
+	    <div class="row">
+		    <div class="col-md-1"></div>
+			<div class="col-md-10">
+				<hr></hr>
+			</div>
+		</div>
+	    <div class="row">
+		    <div class="col-md-1"></div>
+			<div class="col-md-10">
+				<input type="submit" name="submit" value="Submit"></input>
+			</div>
+		</div>
+	</form>
+</body>
+</html>

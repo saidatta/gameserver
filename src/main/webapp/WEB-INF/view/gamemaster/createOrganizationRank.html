@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    
+    <title th:text="#{createOrganizationRank.title}">Title</title>
+    
+	<script th:inline="javascript">
+	$(document).ready(function() {
+		$( window ).load(function() {
+			
+			$(".addOrgRank").click(function(event) {
+				var target = $(event.target);
+				var id = $(target).attr('id');
+				var name = $(target).attr('name');
+				var addOrgRank = $("#addOrganizationRankId");
+				addOrgRank.attr("value", id);		
+				var form = $("#createOrganizationRankForm");
+				form.attr("action", "/gameserver/gamemaster/addOrganizationRankToCampaign");
+				form.submit();
+			});
+			
+			$(".removeOrgRank").click(function(event) {
+				var target = $(event.target);
+				var id = $(target).attr('id');
+				var name = $(target).attr('name');
+				var removeOrgRank = $("#removeOrganizationRankId");
+				var form = $("#createOrganizationRankForm");
+				removeOrgRank.attr("value", id);		
+				form.attr("action", "/gameserver/gamemaster/removeOrganizationRankFromCampaign");
+				form.submit();
+			});
+			
+		});		
+	});		
+</script>  
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+	<div th:fragment="createOrganizationRank">
+		<br></br>
+	
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-7">
+				<div>
+					<h1 th:text="#{createOrganizationRank.title}">Create</h1>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="item-hide" th:text="${session.campaignId}"></div>
+				<div class="on-same-line">
+					<span th:if="${session.campaignName}" th:text="#{campaignLabel}"></span><span th:text="${session.campaignName}"></span>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<div id="error-message" class="error-message" th:if="${feFeedback.error}" th:text="${feFeedback.error}">Error.</div>
+			</div>
+		</div>
+		<br></br>
+		<form id="createOrganizationRankForm" th:object="${organizationRankCreator}" action="#" th:action="@{/gamemaster/createOrganizationRank}" method="post">
+			<input id="addOrganizationRankId" type="hidden" th:field="*{addOrganizationRankId}"></input>
+			<input id="removeOrganizationRankId" type="hidden" th:field="*{removeOrganizationRankId}"></input>
+			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-9">
+					<span th:text="#{createOrganizationRank.description}">description</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-9">
+					<hr></hr>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{createOrganizationRank.organizationRankName}">Name</label>
+				</div>
+				<div class="col-md-8">
+					<input class="input-margin" th:field="*{organizationRank.name}"></input>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{createOrganizationRank.organizationRankDescription}">Desc</label>
+				</div>
+				<div class="col-md-8">
+					<textarea rows="8" cols="100" class="input-margin" th:field="*{organizationRank.description}"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-2">
+	           		<input class="basic-margin" type="submit" value="Submit" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-9">
+					<hr></hr>
+				</div>
+			</div>
+			<br></br>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-3">			
+					<h4>Organization Types in campaign</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">			
+					<ul id="orgRanksInCampaign">
+						<li class="no-bullets" th:each="organizationRank : *{organizationRanksInCampaign}">
+						    <div class="on-same-line"> 
+								<button class="modifyTT removeOrgRank fa fa-minus" th:id="${organizationRank.id}" th:name="${organizationRank.name}"></button>
+								<span th:text="${organizationRank.name}"></span>
+							</div> 
+						</li>				
+					</ul>	
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-3">			
+					<h4>Other Organization Ranks</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-2">			
+					<ul id="otherOrgRanks">
+						<li class="no-bullets" th:each="organizationRank : *{otherOrganizationRanks}">
+						    <div class="on-same-line"> 
+								<button class="modifyTT addTT fa fa-plus" th:id="${organizationRank.id}" th:name="${organizationRank.name}"></button>
+								<span th:text="${organizationRank.name}"></span>
+							</div> 
+						</li>				
+					</ul>	
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

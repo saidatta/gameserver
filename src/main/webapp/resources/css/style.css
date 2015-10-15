@@ -1,0 +1,216 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+caption {
+	font-size: 18px;
+}
+
+hr {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+
+.authority {
+	width: 250px;
+}
+
+.basic-margin {
+	margin-right: 5px;
+	margin-left: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+} 
+
+.basic-padding {
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+} 
+
+#black-text {
+	color:#000;
+}
+
+.body-test {
+	font-family: Arial, sans-serif;
+	font-size: 1em;
+	background-color: #d6d6ae;
+}
+
+.boxed {
+  border: 1px solid green ;
+}
+
+.center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.collapseable-li {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.gs-accordian-panel {
+	border: 1px, solid, transparent;
+	border0radius: 4px;
+}
+
+.half_width {
+	width: 45%;
+}
+
+.indent1 {
+	margin-left: 5px;
+}
+
+.indent2 {
+	margin-left: 10px;
+}
+
+.indent3 {
+	margin-left: 15px;
+}
+
+.indent4 {
+	margin-left: 20px;
+}
+
+.indent5 {
+	margin-left: 25px;
+}
+
+.indent6 {
+	margin-left: 30px;
+}
+
+.indent7 {
+	margin-left: 35px;
+}
+
+.indent8 {
+	margin-left: 40px;
+}
+
+.indent9 {
+	margin-left: 45px;
+}
+
+.input-margin {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.input-padding {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.item-hide {
+	visibility: hidden;
+}
+
+.left-padding-5 {
+	padding-left: 5px;
+}
+
+.left-padding-10 {
+	padding-left: 10px;
+}
+
+.margin-right-5 {
+	margin-right: 5px;	
+}
+
+.no-bullets {
+	list-style-type: none;
+}
+
+.on-same-line {
+	display: inline;
+}
+
+.outline {
+	outline: 1px solid black; 
+}
+
+.padded-body {
+  padding-top: 50px;
+}
+
+.padded-logout-text {
+  padding-top: 15px;
+}
+
+.pointer-cursor {
+	cursor: pointer;	
+}
+
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.tooltip{
+    position:relative;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip) ;
+    font-size: 12px;
+    position:absolute;
+    z-index: 999;
+    white-space:nowrap;
+    bottom:9999px;
+    left: 0;
+    background:#000;
+    color:#e0e0e0;
+    padding:0px 7px;
+    line-height: 24px;
+    height: 24px;
+    opacity: 0;
+}
+
+.tooltip:hover::before {
+    opacity: 1;
+    top:22px;
+}
+
+.tooltip:hover::after {
+    content: "";
+    opacity: 1;
+    width: 0; 
+    height: 0; 
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid black;
+    z-index: 999;
+    position:absolute;
+    white-space:nowrap;
+    top:17px;
+    left: 0px;
+}
+
+.width-125 {
+	width: 125px;
+}
+
+.width-200 {
+	width: 200px;
+}
+
+#error-message {
+	color : red;
+	font-weight : bold;
+}
+
+#info-message {
+	color : #008000;
+	font-weight : bold;
+}
+

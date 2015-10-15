@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+<!--
+ 	<script src="/gameserver/resources/js/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <link href="/gameserver/resources/css/bootstrap.min.css" rel="stylesheet"></link>
+    <link href="/gameserver/resources/css/bootstrap-theme.min.css" rel="stylesheet"></link>	
+	<link href="/gameserver/resources/js/bootstrap.min.js" type="text/javascript"></link>
+ -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+	<title th:text="#{updateUser.title}">Title</title>
+
+	<script th:inline="javascript">
+	$(document).ready(function() {
+
+		// This is for selecting a user from the list and then populating
+		// the other form with it.
+		$("#selectUserBtn").click(function(event) {
+			var userId = $("#userSelect").val();
+			
+			$.getJSON("rolesJson/" + userId, function(data) {
+				$.each(data.selectedRoles, function(key, value) {
+				    $('#'+value).attr('checked','checked');
+				});
+			});
+			
+			//make the AJAX request, dataType is set to json
+			//meaning we are expecting JSON data in response from the server
+			$.getJSON("getUser/" + userId, function(data) {
+				$.each(data, function(key, val) {
+					if (key == "accountNonExpired" || 
+					    key == "accountNonLocked" ||
+					    key == "credentialsNonExpired" ||
+					    key == "enabled") {
+						setBoolean(key, val);						
+					}
+					var element =$("#"+key);
+					if (element != null) {
+						element.val(val);
+					}
+				});
+			});
+
+			event.preventDefault();
+		});
+
+		$("#updateUserForm").submit(function(event) {
+//			$("select[multiple] option").prop("selected", "selected");
+
+			var checked = $('#roles').find('input:checked');
+			$('#roles').find('input:checked').each(function() {
+				var id = $(this).prop('id');
+				var value = $(this).prop('value');
+				var selectedRoles = $("#selectedRoles");
+				var optionString = '<option value="' + value + '" selected="selected">' + id + "</option>";
+				selectedRoles.append(optionString);
+				console.log('id='+id);
+				console.log('value='+value);
+			});
+			return;
+		});
+		
+		$( window ).load(function() {
+            $('.check:button').toggle(function(){
+		        $('input:checkbox').removeAttr('checked');
+		    });
+
+			var userId = getUserId();
+			if (userId == null) {
+				userId = "newUser"
+			}
+			$.getJSON("rolesJson/" + userId, function(data) {
+				$.each(data.selectedRoles, function(key, value) {
+				    $('#'+value).attr('checked','checked');
+				});
+			});
+		});		
+		
+		$("#clearBtn").click(function(event) {
+			$('#selectedRoles')
+		    .find('option')
+		    .remove()
+		    .end();
+			
+            $('.check:button').toggle(function(){
+		        $('input:checkbox').removeAttr('checked');
+		    });
+			$('#roles').find('input:checked').each(function() {
+				$(this).removeAttr('checked');
+			});
+			
+			$('#id').val("");
+			$('#username').val("");
+			$('#firstName').val("");
+			$('#lastName').val("");
+			$('#password').val();
+			$('#email').val("");
+			setBoolean("accountNonExpired", false); 
+			setBoolean("accountNonLocked", false);
+			setBoolean("credentialsNonExpired", false);
+			setBoolean("enabled", false);
+		});
+		
+	});
+</script>
+<script type="text/javascript">
+  function setBoolean(key, value) {
+	var element = $("#" + key);
+	if (element != null) {
+		element.prop("checked", value);
+	}
+  }
+  
+  function getUserId() {
+    pairs = document.URL.split('?').pop();
+   	p = pairs.split('=');
+   	if (typeof p[1] == 'undefined') {
+   		p[1] = null;
+   	}
+    return p[1];
+  }
+</script>
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+	
+	<br></br>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-11">
+			<h1 th:text="#{updateUser.title}">Update</h1>
+		</div>
+	</div>
+	<form id="updateUserForm" th:object="${userData}" action="#" th:action="@{/admin/updateUserData}" method="post">
+	    <select id="selectedRoles" class="select optional item-hide" multiple="multiple" th:field="${userData.selectedUser.authorities}" size="1"></select>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+	        	<fieldset>
+	        		<legend th:text="#{updateUser.editInfo}">Edit</legend>
+		        	<input type="hidden" id="id" th:field="${userData.selectedUser.id}"></input>
+				</fieldset>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-11">
+				<div class="dropdown">
+				    <!--Default buttons with dropdown menu-->
+				    <div class="btn-group">
+		        		<button type="button" class="btn btn-default" th:text="#{updateUser.selectUser}">Action</button>
+				        <button type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle"><span class="caret"></span></button>
+				        <ul class="dropdown-menu">
+		        		    <li th:each="user : ${userData.userList}" th:value="${user.id}">
+		            			<a th:href="@{/admin/getUserData(userId=${user.id})}" th:text="${user.displayName}">test</a>
+				           	</li>
+				        </ul>
+		    		</div>
+				</div> 		    
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">User Name</label>
+			</div>
+			<div class="col-md-9">
+				<input id="username" name="username" class="input-margin" th:field="${userData.selectedUser.username}" ></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">First Name</label>
+			</div>
+			<div class="col-md-9">
+				<input id="firstName" class="input-margin" th:field="${userData.selectedUser.firstName}" ></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Last Name</label>
+			</div>
+			<div class="col-md-9">
+				<input id="lastName" class="input-margin" th:field="${userData.selectedUser.lastName}" ></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin" th:text="#{updateUser.password}">Pass</label>
+			</div>
+			<div class="col-md-9">
+				<input type="password" id="password" class="input-margin" th:field="${userData.password}" ></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin" th:text="#{updateUser.verifyPassword}">Pass</label>
+			</div>
+			<div class="col-md-9">
+				<input type="password" id="password" class="input-margin" th:field="${userData.verifyPassword}" ></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Email</label>
+			</div>
+			<div class="col-md-9">
+				<input id="email" class="input-margin" th:field="${userData.selectedUser.email}" ></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Authorities</label>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-2">			
+				<ul id="roles" class="no-bullets">
+					<li th:each="role : ${userData.allRoles}">
+						<input th:id="${role.key}" type="checkbox" class="margin-right-5" th:value="${role.value}" th:text="${role.key}"></input>
+					</li>				
+				</ul>	
+			</div>
+		</div>
+		
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-2">
+				<label class="input-margin">Account non-expired</label>
+			</div>
+			<div class="col-md-8">
+				<input type="checkbox" id="accountNonExpired" th:field="${userData.selectedUser.accountNonExpired}"></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-2">
+				<label class="input-margin">Account non-locked</label>
+			</div>
+			<div class="col-md-8">
+				<input type="checkbox" id="accountNonLocked" class="input-margin" th:field="${userData.selectedUser.accountNonLocked}"></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-2">
+				<label class="input-margin">Credentials non-expired</label>
+			</div>
+			<div class="col-md-8">
+				<input type="checkbox" id="credentialsNonExpired" class="input-margin" th:field="${userData.selectedUser.credentialsNonExpired}"></input>
+			</div>
+		</div>
+		<div class="row">		        	
+			<div class="col-md-1"></div>
+			<div class="col-md-2">
+				<label class="input-margin">Enabled</label>
+			</div>
+			<div class="col-md-8">
+				<input type="checkbox" id="enabled" class="input-margin" th:field="${userData.selectedUser.enabled}"></input>
+			</div>
+		</div>
+		<div class="row">		  
+			<div class="col-md-1"></div>      	
+			<div class="col-md-1">
+				<input type="submit" class="btn btn-default" th:value="#{updateUser.page.submitBtn}" ></input>
+			</div>
+			<div class="col-md-1">
+				<input type="button" class="btn btn-default" id="clearBtn" th:value="#{updateUser.page.clearBtn}" ></input>
+			</div>
+		</div>
+	</form>
+</body>
+</html>

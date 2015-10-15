@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    
+	<title th:text="#{createAccount.title}">Title</title>
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+	<br></br>
+
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div>
+				<h1>Create a new account</h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			Please enter your account information. Note that all new accounts are
+			subject to approval prior to activation. A valid email address is
+			required for account activation.
+		</div>
+	</div>
+	<br></br>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div th:if="${error}" th:text="${error}">Invalid user name and/or password.</div>
+		</div>
+	</div>
+	<br></br>
+	<form th:object="${userCreator}"  action="#" th:action="@{/public/postaccount}" method="post">
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">User name</label>
+			</div>
+			<div class="col-md-8">
+				<input class="input-margin" th:field="${userCreator.username}"></input>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">First name</label>
+			</div>
+			<div class="col-md-8">
+				<input class="input-margin" th:field="${userCreator.firstName}"></input>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Last name</label>
+			</div>
+			<div class="col-md-8">
+				<input class="input-margin" th:field="${userCreator.lastName}"></input>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Password</label>
+			</div>
+			<div class="col-md-8">
+				<input type="password" class="input-margin" th:field="${userCreator.password}"></input>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Verify password</label>
+			</div>
+			<div class="col-md-8">
+				<input type="password" class="input-margin" th:field="${userCreator.verifyPassword}"></input>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Email</label>
+			</div>
+			<div class="col-md-8">
+				<input class="input-margin" th:field="${userCreator.email}" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-2">
+           		<input type="submit" value="Submit" />
+			</div>
+		</div>
+	</form>
+</body>
+</html>

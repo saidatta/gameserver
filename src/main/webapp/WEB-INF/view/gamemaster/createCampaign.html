@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    
+    <title th:text="#{createCampaign.title}">Title</title>
+    
+	<script th:inline="javascript">
+	$(document).ready(function() {
+		$( window ).load(function() {
+			// placeholder
+		});		
+	});		
+</script>   
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+	
+	<br></br>
+
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div>
+				<h1 th:text="#{createCampaign.title}">Create</h1>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<div th:if="${error}" th:text="${error}">Error.</div>
+		</div>
+	</div>
+	<br></br>
+	<form id="updateOwnerForm" th:object="${campaignCreator}" action="#" th:action="@{/gamemaster/createCampaign}" method="post">
+		<input id="ownerId" type="hidden" th:field="*{ownerId}"></input>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label th:text="#{createCampaign.owner}">Owner</label>
+			</div>
+			<div class="col-md-10">
+  				<input th:field="*{ownerName}" th:disabled="disabled"></input>			 
+			</div>
+		</div>		 
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Campaign name</label>
+			</div>
+			<div class="col-md-8">
+				<input class="input-margin" th:field="*{campaign.name}"></input>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin">Description</label>
+			</div>
+			<div class="col-md-8">
+				<textarea rows="8" cols="100" class="input-margin" th:field="*{campaign.description}"></textarea>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-2">
+           		<input type="submit" value="Submit" />
+			</div>
+		</div>
+	</form>
+</body>
+</html>

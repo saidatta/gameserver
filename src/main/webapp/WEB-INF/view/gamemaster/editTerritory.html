@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    
+    <title th:text="#{createTerritory.title}">Title</title>
+    
+<script type="text/javascript">	
+<!--
+	function buildTree(territoryNode, dataParentId, nodeParent, index, indent) {
+		var indentClass = "indent" + indent;
+	    var subMenu = "subMenu" + index;
+	    index = index + 1;
+		var newAnchor = document.createElement("a");
+		var anchorClasses = "list-group-item " + indentClass;
+		$(newAnchor).attr("class", anchorClasses);
+		$(newAnchor).attr("data-parent", dataParentId);
+
+		var buttonDiv = document.createElement("div");
+		var territoryId = territoryNode["territoryId"];
+		var territoryName = territoryNode["territoryName"];
+		var displayName = territoryNode["displayName"];
+		var divHtml;
+		var children = territoryNode["children"];
+		if (children != "") {
+			divHtml = '<div class="on-same-line"><button class="addParent fa fa-plus" id="'+territoryId+'" name="'+territoryName+'"></button> '+displayName+' <span class="caret"></span></div>';
+		} else {
+			divHtml = '<div class="on-same-line"><button class="addParent fa fa-plus" id="'+territoryId+'" name="'+territoryName+'"></button> '+displayName+' </div>';
+		}
+		$(buttonDiv).html(divHtml);
+		$(newAnchor).append(buttonDiv);
+		$(nodeParent).append(newAnchor);
+		
+		if (children != "") {
+			$(newAnchor).attr("href", "#"+subMenu);
+			$(newAnchor).attr("data-toggle", "collapse");
+
+			var newNodeParent = document.createElement("div");
+			var newNodeParentClasses = "collapse list-group-submenu " + indentClass;
+			$(newNodeParent).attr("class", newNodeParentClasses);
+			$(newNodeParent).attr("id", subMenu);
+			$(nodeParent).append(newNodeParent);
+			indent = indent + 1;
+			$(children).each(function() {
+				buildTree(this, subMenu, newNodeParent, index, indent);
+				index = index + 1;
+			});
+		}
+		return index;
+	}
+	-->
+	function buildTree(territoryNode, nodeParent, index, indent) {
+		var parentId = $(nodeParent).attr("id");
+		var indentClass = "indent" + indent;
+	    var subMenu = "subMenu" + index;
+	    index = index + 1;
+		var newList = document.createElement("ul");
+		var listItem = document.createElement("li");
+		var territoryId = territoryNode["id"];
+		var territoryName = territoryNode["name"];
+		var displayName = territoryNode["displayName"];
+		var itemHtml;
+		var children = territoryNode["children"];
+		if (children.length > 0) {
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+territoryId+'\',\''+territoryName+'\');"></button> <span id="'+territoryId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+territoryId+'\');">'+displayName+' <span class="caret"></span></span></div>';
+		} else {
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+territoryId+'\',\''+territoryName+'\');"></button> <span id="'+territoryId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+territoryId+'\');">'+displayName+'</span> </div>';
+		}
+		$(listItem).html(itemHtml);
+		$(listItem).attr("id", territoryId);
+		$(listItem).addClass(parentId);
+		$(newList).append(listItem);
+		$(nodeParent).append(newList);
+		if ($(territoryNode).attr("id") != "ROOT") {
+			$(listItem).attr("hidden", "hidden");
+		}
+		
+		if (children.length > 0) {
+			indent = indent + 1;
+			$(children).each(function() {
+				buildTree(this, listItem, index, indent);
+				index = index + 1;
+			});
+		}
+		return index;
+	}
+	
+	function clickPlus(parentTerritoryId, parentTerritoryName) {
+		$("#hiddenParentId").val(parentTerritoryId);
+		$("#territoryParentName").val(parentTerritoryName);
+		event.preventDefault();
+	}
+	
+	function clickText(territoryId) {
+//		var territory = $("#"+territoryId);
+        var search = "."+territoryId;
+		var children = $(search);
+		$.each(children, function() {
+			var hidden = $(this).attr("hidden");
+			if (hidden == "hidden") {
+				$(this).removeAttr("hidden");
+			} else {
+				$(this).attr("hidden", "hidden");
+			}
+		});
+	}
+</script>   
+<script th:inline="javascript">
+	$(document).ready(function() {
+		$( window ).load(function() {
+			var territoryTypeId = $("#territoryTypeId");
+			if (territoryTypeId.val() != "") {
+	            $('.modifyTT').each(function(data) {
+    	        	var id = $(data).attr("id");
+			        if (id == territoryTypeId) {
+			        	var value = $(data).val();
+			        	var elem = $("#addTerritoryTypeId");
+			        	$(elem).val(id);
+			        }
+		    	});
+			}
+			
+			var territoryTreeJson = $("#territoryTreeJson").val();
+			var territoryTree = jQuery.parseJSON( territoryTreeJson );
+			var nodeParent = $("#territoryGroupPanel");
+			var children = territoryTree["children"];
+			var index = 0;
+			var indent = 0;
+			buildTree(territoryTree, $(nodeParent), index, indent);
+//			$(territoryTree.children).each(function() {
+//				index = buildTree(this, $(nodeParent), index, indent);
+//			});
+		});		
+
+		$(".modifyTT").click(function(event) {
+			// Get the data out of the event
+			var target = $(event.target);
+			var id = $(target).attr('id');
+			var name = $(target).text();
+
+			// Set the hidden fields
+			var addTT = $("#territoryTypeId");
+			addTT.val(id);
+			var ttName = $("#territoryTypeName");
+			ttName.val(name);
+			// Set the button text
+			var ttBtn = $("#ttBtn");
+			var newIH = name + ' <span class="caret"></span>';
+			$(ttBtn).html(newIH);
+		});
+		
+		$(".selectTerritory").click(function(event) {
+			var target = $(event.target);
+			var id = $(target).attr('id');
+			var name = $(target).text();
+			if (id == "0") { 
+				$("#territoryName").val(null);
+				$("#territoryId").val(null);
+			} else {
+				$("#territoryName").val(name);
+			}
+     		var form = $("#getTerritoryForm");
+			var action = form.attr("action");
+			action += "/"+id;
+			form.submit();
+		});
+	});		
+</script>
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+	<div th:fragment="createTerritory">
+		<br></br>
+	
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-7">
+				<div>
+					<h1 th:text="#{createTerritory.title}">Create</h1>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="item-hide" th:text="${session.campaignId}"></div>
+				<div class="on-same-line">
+					<span th:if="${session.campaignName}" th:text="#{campaignLabel}"></span><span th:text="${session.campaignName}"></span>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<div class="error-message" th:if="${feFeedback.error}" th:text="${feFeedback.error}">Error.</div>
+			</div>
+		</div>
+		<br></br>
+		<form id="getTerritoryForm" th:object="${territoryCreator}" action="#" th:action="@{/gamemaster/editTerritory}" method="get"></form>
+		<form id="editTerritoryForm" th:object="${territoryCreator}" action="#" th:action="@{/gamemaster/editTerritory}" method="post">
+			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
+			<input id="campaignId" type="hidden" th:field="*{territory.campaignId}"></input>
+			<input id="territoryTypeId" type="hidden" th:field="*{territory.gameDataTypeId}"></input>
+			<input id="territoryTypeName" type="hidden" th:field="*{territory.gameDataTypeName}"></input>
+			<input id="territoryTreeJson" type="hidden" th:field="*{territoryTreeJson}"></input>
+			<input id="hiddenParentId" type="hidden" th:field="*{territory.parentId}"></input>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-9">
+					<span th:text="#{createTerritory.description}">description</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-9">
+					<hr></hr>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{editTerritory.selectTerritory}">Name</label>
+				</div>
+				<div class="col-md-8">
+					<div class="btn-group">
+	  					<button id="tBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editTerritory.selectTerritoryDown}">
+	    					Select Territory <span class="caret"></span>
+	  					</button>
+		  				<ul class="dropdown-menu" role="menu">
+		    				<li th:each="territory : ${territoryCreator.territoriesInCampaign}"><a th:id="${territory.id}" class="selectTerritory" th:text="${territory.name}">Action</a></li>
+		  				</ul>
+					</div>				
+				</div>
+			</div>
+						
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{createTerritory.territoryName}">Name</label>
+				</div>
+				<div class="col-md-8">
+					<input class="input-margin" th:field="*{territory.name}"></input>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{createTerritory.parentTerritory}">Name</label>
+				</div>
+				<div class="col-md-8">
+					<input id="territoryParentName" class="input-margin" disabled="disabled"></input>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{createTerritory.territoryType}"></label>
+				</div>
+				<div class="col-md-8">
+					<div class="btn-group">
+	  					<button id="ttBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{createTerritoryType.ttBtn}">
+	    					Territory Type <span class="caret"></span>
+	  					</button>
+		  				<ul class="dropdown-menu" role="menu">
+		    				<li th:each="territoryType : ${territoryTypeCreator.gameDataTypesInCampaign}"><a th:id="${territoryType.id}" class="modifyTT" th:text="${territoryType.name}">Action</a></li>
+		  				</ul>
+					</div>				
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{createTerritory.territoryDescription}">Desc</label>
+				</div>
+				<div class="col-md-8">
+					<textarea rows="8" cols="100" class="input-margin" th:field="*{territory.description}"></textarea>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-3">			
+					<h4>Select parent territory in campaign</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-10">
+					<div id="territoryRoot">
+						<div id="territoryGroupPanel" class="list-group panel"></div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-2">
+	           		<input class="basic-margin" type="submit" value="Submit" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-9">
+					<hr></hr>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

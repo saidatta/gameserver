@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    
+	<title th:text="#{login.page.title}">Title</title>
+	
+	
+	<script th:inline="javascript">
+	$(document).ready(function() {
+
+		$.fn.extend({
+		    treed: function (o) {
+		      
+		      var openedClass = 'glyphicon-minus-sign';
+		      var closedClass = 'glyphicon-plus-sign';
+		      
+		      if (typeof o != 'undefined'){
+		        if (typeof o.openedClass != 'undefined'){
+		        openedClass = o.openedClass;
+		        }
+		        if (typeof o.closedClass != 'undefined'){
+		        closedClass = o.closedClass;
+		        }
+		      };
+		      
+		        //initialize each of the top levels
+		        var tree = $(this);
+		        tree.addClass("tree");
+		        tree.find('li').has("ul").each(function () {
+		            var branch = $(this); //li with children ul
+		            branch.prepend('<i class="indicator glyphicon ' + closedClass + '"></i>');
+		            branch.addClass('branch');
+		            branch.on('click', function (e) {
+		                if (this == e.target) {
+		                    var icon = $(this).children('i:first');
+		                    icon.toggleClass(openedClass + " " + closedClass);
+		                    $(this).children().children().toggle();
+		                }
+		            });
+		            branch.children().children().toggle();
+		        });
+		        //fire event from the dynamically added icon
+		      tree.find('.branch .indicator').each(function(){
+		        $(this).on('click', function () {
+		            $(this).closest('li').click();
+		        });
+		      });
+		        //fire event to open branch if the li contains an anchor instead of text
+		        tree.find('.branch>a').each(function () {
+		            $(this).on('click', function (e) {
+		                $(this).closest('li').click();
+		                e.preventDefault();
+		            });
+		        });
+		        //fire event to open branch if the li contains a button instead of text
+		        tree.find('.branch>button').each(function () {
+		            $(this).on('click', function (e) {
+		                $(this).closest('li').click();
+		                e.preventDefault();
+		            });
+		        });
+		    }
+		});
+	});
+</script>	
+	
+	
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+	
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+		<div th:if="${param.error}"><i class="fa fa-icon-exclamation-sign fa-2x"></i><h2 style="color:red">Invalid user name and/or password.</h2></div>
+        <h1>Game Server</h1>
+        <p>This is a an online application for managing tabletop role playing games.</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+
+		<div class="container">
+		  <div class="row">
+		    <div class="modal fade" id="myModal" role="dialog">
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal">x</button>
+		          <h3>Login to Gameserver</h3>
+				</div>
+				<div class="modal-body">
+				  <form th:action="@{/login}" method="post" name="login_form">
+		        	<p><input type="text" class="span3" name="username" id="username" placeholder="Login"></input></p>
+				    <p><input type="password" class="span3" name="password" placeholder="Password"></input></p>
+				    <p><button type="submit" class="btn btn-primary">Sign in</button>
+		        	  <a href="#">Forgot Password?</a>
+				    </p>
+				  </form>
+		        </div>
+		        <div class="modal-footer">
+		          New To gameserver?
+		          <a href="#" th:href="@{/public/createaccount}" class="btn btn-primary">Register</a>
+		        </div>
+		      </div>
+			</div>
+		  </div>
+		</div>
+      </div>
+    </div>
+	
+	
+<!-- 
+	<fieldset>
+	  	<legend th:text="#{login.page.title}">Hello</legend>
+		<div th:if="${param.error}">Invalid user name and password.</div>
+		<div th:if="${param.logout}">You have been logged out.</div>
+		<form th:action="@{/login}" method="post">
+			<div>
+				<label th:text="#{login.page.username}"> User: </label><input type="text" th:class="basic-margin" name="username" value="admin" />
+			</div>
+			<div>
+				<label th:text="#{login.page.password}"> Pwd: </label><input type="password" class="basic-margin" name="password" value="admin" />
+			</div>
+			<div>
+				<input type="submit" value="Sign In" />
+			</div>
+		</form>
+		<br></br>
+		<a th:href="@{/public/createaccount}" th:text="#{login.page.createAccount}" th:class="basic-margin">New account</a><br></br>
+		<a th:href="@{/public/bootstrapTest}" th:class="basic-margin">Test bootstrap</a>
+	</fieldset>
+ -->	
+</body>
+</html>
