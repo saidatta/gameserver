@@ -257,6 +257,17 @@ public class TerritoryService {
 	}
 
 	public Territory findOneTerritory(String territoryId) {
-		return territoryRepository.findOne(territoryId);
+		Territory territory = territoryRepository.findOne(territoryId);
+		String parentId = territory.getParentId();
+		if (parentId != null) {
+			Territory parent = territoryRepository.findOne(parentId);
+		    territory.setParentName(parent.getName());
+		}
+		String territoryTypeId = territory.getGameDataTypeId();
+		if (territoryTypeId != null) {
+		    TerritoryType type = territoryTypeRepository.findOne(territory.getGameDataTypeId());
+		    territory.setGameDataTypeName(type.getName());
+		}
+		return territory;
 	}
 }

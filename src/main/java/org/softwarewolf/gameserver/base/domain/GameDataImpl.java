@@ -16,6 +16,7 @@ public class GameDataImpl implements GameData, Serializable {
 	private String name;
 	private String description;
 	private String gameDataTypeId;
+	@Transient
 	private String gameDataTypeName;
 	private String campaignId;
 	private String parentId;

@@ -180,7 +180,19 @@
 			$.get( "/gameserver/gamemaster/getTerritory?hiddenTerritoryId="+id, function( data ) {
 //				  $( ".result" ).html( data );
 				  alert(data);
-				  var territoryTree = jQuery.parseJSON( territoryTreeJson );
+				  var territoryJson = jQuery.parseJSON(data);
+				  var description = territoryJson["description"];
+				  var territoryDescription = $("#territoryDescription");
+				  territoryDescription.val(description);
+				  var typeId = territoryJson["gameDataTypeId"];
+				  var territoryTypeId = $("#territoryTypeId");
+				  territoryTypeId.val(typeId);
+				  var typeName = territoryJson["gameDataTypeName"];
+				  var territoryTypeName = $("#territoryTypeName");
+				  territoryTypeName.val(typeName);
+				  var parentId = territoryJson["parentId"];
+				  var territoryParentId = $("#hiddenParentId");
+				  territoryParentId.val(parentId);
 				});
 			
 //     		var form = $("#editTerritoryForm");
@@ -220,7 +232,6 @@
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
 			<input id="campaignId" type="hidden" th:field="*{territory.campaignId}"></input>
 			<input id="territoryTypeId" type="hidden" th:field="*{territory.gameDataTypeId}"></input>
-			<input id="territoryTypeName" type="hidden" th:field="*{territory.gameDataTypeName}"></input>
 			<input id="territoryTreeJson" type="hidden" th:field="*{territoryTreeJson}"></input>
 			<input id="hiddenParentId" type="hidden" th:field="*{territory.parentId}"></input>
 			<input id="hiddenTerritoryId" type="hidden" th:field="*{territory.id}"></input>
@@ -294,7 +305,7 @@
 					<label class="input-margin" th:text="#{createTerritory.territoryType}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input id="territoryTypeName" class="input-margin" disabled="disabled"></input>
+					<input id="territoryTypeName" class="input-margin" disabled="disabled" th:field="*{territory.gameDataTypeName}"></input>
 				</div>
 			</div>
 			<div class="row">
@@ -303,7 +314,7 @@
 					<label class="input-margin" th:text="#{createTerritory.territoryDescription}">Desc</label>
 				</div>
 				<div class="col-md-8">
-					<textarea rows="8" cols="100" class="input-margin" th:field="*{territory.description}"></textarea>
+					<textarea id="territoryDescription" rows="8" cols="100" class="input-margin" th:field="*{territory.description}"></textarea>
 				</div>
 			</div>
 			<div class="row">
