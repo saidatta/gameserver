@@ -1,8 +1,11 @@
 package org.softwarewolf.gameserver.base.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.PathParam;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
@@ -25,9 +28,11 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/gamemaster")
@@ -609,29 +614,30 @@ public class GamemasterController {
 		return forwardingUrl;
 	}
 	
-	@RequestMapping(value = "/getTerritory", method = RequestMethod.POST)
+	@RequestMapping(value = "/getTerritory", method = RequestMethod.GET)
+//	@SendToUser(value = ClientMessagingEndpoints.MODEL_CONTROLLER, broadcast = false)
 	@Secured({"GAMEMASTER"})
+	@ResponseBody
 	public String editTerritoryId(HttpSession session, final TerritoryCreator territoryCreator, 
 			final TerritoryTypeCreator territoryTypeCreator, final OrganizationCreator organizationCreator,
-			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		if (campaignId == null) {
-			return USER_MENU;
-		}
+			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback,
+			@RequestParam(value="hiddenTerritoryId", required= false) String territoryId, @ModelAttribute("territory") Territory territory) {
 		
-		String forwardingUrl = "/gamemaster/editTerritory";
 		// In this case, the territory object just has the id and name, we need everything here.
-		String territoryId = territoryCreator.getTerritory().getId();
 		if (territoryId != null && territoryId != "") {
-			Territory territory = territoryService.findOneTerritory(territoryId);
-			territoryCreator.setTerritory(territory);
-		} else {
-			territoryCreator.setTerritory(null);
+			territory = territoryService.findOneTerritory(territoryId);
 		}
-		territoryService.initTerritoryCreator(territoryCreator, campaignId, forwardingUrl);
-		territoryCreator.setForwardingUrl(forwardingUrl);
-		territoryService.initTerritoryTypeCreator(new TerritoryType(), territoryTypeCreator, campaignId, forwardingUrl);
-		return forwardingUrl;
+		ObjectMapper objectMapper = new ObjectMapper();
+		String out = "{}";
+		if (territory != null) {
+			try {
+				out = objectMapper.writeValueAsString(territory);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return out;
 	}
 	
 	@RequestMapping(value = "/editTerritory", method = RequestMethod.POST)

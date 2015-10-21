@@ -84,11 +84,14 @@ public class TerritoryService {
 				territory.setCampaignId(campaignId);
 			}
 			territoryCreator.setTerritory(territory);
-		} else if (territory.getParentId() != null){
+		} 
+		if (territory.getParentId() != null){
 			Territory parent = findOneTerritory(territory.getParentId());
-			if (parent != null) {
+			if (parent != null && parent.getName() != "ROOT") {
 				territory.setParentName(parent.getName());
-			}
+			} 
+		} else {
+			territory.setParentName("ROOT");
 		}
 		List<Territory> territories = territoryRepository.findAllByKeyValue("campaignId", campaignId);
 		territoryCreator.setTerritoriesInCampaign(territories);

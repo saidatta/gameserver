@@ -157,9 +157,11 @@
 			var ttName = $("#territoryTypeName");
 			ttName.val(name);
 			// Set the button text
-			var ttBtn = $("#ttBtn");
-			var newIH = name + ' <span class="caret"></span>';
-			$(ttBtn).html(newIH);
+//			var ttBtn = $("#ttBtn");
+//			var newIH = name + ' <span class="caret"></span>';
+//			$(ttBtn).html(newIH);
+			var territoryTypeName = $("#territoryTypeName");
+			territoryTypeName.val(name);
 		});
 		
 		$(".selectTerritory").click(function(event) {
@@ -174,9 +176,16 @@
 				$("#territoryName").val(name);
 				$("#hiddenTerritoryId").val(id);
 			}
-     		var form = $("#editTerritoryForm");
-     		form.attr("action", "/gameserver/gamemaster/getTerritory");
-     		form.submit();
+			
+			$.get( "/gameserver/gamemaster/getTerritory?hiddenTerritoryId="+id, function( data ) {
+//				  $( ".result" ).html( data );
+				  alert(data);
+				  var territoryTree = jQuery.parseJSON( territoryTreeJson );
+				});
+			
+//     		var form = $("#editTerritoryForm");
+//     		form.attr("action", "/gameserver/gamemaster/getTerritory");
+//     		form.submit();
 		});
 	});		
 </script>
@@ -277,6 +286,15 @@
 		    				<li th:each="territoryType : ${territoryTypeCreator.gameDataTypesInCampaign}"><a th:id="${territoryType.id}" class="modifyTT" th:text="${territoryType.name}">Action</a></li>
 		  				</ul>
 					</div>				
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{createTerritory.territoryType}">Name</label>
+				</div>
+				<div class="col-md-8">
+					<input id="territoryTypeName" class="input-margin" disabled="disabled"></input>
 				</div>
 			</div>
 			<div class="row">
