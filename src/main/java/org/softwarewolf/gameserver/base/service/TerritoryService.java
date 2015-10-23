@@ -179,7 +179,8 @@ public class TerritoryService {
 		HierarchyJsonBuilder rootBuilder = new HierarchyJsonBuilder(root.getId(), root.getName(),
 				root.getGameDataTypeId(), root.getGameDataTypeName());
 
-		rootBuilder = buildHierarchy(rootBuilder, territoryMap);
+		Map<String, String> territoryTypeNameMap = getTerritoryTypeNameMap();
+		rootBuilder = buildHierarchy(rootBuilder, territoryMap, territoryTypeNameMap);
 				
 		//ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		ObjectWriter ow = new ObjectMapper().writer();
@@ -192,15 +193,27 @@ public class TerritoryService {
 		return json;
 	}
 	
-	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, Territory> territoryMap) {
+	private Map<String, String> getTerritoryTypeNameMap() {
+		Map<String, String> ttNameMap = new HashMap<>();
+		List<TerritoryType> territoryTypeList = territoryTypeRepository.findAll();
+		for (TerritoryType territoryType : territoryTypeList) {
+			ttNameMap.put(territoryType.getId(), territoryType.getName());
+		}
+		
+		return ttNameMap;
+	}
+	
+	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, Territory> territoryMap, 
+			Map<String, String> territoryTypeNameMap) {
 		Territory territory = territoryMap.get(parent.getId());
 		if (territory.hasChildren()) {
 			for (String childId : territory.getChildrenIdList()) {
 				Territory childTerritory = territoryMap.get(childId);
+				childTerritory.setGameDataTypeName(territoryTypeNameMap.get(childTerritory.getGameDataTypeId()));
 				HierarchyJsonBuilder child = new HierarchyJsonBuilder(childId, childTerritory.getName(),
 						childTerritory.getGameDataTypeId(), childTerritory.getDisplayName());
 				if (childTerritory.hasChildren()) {
-					child = buildHierarchy(child, territoryMap);
+					child = buildHierarchy(child, territoryMap, territoryTypeNameMap);
 				}
 				parent.addChild(child);
 			}
@@ -209,17 +222,19 @@ public class TerritoryService {
 		return parent;
 	}
 
-	public void initTerritoryTypeCreator(TerritoryType territoryType, TerritoryTypeCreator territoryTypeCreator, 
+	public void initTerritoryTypeCreator(String territoryTypeId, TerritoryTypeCreator territoryTypeCreator, 
 			String campaignId, String forwardingUrl) {
 		if (forwardingUrl != null) {
 			territoryTypeCreator.setForwardingUrl(forwardingUrl);
 		}
 
-		if (territoryType != null) {
-			territoryTypeCreator.setTerritoryType(territoryType);
+		TerritoryType territoryType = null;
+		if (territoryTypeId != null) {
+			territoryType = territoryTypeRepository.findOne(territoryTypeId);
 		} else {
-			territoryTypeCreator.setTerritoryType(new TerritoryType());
+			territoryType = new TerritoryType();
 		}
+		territoryTypeCreator.setTerritoryType(territoryType);
 		List<TerritoryType> territoryTypesInCampaign = null;
 		List<GameDataType> gameDataTypesInCampaign = new ArrayList<>();
 		List<GameDataType> otherGameDataTypes = new ArrayList<>();
@@ -229,6 +244,10 @@ public class TerritoryService {
 				List<String> campaignIds = new ArrayList<>();
 				campaignIds.add(campaignId);
 				territoryTypesInCampaign = territoryTypeRepository.findAllByKeyValue("campaignList", campaignId);
+				TerritoryType addNewTT = new TerritoryType();
+				addNewTT.setId("0");
+				addNewTT.setName("Add new territory type");
+				gameDataTypesInCampaign.add(addNewTT);
 				for (TerritoryType tt : territoryTypesInCampaign) {
 					gameDataTypesInCampaign.add(tt);
 				}
