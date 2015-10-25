@@ -51,8 +51,6 @@
 		                  <li><a href="#" th:text="#{menu.item.checkNotifications}">Notifications</a></li>
 		                  <li><a href="/gameserver/gamemaster/createCampaign" th:text="#{menu.item.createCampaign}">Create Camp</a></li>
 		                  <li><a href="/gameserver/gamemaster/campaignHome" th:text="#{menu.item.campaignHome}">Camp Home</a></li>
-		                  <li th:if="${session.campaignName}"><a href="/gameserver/gamemaster/createTerritoryType" th:text="#{menu.item.createTerritoryType}">Create Territory</a></li>
-		                  <li th:if="${session.campaignName}"><a href="/gameserver/gamemaster/createTerritory" th:text="#{menu.item.createTerritory}">Create T</a></li>
 		                  <li th:if="${session.campaignName}"><a href="/gameserver/gamemaster/editTerritory" th:text="#{menu.item.editTerritory}">Create T</a></li>
 		                  <li th:if="${session.campaignName}"><a href="/gameserver/gamemaster/createOrganizationType" th:text="#{menu.item.createOrganizationType}">Create Territory</a></li>
 		                  <li th:if="${session.campaignName}"><a href="/gameserver/gamemaster/createOrganization" th:text="#{menu.item.createOrganization}">Create T</a></li>

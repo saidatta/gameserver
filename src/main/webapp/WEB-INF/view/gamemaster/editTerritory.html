@@ -153,9 +153,9 @@
 				var form = $("#createTerritoryTypeForm");
 				var territoryId = $("#hiddenTerritoryId").val();
 				var action = form.attr("action");
-				action += "?forwardingUrl=/gameserver/gamemaster/editTerritory";
+				action += "?forwardingUrl=/gamemaster/editTerritory";
 //				if (territoryId != "") {
-//					action += "%3Fid=" + territoryId;
+//					action += ".id=" + territoryId;
 //				}
 				window.location.href = action;
 			} else {
@@ -191,6 +191,7 @@
 			$.get( "/gameserver/gamemaster/getTerritory?hiddenTerritoryId="+id, function( data ) {
 //				  $( ".result" ).html( data );
 //				  alert(data);
+				  // Populate the form with the data returned from the back end
 				  var territoryJson = jQuery.parseJSON(data);
 				  var description = territoryJson["description"];
 				  var territoryDescription = $("#territoryDescription");
@@ -205,10 +206,12 @@
 				  var territoryParentId = $("#hiddenParentId");
 				  territoryParentId.val(parentId);
 				  var parentName = territoryJson["parentName"];
+				  if (parentName == null) {
+					  parentName = "ROOT";
+				  }
 				  var territoryParentName = $("#territoryParentName");
 				  territoryParentName.val(parentName);
-				});
-			
+			});
 		});
 	});		
 </script>
@@ -235,7 +238,13 @@
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
-				<div class="error-message" th:if="${feFeedback.error}" th:text="${feFeedback.error}">Error.</div>
+				<span class="error-message" th:if="${feFeedback.error}" th:text="${feFeedback.error}">Error.</span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<span class="info-message" th:if="${feFeedback.info}" th:text="${feFeedback.info}">Info.</span>
 			</div>
 		</div>
 		<br></br>
@@ -306,7 +315,7 @@
 	    					Territory Type <span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="territoryType : ${territoryTypeCreator.gameDataTypesInCampaign}"><a th:id="${territoryType.id}" class="modifyTT" th:text="${territoryType.name}">Action</a></li>
+		    				<li th:each="territoryType : ${territoryCreator.territoryTypesInCampaign}"><a th:id="${territoryType.id}" class="modifyTT" th:text="${territoryType.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>

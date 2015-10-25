@@ -3,10 +3,12 @@ package org.softwarewolf.gameserver.base.domain.helper;
 import java.util.List;
 
 import org.softwarewolf.gameserver.base.domain.Territory;
+import org.softwarewolf.gameserver.base.domain.TerritoryType;
 
 public class TerritoryCreator {
 	public Territory territory;
 	public List<Territory> territoriesInCampaign;
+	public List<TerritoryType> territoryTypesInCampaign;
 	public String territoryTreeJson;
 	public String addGameDataTypeId;
 	public String removeGameDataTypeId;
@@ -30,6 +32,14 @@ public class TerritoryCreator {
 	
 	public void setTerritoriesInCampaign(List<Territory> territoriesInCampaign) {
 		this.territoriesInCampaign = territoriesInCampaign;
+	}
+	
+	public List<TerritoryType> getTerritoryTypesInCampaign() {
+		return territoryTypesInCampaign;
+	}
+	
+	public void setTerritoryTypesInCampaign(List<TerritoryType> territoryTypesInCampaign) {
+		this.territoryTypesInCampaign = territoryTypesInCampaign;
 	}
 	
 	public String getTerritoryTreeJson() {

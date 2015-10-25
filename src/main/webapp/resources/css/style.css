@@ -56,6 +56,11 @@ hr {
 	margin-bottom: 2px;
 }
 
+.error-message {
+	color: #E80000;
+	font-weight: bold;	
+}
+
 .gs-accordian-panel {
 	border: 1px, solid, transparent;
 	border0radius: 4px;
@@ -109,6 +114,11 @@ hr {
 .input-padding {
 	padding-top: 5px;
 	padding-bottom: 5px;
+}
+
+.info-message {
+	color: #33CC33;
+	font-weight: bold;	
 }
 
 .item-hide {

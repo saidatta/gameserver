@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.softwarewolf.gameserver.base.domain.GameDataType;
 import org.softwarewolf.gameserver.base.domain.Territory;
@@ -22,6 +23,7 @@ import org.codehaus.jackson.map.ObjectWriter;
 @Service
 public class TerritoryService {
 	public static final String ROOT = "ROOT";
+	private static final Logger logger = Logger.getLogger(TerritoryService.class.getSimpleName());
 	
 	@Autowired
 	protected TerritoryRepository territoryRepository;
@@ -67,7 +69,26 @@ public class TerritoryService {
 		return territoryType;
 	}
 	
-	public void initTerritoryCreator(TerritoryCreator territoryCreator, String campaignId, String forwardingUrl) {
+	public void initTerritoryCreator(String territoryId, TerritoryCreator territoryCreator, 
+			String campaignId, String forwardingUrl) {
+
+		Territory territory = null;
+		if (territoryId != null) {
+			territory = territoryRepository.findOne(territoryId);
+			if (territory == null) {
+				throw new RuntimeException("Can not find a territory for id " + territoryId);
+			}
+		} else {
+			territory = new Territory();
+			territory.setParentName(ROOT);
+			territory.setParentId(ROOT);
+		}
+		
+		initTerritoryCreator(territory, territoryCreator, campaignId, forwardingUrl);
+	}
+	
+	public void initTerritoryCreator(Territory territory, TerritoryCreator territoryCreator, 
+			String campaignId, String forwardingUrl) {
 		if (forwardingUrl != null) {
 			territoryCreator.setForwardingUrl(forwardingUrl);
 		}
@@ -75,17 +96,15 @@ public class TerritoryService {
 			String json = createTerritoryTree(campaignId);
 			territoryCreator.setTerritoryTreeJson(json); 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.fine(e.getMessage());
 		}
-		Territory territory = territoryCreator.getTerritory();
-		if (territory == null || territory.getId() == null) {
-			territory = new Territory();
-			if (campaignId != null) {
-				territory.setCampaignId(campaignId);
-			}
-			territoryCreator.setTerritory(territory);
-		} 
-		if (territory.getParentId() != null){
+
+		if (campaignId != null && territory.getCampaignId() == null) {
+			territory.setCampaignId(campaignId);
+		}
+		territoryCreator.setTerritory(territory);
+
+		if (territory.getParentId() != null) {
 			Territory parent = findOneTerritory(territory.getParentId());
 			if (parent != null && parent.getName() != "ROOT") {
 				territory.setParentName(parent.getName());
@@ -95,7 +114,13 @@ public class TerritoryService {
 		}
 		List<Territory> territories = territoryRepository.findAllByKeyValue("campaignId", campaignId);
 		territoryCreator.setTerritoriesInCampaign(territories);
-
+		
+		List<TerritoryType> territoryTypesInCampaign = territoryTypeRepository.findAllByKeyValue("campaignList", campaignId);
+		TerritoryType addNew = new TerritoryType();
+		addNew.setId("0");
+		addNew.setName("Add new territory type");
+		territoryTypesInCampaign.add(0, addNew);
+		territoryCreator.setTerritoryTypesInCampaign(territoryTypesInCampaign);
 	}
 	
 	public void saveTerritoryType(TerritoryType territoryType) {
@@ -277,6 +302,9 @@ public class TerritoryService {
 
 	public Territory findOneTerritory(String territoryId) {
 		Territory territory = territoryRepository.findOne(territoryId);
+		if (territory == null) {
+			return null;
+		}
 		String parentId = territory.getParentId();
 		if (parentId != null) {
 			Territory parent = territoryRepository.findOne(parentId);
