@@ -2,18 +2,17 @@ package org.softwarewolf.gameserver.base.domain.helper;
 
 import java.util.List;
 
-import org.softwarewolf.gameserver.base.domain.GameDataType;
 import org.softwarewolf.gameserver.base.domain.Organization;
+import org.softwarewolf.gameserver.base.domain.OrganizationType;
 
 public class OrganizationCreator {
 	public Organization organization;
 	public List<Organization> organizationsInCampaign;
+	public List<OrganizationType> organizationTypesInCampaign;
 	public String organizationTreeJson;
 	public String addGameDataTypeId;
 	public String removeGameDataTypeId;
 	public String forwardingUrl;
-	public List<GameDataType> gameDataTypesInCampaign;
-	public List<GameDataType> otherGameDataTypes;
 	
 	public OrganizationCreator() {
 		organization = new Organization();
@@ -33,6 +32,14 @@ public class OrganizationCreator {
 	
 	public void setOrganizationsInCampaign(List<Organization> organizationsInCampaign) {
 		this.organizationsInCampaign = organizationsInCampaign;
+	}
+	
+	public List<OrganizationType> getOrganizationTypesInCampaign() {
+		return organizationTypesInCampaign;
+	}
+	
+	public void setOrganizationTypesInCampaign(List<OrganizationType> organizationTypesInCampaign) {
+		this.organizationTypesInCampaign = organizationTypesInCampaign;
 	}
 	
 	public String getOrganizationTreeJson() {
@@ -61,22 +68,6 @@ public class OrganizationCreator {
 
 	public String getForwardingUrl() {
 		return forwardingUrl;
-	}
-	
-	public List<GameDataType> getGameDataTypesInCampaign() {
-		return gameDataTypesInCampaign;
-	}
-	
-	public void setGameDataTypesInCampaign(List<GameDataType> gameDataTypesInCampaign) {
-		this.gameDataTypesInCampaign = gameDataTypesInCampaign;
-	}
-
-	public List<GameDataType> getOtherGameDataTypes() {
-		return otherGameDataTypes;
-	}
-	
-	public void setOtherGameDataTypes(List<GameDataType> otherGameDataTypes) {
-		this.otherGameDataTypes = otherGameDataTypes;
 	}
 	
 	public void setForwardingUrl(String forwardingUrl) {

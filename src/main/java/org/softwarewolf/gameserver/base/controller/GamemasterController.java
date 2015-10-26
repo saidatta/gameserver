@@ -39,6 +39,7 @@ public class GamemasterController {
 	private static final String USER_MENU = "/user/menu";
 	private static final String EDIT_TERRITORY = "/gamemaster/editTerritory";
 	private static final String CREATE_TERRITORY_TYPE = "/gamemaster/createTerritoryType";
+	private static final String EDIT_ORGANIZATION = "/gamemaster/editOrganization";
 			
 	@Autowired
 	protected UserRepository userRepository;
@@ -260,175 +261,175 @@ public class GamemasterController {
 		return forwardingUrl;
 	}
 
-	@RequestMapping(value = "/createOrganization", method = RequestMethod.GET)
-	@Secured({"GAMEMASTER"})
-	public String createOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
-			final OrganizationTypeCreator organizationTypeCreator, final TerritoryCreator territoryCreator,
-			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		if (campaignId == null) {
-			return USER_MENU;
-		}
-		
-		String forwardingUrl = "/gamemaster/createOrganization";
-		organizationService.initOrganizationCreator(organizationCreator, campaignId, forwardingUrl);
-		organizationCreator.setForwardingUrl(forwardingUrl);
-		organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
-		return forwardingUrl;
-	}
+//	@RequestMapping(value = "/createOrganization", method = RequestMethod.GET)
+//	@Secured({"GAMEMASTER"})
+//	public String createOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
+//			final OrganizationTypeCreator organizationTypeCreator, final TerritoryCreator territoryCreator,
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		if (campaignId == null) {
+//			return USER_MENU;
+//		}
+//		
+//		String forwardingUrl = "/gamemaster/createOrganization";
+//		organizationService.initOrganizationCreator(organizationCreator, campaignId, forwardingUrl);
+//		organizationCreator.setForwardingUrl(forwardingUrl);
+//		organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
+//		return forwardingUrl;
+//	}
 	
-	@RequestMapping(value = "/createOrganization", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String postOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
-			final OrganizationTypeCreator organizationTypeCreator, final TerritoryCreator territoryCreator,
-			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
-		Organization organization = organizationCreator.getOrganization();
-		StringBuilder errorMsg = new StringBuilder(); 
-		if (organization.getName().isEmpty()) {
-			errorMsg.append("You must have a organization name.");
-		}
-		if (organization.getGameDataTypeId() == null || organization.getGameDataTypeId().isEmpty()) {
-			if (errorMsg.length() > 0) {
-				errorMsg.append("\n");
-			}
-			errorMsg.append("You must have an organization type.");
-		}
-		if (organization.getDescription().isEmpty()) {
-			if (errorMsg.length() > 0) {
-				errorMsg.append("\n");
-			}
-			errorMsg.append("You must have a description.");
-		}
-		if (organization.getParentId().isEmpty()) {
-			if (errorMsg.length() > 0) {
-				errorMsg.append("\n");
-			}
-			errorMsg.append("You must have a parent organization.");
-		}
-		if (errorMsg.length() > 0) {
-			feFeedback.setError(errorMsg.toString());
-			return "/gamemaster/createOrganization";
-		}
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		if (campaignId != null) {
-			organization.setCampaignId(campaignId);
-		}
-		try {
-			organizationService.saveOrganization(organization);
-			organizationService.initOrganizationCreator(organizationCreator, campaignId, organizationCreator.getForwardingUrl());
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return "/gamemaster/createOrganization";
-		}
-		return "/gamemaster/organizationCreated";
-	}
+//	@RequestMapping(value = "/createOrganization", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String postOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
+//			final OrganizationTypeCreator organizationTypeCreator, final TerritoryCreator territoryCreator,
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		Organization organization = organizationCreator.getOrganization();
+//		StringBuilder errorMsg = new StringBuilder(); 
+//		if (organization.getName().isEmpty()) {
+//			errorMsg.append("You must have a organization name.");
+//		}
+//		if (organization.getGameDataTypeId() == null || organization.getGameDataTypeId().isEmpty()) {
+//			if (errorMsg.length() > 0) {
+//				errorMsg.append("\n");
+//			}
+//			errorMsg.append("You must have an organization type.");
+//		}
+//		if (organization.getDescription().isEmpty()) {
+//			if (errorMsg.length() > 0) {
+//				errorMsg.append("\n");
+//			}
+//			errorMsg.append("You must have a description.");
+//		}
+//		if (organization.getParentId().isEmpty()) {
+//			if (errorMsg.length() > 0) {
+//				errorMsg.append("\n");
+//			}
+//			errorMsg.append("You must have a parent organization.");
+//		}
+//		if (errorMsg.length() > 0) {
+//			feFeedback.setError(errorMsg.toString());
+//			return "/gamemaster/createOrganization";
+//		}
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		if (campaignId != null) {
+//			organization.setCampaignId(campaignId);
+//		}
+//		try {
+//			organizationService.saveOrganization(organization);
+//			organizationService.initOrganizationCreator(organizationCreator, campaignId, organizationCreator.getForwardingUrl());
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return "/gamemaster/createOrganization";
+//		}
+//		return "/gamemaster/organizationCreated";
+//	}
 
-	@RequestMapping(value = "/createOrganizationType", method = RequestMethod.GET)
-	@Secured({"GAMEMASTER"})
-	public String createOrganizationType(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
-			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
-			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		if (campaignId == null) {
-			return USER_MENU;
-		}
-		
-		String forwardingUrl = "/gamemaster/createOrganizationType";
-		OrganizationType organizationType = new OrganizationType();
-		organizationService.initOrganizationTypeCreator(organizationType, organizationTypeCreator, campaignId, forwardingUrl);
-		return forwardingUrl;
-	}
+//	@RequestMapping(value = "/createOrganizationType", method = RequestMethod.GET)
+//	@Secured({"GAMEMASTER"})
+//	public String createOrganizationType(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		if (campaignId == null) {
+//			return USER_MENU;
+//		}
+//		
+//		String forwardingUrl = "/gamemaster/createOrganizationType";
+//		OrganizationType organizationType = new OrganizationType();
+//		organizationService.initOrganizationTypeCreator(organizationType, organizationTypeCreator, campaignId, forwardingUrl);
+//		return forwardingUrl;
+//	}
 	
-	@RequestMapping(value = "/addOrganizationTypeToCampaign", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String addOrganizationTypeToCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
-			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
-			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String addOrganizationTypeId = organizationTypeCreator.getAddGameDataTypeId();
-		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
-		try {
-			if (addOrganizationTypeId != null) {
-				OrganizationType organizationType = organizationService.getOrganizationTypeById(addOrganizationTypeId);
-				organizationType.addCampaign(campaignId);
-				organizationService.saveOrganizationType(organizationType);
-				organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
-			}
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return forwardingUrl;
-		}
-		return forwardingUrl;
-	}
+//	@RequestMapping(value = "/addOrganizationTypeToCampaign", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String addOrganizationTypeToCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String addOrganizationTypeId = organizationTypeCreator.getAddGameDataTypeId();
+//		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+//		try {
+//			if (addOrganizationTypeId != null) {
+//				OrganizationType organizationType = organizationService.getOrganizationTypeById(addOrganizationTypeId);
+//				organizationType.addCampaign(campaignId);
+//				organizationService.saveOrganizationType(organizationType);
+//				organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
 
-	@RequestMapping(value = "/removeOrganizationTypeFromCampaign", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String removeOrganizationTypeFromCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
-			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
-			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String removeOrganizationTypeId = organizationTypeCreator.getRemoveGameDataTypeId();
-		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
-		try {
-			if (removeOrganizationTypeId != null) {
-				OrganizationType organizationType = organizationService.getOrganizationTypeById(removeOrganizationTypeId);
-				organizationType.removeCampaign(campaignId);
-				organizationService.saveOrganizationType(organizationType);
-				organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
-			}
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return forwardingUrl;
-		}
-		return forwardingUrl;
-	}
+//	@RequestMapping(value = "/removeOrganizationTypeFromCampaign", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String removeOrganizationTypeFromCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String removeOrganizationTypeId = organizationTypeCreator.getRemoveGameDataTypeId();
+//		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+//		try {
+//			if (removeOrganizationTypeId != null) {
+//				OrganizationType organizationType = organizationService.getOrganizationTypeById(removeOrganizationTypeId);
+//				organizationType.removeCampaign(campaignId);
+//				organizationService.saveOrganizationType(organizationType);
+//				organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
 
-	@RequestMapping(value = "/createOrganizationType", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String postOrganizationType(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
-			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator,
-			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
-		OrganizationType organizationType = organizationTypeCreator.getOrganizationType();
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
-		if (campaignId != null) {
-			organizationType.addCampaign(campaignId);
-		}
-		try {
-			organizationService.saveOrganizationType(organizationType);
-			organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
-			feFeedback.setInfo("Success, you have created a territory type");
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return forwardingUrl;
-		}
-		return forwardingUrl;
-	}
+//	@RequestMapping(value = "/createOrganizationType", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String postOrganizationType(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator,
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		OrganizationType organizationType = organizationTypeCreator.getOrganizationType();
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+//		if (campaignId != null) {
+//			organizationType.addCampaign(campaignId);
+//		}
+//		try {
+//			organizationService.saveOrganizationType(organizationType);
+//			organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
+//			feFeedback.setInfo("Success, you have created a territory type");
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
 
-	@RequestMapping(value = "/addOrganizationTypeToOrganization", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String addOrganizationTypeToOrganization(HttpSession session, final OrganizationCreator organizationCreator,
-			final OrganizationTypeCreator organizationTypeCreator, final TerritoryCreator territoryCreator,
-			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String addOrganizationTypeId = organizationCreator.getAddGameDataTypeId();
-		String forwardingUrl = organizationCreator.getForwardingUrl();
-		try {
-			if (addOrganizationTypeId != null) {
-				OrganizationType organizationType = organizationService.getOrganizationTypeById(addOrganizationTypeId);
-				if (organizationType == null) {
-					feFeedback.setError("Invalid organization type.");
-					return forwardingUrl;
-				}
-				organizationCreator.getOrganization().setGameDataTypeId(addOrganizationTypeId);
-				organizationService.initOrganizationCreator(organizationCreator, campaignId, forwardingUrl);
-			}
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return forwardingUrl;
-		}
-		return forwardingUrl;
-	}
+//	@RequestMapping(value = "/addOrganizationTypeToOrganization", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String addOrganizationTypeToOrganization(HttpSession session, final OrganizationCreator organizationCreator,
+//			final OrganizationTypeCreator organizationTypeCreator, final TerritoryCreator territoryCreator,
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String addOrganizationTypeId = organizationCreator.getAddGameDataTypeId();
+//		String forwardingUrl = organizationCreator.getForwardingUrl();
+//		try {
+//			if (addOrganizationTypeId != null) {
+//				OrganizationType organizationType = organizationService.getOrganizationTypeById(addOrganizationTypeId);
+//				if (organizationType == null) {
+//					feFeedback.setError("Invalid organization type.");
+//					return forwardingUrl;
+//				}
+//				organizationCreator.getOrganization().setGameDataTypeId(addOrganizationTypeId);
+//				organizationService.initOrganizationCreator(organizationCreator, campaignId, forwardingUrl);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
 
 //	@RequestMapping(value = "/removeOrganizationRankFromCampaign", method = RequestMethod.POST)
 //	@Secured({"GAMEMASTER"})
@@ -538,8 +539,9 @@ public class GamemasterController {
 		territoryService.initTerritoryCreator(territoryId, territoryCreator, campaignId, CAMPAIGN_HOME);
 		territoryService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, CAMPAIGN_HOME);
 
-		organizationService.initOrganizationCreator(organizationCreator, campaignId, CAMPAIGN_HOME);
-		organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, CAMPAIGN_HOME);
+		String organizationId = null;
+		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, CAMPAIGN_HOME);
+		organizationService.initOrganizationTypeCreator(null, organizationTypeCreator, campaignId, CAMPAIGN_HOME);
 
 		return CAMPAIGN_HOME;
 	}
@@ -556,7 +558,7 @@ public class GamemasterController {
 		
 		String forwardingUrl = "/gamemaster/createOrganizationRank";
 		organizationRankCreator.setForwardingUrl(forwardingUrl);
-		organizationService.initOrganizationRankCreator(organizationRankCreator, campaignId, forwardingUrl);
+//		organizationService.initOrganizationRankCreator(organizationRankCreator, campaignId, forwardingUrl);
 		return forwardingUrl;
 	}
 	
@@ -590,8 +592,8 @@ public class GamemasterController {
 			organizationRank.setCampaignId(campaignId);
 		}
 		try {
-			organizationService.saveOrganizationRank(organizationRank);
-			organizationService.initOrganizationRankCreator(organizationRankCreator, campaignId, organizationRankCreator.getForwardingUrl());
+//			organizationService.saveOrganizationRank(organizationRank);
+//			organizationService.initOrganizationRankCreator(organizationRankCreator, campaignId, organizationRankCreator.getForwardingUrl());
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return "/gamemaster/createOrganizationRank";
@@ -699,10 +701,110 @@ public class GamemasterController {
 		return errorMsg.toString();
 	}
 	
+	private String validateOrganization(final Organization organization) {
+		StringBuilder errorMsg = new StringBuilder(); 
+		if (organization.getName().isEmpty()) {
+			addMessage(errorMsg, "You must have a organization name.");
+		}
+		if (organization.getGameDataTypeId() == null || organization.getGameDataTypeId().isEmpty()) {
+			addMessage(errorMsg, "You must have a terrorganizationitory type.");
+		}
+		if (organization.getDescription().isEmpty()) {
+			addMessage(errorMsg, "You must have a description.");
+		}
+		if (organization.getParentId().isEmpty()) {
+			addMessage(errorMsg, "You must have a parent organization");
+		}
+		return errorMsg.toString();
+	}
+	
 	private void addMessage(StringBuilder builder, String message) {
 		if (builder.length() > 0) {
 			builder.append("\n");
 		}
 		builder.append(message);
 	}
+	
+	@RequestMapping(value = "/editOrganization", method = RequestMethod.GET)
+	@Secured({"GAMEMASTER"})
+	public String editOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
+			final FeFeedback feFeedback, @RequestParam(value="id", required= false) String organizationId) {
+		// If we haven't selected a campaign, get to the menu!
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return USER_MENU;
+		}
+		
+		// In this case, the territory object just has the id and name, we need everything here.
+		if (organizationId != null && organizationId != "") {
+			Organization organization = organizationCreator.getOrganization();
+			organization.setId(organizationId);
+			organization = organizationService.findOneOrganization(organization.getId());
+		}
+		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, EDIT_ORGANIZATION);
+		return EDIT_ORGANIZATION;
+	}
+	
+	/**
+	 * Ajax call to get just the data on a territory when a user clicks on a territory
+	 * in the edit territory drop-down
+	 * @param session
+	 * @param territoryCreator
+	 * @param territoryTypeCreator
+	 * @param organizationCreator
+	 * @param organizationTypeCreator
+	 * @param feFeedback
+	 * @param territoryId
+	 * @param territory
+	 * @return
+	 */
+	@RequestMapping(value = "/getOrganization", method = RequestMethod.GET)
+	@Secured({"GAMEMASTER"})
+	@ResponseBody
+	public String editOrganizationId(HttpSession session, final OrganizationCreator territoryCreator, 
+			final FeFeedback feFeedback, @RequestParam(value="hiddenOrganizationId", required= false) String organizationId, 
+			@ModelAttribute("organization") Organization organization) {
+		
+		// In this case, the territory object just has the id and name, we need everything here.
+		if (organizationId != null && organizationId != "") {
+			organization = organizationService.findOneOrganization(organizationId);
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		String out = "{}";
+		if (organization != null) {
+			try {
+				out = objectMapper.writeValueAsString(organization);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return out;
+	}
+	
+	@RequestMapping(value = "/editOrganization", method = RequestMethod.POST)
+	@Secured({"GAMEMASTER"})
+	public String postEditOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
+			final FeFeedback feFeedback) {
+		Organization organization = organizationCreator.getOrganization();
+
+		String errorMsg = validateOrganization(organization);
+		if (errorMsg.length() > 0) {
+			feFeedback.setError(errorMsg.toString());
+			organizationService.initOrganizationCreator(organization.getId(), organizationCreator, organization.getCampaignId(), organizationCreator.getForwardingUrl());
+			return EDIT_ORGANIZATION;
+		}
+		
+		try {
+			String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+			organizationService.saveOrganization(organization);
+			String organizationId = null;
+			organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, organizationCreator.getForwardingUrl());
+			feFeedback.setInfo("Success, you've created " + organization.getName());
+		} catch (IllegalArgumentException e) {
+			feFeedback.setError(e.getMessage());
+			return EDIT_ORGANIZATION;
+		}
+		return organizationCreator.getForwardingUrl();
+	}	
 }
