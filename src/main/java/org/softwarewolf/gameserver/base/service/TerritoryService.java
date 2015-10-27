@@ -113,6 +113,11 @@ public class TerritoryService {
 			territory.setParentName("ROOT");
 		}
 		List<Territory> territories = territoryRepository.findAllByKeyValue("campaignId", campaignId);
+		// Add a dummy territory to the list for selecting the option of adding a new territory
+		Territory addNewTerritory = new Territory();
+		addNewTerritory.setId("0");
+		addNewTerritory.setName("Add a new territory");
+		territories.add(0, addNewTerritory);
 		territoryCreator.setTerritoriesInCampaign(territories);
 		
 		List<TerritoryType> territoryTypesInCampaign = territoryTypeRepository.findAllByKeyValue("campaignList", campaignId);

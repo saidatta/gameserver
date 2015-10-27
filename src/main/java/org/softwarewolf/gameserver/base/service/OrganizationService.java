@@ -113,6 +113,11 @@ public class OrganizationService {
 			organization.setParentName("ROOT");
 		}
 		List<Organization> organizations = organizationRepository.findAllByKeyValue("campaignId", campaignId);
+		// Add a dummy organization to the list for selecting the option of adding a new organization
+		Organization addNewOrganization = new Organization();
+		addNewOrganization.setId("0");
+		addNewOrganization.setName("Add a new organization");
+		organizations.add(0, addNewOrganization);
 		organizationCreator.setOrganizationsInCampaign(organizations);
 		
 		List<OrganizationType> organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValue("campaignList", campaignId);

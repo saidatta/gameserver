@@ -20,6 +20,11 @@
     
 <script type="text/javascript">	
 	function buildTree(territoryNode, nodeParent, index, indent) {
+		var displayName = territoryNode["displayName"];
+		// If we're looking at "Add new territory" skip it, it isn't real.
+		if (displayName == "" || displayName == null) {
+			return index;
+		}
 		var parentId = $(nodeParent).attr("id");
 		var indentClass = "indent" + indent;
 	    var subMenu = "subMenu" + index;
@@ -28,7 +33,6 @@
 		var listItem = document.createElement("li");
 		var territoryId = territoryNode["id"];
 		var territoryName = territoryNode["name"];
-		var displayName = territoryNode["displayName"];
 		var itemHtml;
 		var children = territoryNode["children"];
 		if (children.length > 0) {
@@ -55,14 +59,15 @@
 		return index;
 	}
 	
+	// This is for selecting a parent territory
 	function clickPlus(parentTerritoryId, parentTerritoryName) {
 		$("#hiddenParentId").val(parentTerritoryId);
 		$("#territoryParentName").val(parentTerritoryName);
 		event.preventDefault();
 	}
 	
+	// This is for collapsing the parent territory hierarchy
 	function clickText(territoryId) {
-//		var territory = $("#"+territoryId);
         var search = "."+territoryId;
 		var children = $(search);
 		$.each(children, function() {

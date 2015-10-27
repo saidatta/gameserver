@@ -128,7 +128,10 @@ public class GameDataImpl implements GameData, Serializable {
 	}
 
 	public String getDisplayName() {
-		StringBuilder displayNameBuilder = new StringBuilder(getName()).append("(").append(this.getGameDataTypeName()).append(")");
+		if (getName() == null || getGameDataTypeName() == null) {
+			return "";
+		}
+		StringBuilder displayNameBuilder = new StringBuilder(getName()).append("(").append(getGameDataTypeName()).append(")");
 		return displayNameBuilder.toString();
 	}
 	

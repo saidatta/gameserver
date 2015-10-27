@@ -20,6 +20,11 @@
     
 <script type="text/javascript">	
 	function buildTree(organizationNode, nodeParent, index, indent) {
+		var displayName = territoryNode["displayName"];
+		// If we're looking at "Add new organization" skip it, it isn't real.
+		if (displayName == "" || displayName == null) {
+			return index;
+		}
 		var parentId = $(nodeParent).attr("id");
 		var indentClass = "indent" + indent;
 	    var subMenu = "subMenu" + index;
@@ -27,7 +32,6 @@
 		var newList = document.createElement("ul");
 		var listItem = document.createElement("li");
 		var organizationId = organizationNode["id"];
-		var organizationName = organizationNode["name"];
 		var displayName = organizationNode["displayName"];
 		var itemHtml;
 		var children = organizationNode["children"];
@@ -55,12 +59,14 @@
 		return index;
 	}
 	
+	// This is for selecting a parent organization
 	function clickPlus(parentOrganizationId, parentOrganizationName) {
 		$("#hiddenParentId").val(parentOrganizationId);
 		$("#organizationParentName").val(parentOrganizationName);
 		event.preventDefault();
 	}
 	
+	// This is for collapsing the parent organization hierarchy
 	function clickText(organizationId) {
 //		var organization = $("#"+organizationId);
         var search = "."+organizationId;

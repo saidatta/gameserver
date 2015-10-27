@@ -315,19 +315,19 @@ public class DataSeeder {
 	private void seedOrganizations(Map<String, Campaign> campaignMap, Map<String, OrganizationType> organizationTypeMap) {
 		organizationRepo.deleteAll();
 		String sAndSCampaignId = campaignMap.get(SWORD_AND_SORCERY).getId();
-		Organization kingdom = findAndSaveOrganization(KINGDOM, sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
+		Organization kingdom = findAndSaveOrganization(KINGDOM + " of Midland", sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
 				organizationTypeMap.get(KINGDOM).getName(), campaignMap, "A kingdom", null);
 
-		Organization county = findAndSaveOrganization(COUNTY, sAndSCampaignId, organizationTypeMap.get(COUNTY).getId(),
+		Organization county = findAndSaveOrganization("Kirkwall " + COUNTY, sAndSCampaignId, organizationTypeMap.get(COUNTY).getId(),
 				organizationTypeMap.get(COUNTY).getName(), campaignMap, "A county", kingdom);
 
-		findAndSaveOrganization(MAGIC_CITY, sAndSCampaignId, organizationTypeMap.get(CITY).getId(), 
+		findAndSaveOrganization("Morningstar", sAndSCampaignId, organizationTypeMap.get(CITY).getId(), 
 				organizationTypeMap.get(CITY).getName(), campaignMap, "A city", county);
 
-		findAndSaveOrganization(MAGIC_TOWN, sAndSCampaignId, organizationTypeMap.get(TOWN).getId(), 
+		findAndSaveOrganization("Markham", sAndSCampaignId, organizationTypeMap.get(TOWN).getId(), 
 				organizationTypeMap.get(TOWN).getName(), campaignMap, "A city", county);
 
-		findAndSaveOrganization(MERCHANTS_GUILD, sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
+		findAndSaveOrganization("Golden Road Trading League", sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
 				organizationTypeMap.get(MERCHANTS_GUILD).getName(), campaignMap, "A merchants guild", null);
 
 		findAndSaveOrganization(BLOOD_MOON, sAndSCampaignId, organizationTypeMap.get(COVEN).getId(), 
@@ -335,21 +335,21 @@ public class DataSeeder {
 
 		/* MODERN */
 		String modernCampaignId = campaignMap.get(MODERN).getId();
-		Organization modernKingdom = findAndSaveOrganization(MODERN_KINGDOM, modernCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
+		Organization modernKingdom = findAndSaveOrganization("Kalibah", modernCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
 				organizationTypeMap.get(KINGDOM).getName(), campaignMap, "A modern kingdom", null);
 
-		Organization modernCounty = findAndSaveOrganization(MODERN_COUNTY, modernCampaignId, organizationTypeMap.get(COUNTY).getId(), 
+		Organization modernCounty = findAndSaveOrganization("Kent", modernCampaignId, organizationTypeMap.get(COUNTY).getId(), 
 				organizationTypeMap.get(COUNTY).getName(), campaignMap, "A modern county", modernKingdom);
 
-		findAndSaveOrganization(MODERN_CITY, modernCampaignId, organizationTypeMap.get(CITY).getId(), 
+		findAndSaveOrganization("York", modernCampaignId, organizationTypeMap.get(CITY).getId(), 
 				organizationTypeMap.get(CITY).getName(), campaignMap, "A modern city", modernCounty);
 
-		findAndSaveOrganization(MODERN_SPACE_STATION, modernCampaignId, organizationTypeMap.get(SPACE_STATION).getId(), 
+		findAndSaveOrganization("Space Station Group", modernCampaignId, organizationTypeMap.get(SPACE_STATION).getId(), 
 				organizationTypeMap.get(SPACE_STATION).getName(), campaignMap, "A modern space station", null);
 
 		/* SPACE OPERA */
 		String spaceOperaCampaignId = campaignMap.get(SPACE_OPERA).getId();
-		findAndSaveOrganization(SPACE_STATION, spaceOperaCampaignId, organizationTypeMap.get(SPACE_STATION).getId(),
+		findAndSaveOrganization(SPACE_STATION + " Omega", spaceOperaCampaignId, organizationTypeMap.get(SPACE_STATION).getId(),
 				organizationTypeMap.get(SPACE_STATION).getName(), campaignMap, "A space station", null);
 	}
 	

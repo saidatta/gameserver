@@ -638,13 +638,16 @@ public class GamemasterController {
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
 	public String editTerritoryId(HttpSession session, final TerritoryCreator territoryCreator, 
-			final FeFeedback feFeedback, @RequestParam(value="hiddenTerritoryId", required= false) String territoryId, 
+			final FeFeedback feFeedback, @RequestParam(value="hiddenTerritoryId", required= true) String territoryId, 
 			@ModelAttribute("territory") Territory territory) {
 		
-		// In this case, the territory object just has the id and name, we need everything here.
-		if (territoryId != null && territoryId != "") {
+		// id = 0 is add a new territory
+		if ("0".equals(territoryId)) {
+			territory = new Territory();
+		} else if (!("".equals(territoryId))) {
 			territory = territoryService.findOneTerritory(territoryId);
 		}
+		// ToDo: Add error handling for no territory found
 		ObjectMapper objectMapper = new ObjectMapper();
 		String out = "{}";
 		if (territory != null) {
@@ -762,13 +765,16 @@ public class GamemasterController {
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
 	public String editOrganizationId(HttpSession session, final OrganizationCreator territoryCreator, 
-			final FeFeedback feFeedback, @RequestParam(value="hiddenOrganizationId", required= false) String organizationId, 
+			final FeFeedback feFeedback, @RequestParam(value="hiddenOrganizationId", required= true) String organizationId, 
 			@ModelAttribute("organization") Organization organization) {
 		
-		// In this case, the territory object just has the id and name, we need everything here.
-		if (organizationId != null && organizationId != "") {
+		// id = 0 is add a new organization
+		if ("0".equals(organizationId)) {
+			organization = new Organization();
+		} else if (!("".equals(organizationId))) {
 			organization = organizationService.findOneOrganization(organizationId);
 		}
+		// ToDo: Add error handling for no territory found
 		ObjectMapper objectMapper = new ObjectMapper();
 		String out = "{}";
 		if (organization != null) {
