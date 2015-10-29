@@ -1,6 +1,7 @@
 package org.softwarewolf.gameserver.base.controller;
 
 import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -18,6 +19,7 @@ import org.softwarewolf.gameserver.base.domain.helper.TerritoryCreator;
 import org.softwarewolf.gameserver.base.domain.helper.TerritoryTypeCreator;
 import org.softwarewolf.gameserver.base.repository.UserRepository;
 import org.softwarewolf.gameserver.base.service.CampaignService;
+import org.softwarewolf.gameserver.base.service.OrganizationRankService;
 import org.softwarewolf.gameserver.base.service.OrganizationService;
 import org.softwarewolf.gameserver.base.service.TerritoryService;
 import org.softwarewolf.gameserver.base.service.UserService;
@@ -52,6 +54,9 @@ public class GamemasterController {
 	
 	@Autowired
 	protected OrganizationService organizationService;
+	
+	@Autowired
+	protected OrganizationRankService organizationRankService;
 	
 	@Autowired
 	protected UserService userService;
@@ -731,7 +736,8 @@ public class GamemasterController {
 	@RequestMapping(value = "/editOrganization", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	public String editOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
-			final FeFeedback feFeedback, @RequestParam(value="id", required= false) String organizationId) {
+			final OrganizationRankCreator organizationRankCreator, final FeFeedback feFeedback, 
+			@RequestParam(value="id", required= false) String organizationId) {
 		// If we haven't selected a campaign, get to the menu!
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
@@ -745,6 +751,8 @@ public class GamemasterController {
 			organization = organizationService.findOneOrganization(organization.getId());
 		}
 		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, EDIT_ORGANIZATION);
+		
+		organizationRankService.initOrganizationRankCreator(organizationId, organizationRankCreator, campaignId, EDIT_ORGANIZATION);
 		return EDIT_ORGANIZATION;
 	}
 	

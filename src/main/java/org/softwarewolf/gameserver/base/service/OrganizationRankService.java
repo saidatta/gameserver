@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.softwarewolf.gameserver.base.domain.GameDataType;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.helper.HierarchyJsonBuilder;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationRankCreator;
@@ -42,7 +41,7 @@ public class OrganizationRankService {
 		return organizationList;
 	}
 
-	public void initOrganizationRankCreator(String organizationId, OrganizationRankCreator organizationCreator, 
+	public void initOrganizationRankCreator(String organizationId, OrganizationRankCreator organizationRankCreator, 
 			String campaignId, String forwardingUrl) {
 
 		OrganizationRank organization = null;
@@ -57,17 +56,17 @@ public class OrganizationRankService {
 			organization.setParentId(ROOT);
 		}
 		
-		initOrganizationRankCreator(organization, organizationCreator, campaignId, forwardingUrl);
+		initOrganizationRankCreator(organization, organizationRankCreator, campaignId, forwardingUrl);
 	}
 	
-	public void initOrganizationRankCreator(OrganizationRank organization, OrganizationRankCreator organizationCreator, 
+	public void initOrganizationRankCreator(OrganizationRank organization, OrganizationRankCreator organizationRankCreator, 
 			String campaignId, String forwardingUrl) {
 		if (forwardingUrl != null) {
-			organizationCreator.setForwardingUrl(forwardingUrl);
+			organizationRankCreator.setForwardingUrl(forwardingUrl);
 		}
 		try {
 			String json = createOrganizationRankTree(campaignId);
-			organizationCreator.setOrganizationRankTreeJson(json); 
+			organizationRankCreator.setOrganizationRankTreeJson(json); 
 		} catch (Exception e) {
 			logger.fine(e.getMessage());
 		}
@@ -75,7 +74,7 @@ public class OrganizationRankService {
 		if (campaignId != null && organization.getCampaignId() == null) {
 			organization.setCampaignId(campaignId);
 		}
-		organizationCreator.setOrganizationRank(organization);
+		organizationRankCreator.setOrganizationRank(organization);
 
 		if (organization.getParentId() != null) {
 			OrganizationRank parent = findOneOrganizationRank(organization.getParentId());
@@ -91,7 +90,7 @@ public class OrganizationRankService {
 		addNewOrganizationRank.setId("0");
 		addNewOrganizationRank.setName("Add a new organization");
 		territories.add(0, addNewOrganizationRank);
-		organizationCreator.setOrganizationRanksInCampaign(territories);
+		organizationRankCreator.setOrganizationRanksInCampaign(territories);
 	}
 	
 	public void saveOrganizationRank(OrganizationRank organization) {
