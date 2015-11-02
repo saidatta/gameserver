@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface OrganizationRankRepository extends MongoRepository<OrganizationRank, String> {
 
-	OrganizationRank findOneByName(String arg0);
+	OrganizationRank findOneByNameAndOrganizationId(String arg0, String arg1);
 	
-	OrganizationRank findOneByNameAndCampaignId(String arg0, String arg1);
+	List<OrganizationRank> findByOrganizationId(String arg1);
 	
 	List<OrganizationRank> findByCampaignId(String arg0);
 

@@ -2,7 +2,6 @@ package org.softwarewolf.gameserver.base.domain.helper;
 
 import java.util.List;
 
-import org.softwarewolf.gameserver.base.domain.GameDataType;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 
 public class OrganizationRankCreator {

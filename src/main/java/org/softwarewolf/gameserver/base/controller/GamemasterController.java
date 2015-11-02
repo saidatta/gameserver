@@ -752,7 +752,8 @@ public class GamemasterController {
 		}
 		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, EDIT_ORGANIZATION);
 		
-		organizationRankService.initOrganizationRankCreator(organizationId, organizationRankCreator, campaignId, EDIT_ORGANIZATION);
+		organizationRankService.initOrganizationRankCreator(organizationId, null, organizationRankCreator, campaignId, EDIT_ORGANIZATION);
+
 		return EDIT_ORGANIZATION;
 	}
 	

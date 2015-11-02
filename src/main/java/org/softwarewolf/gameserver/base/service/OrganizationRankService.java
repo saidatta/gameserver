@@ -22,99 +22,102 @@ public class OrganizationRankService {
 	private static final Logger logger = Logger.getLogger(OrganizationRankService.class.getSimpleName());
 	
 	@Autowired
-	protected OrganizationRankRepository organizationRepository;
+	protected OrganizationRankRepository organizationRankRepository;
 	
 	public List<OrganizationRank> getAllOrganizationRanks() {
-		List<OrganizationRank> organizationList = organizationRepository.findAll();
-		if (organizationList == null) {
-			organizationList = new ArrayList<>();
+		List<OrganizationRank> organizationRankList = organizationRankRepository.findAll();
+		if (organizationRankList == null) {
+			organizationRankList = new ArrayList<>();
 		}
-		return organizationList;
+		return organizationRankList;
 	}
 
 	// This needs to be modified to filter based on campaign id
 	public List<OrganizationRank> getOrganizationRanksInCampaign() {
-		List<OrganizationRank> organizationList = organizationRepository.findAll();
-		if (organizationList == null) {
-			organizationList = new ArrayList<>();
+		List<OrganizationRank> organizationRankList = organizationRankRepository.findAll();
+		if (organizationRankList == null) {
+			organizationRankList = new ArrayList<>();
 		}
-		return organizationList;
+		return organizationRankList;
 	}
 
-	public void initOrganizationRankCreator(String organizationId, OrganizationRankCreator organizationRankCreator, 
+	public void initOrganizationRankCreator(String organizationId, String name, OrganizationRankCreator organizationRankCreator, 
 			String campaignId, String forwardingUrl) {
 
-		OrganizationRank organization = null;
+		OrganizationRank organizationRank = null;
 		if (organizationId != null) {
-			organization = organizationRepository.findOne(organizationId);
-			if (organization == null) {
-				throw new RuntimeException("Can not find a organization for id " + organizationId);
+			organizationRank = organizationRankRepository.findOneByNameAndOrganizationId(name, organizationId);
+			if (organizationRank == null) {
+				throw new RuntimeException("Can not find a organization rank for organization id " + organizationId);
 			}
 		} else {
-			organization = new OrganizationRank();
-			organization.setParentName(ROOT);
-			organization.setParentId(ROOT);
+			organizationRank = new OrganizationRank();
+			organizationRank.setParentName(ROOT);
+			organizationRank.setParentId(ROOT);
 		}
 		
-		initOrganizationRankCreator(organization, organizationRankCreator, campaignId, forwardingUrl);
+		initOrganizationRankCreator(organizationRank, organizationRankCreator, campaignId, forwardingUrl);
 	}
 	
-	public void initOrganizationRankCreator(OrganizationRank organization, OrganizationRankCreator organizationRankCreator, 
+	public void initOrganizationRankCreator(OrganizationRank organizationRank, OrganizationRankCreator organizationRankCreator, 
 			String campaignId, String forwardingUrl) {
 		if (forwardingUrl != null) {
 			organizationRankCreator.setForwardingUrl(forwardingUrl);
 		}
 		try {
-			String json = createOrganizationRankTree(campaignId);
-			organizationRankCreator.setOrganizationRankTreeJson(json); 
+			if (organizationRank.getId() != null) {
+				String json = createOrganizationRankTree(campaignId, organizationRank.getOrganizationId());
+				organizationRankCreator.setOrganizationRankTreeJson(json);
+			}
 		} catch (Exception e) {
 			logger.fine(e.getMessage());
 		}
 
-		if (campaignId != null && organization.getCampaignId() == null) {
-			organization.setCampaignId(campaignId);
+		if (campaignId != null && organizationRank.getCampaignId() == null) {
+			organizationRank.setCampaignId(campaignId);
 		}
-		organizationRankCreator.setOrganizationRank(organization);
+		organizationRankCreator.setOrganizationRank(organizationRank);
 
-		if (organization.getParentId() != null) {
-			OrganizationRank parent = findOneOrganizationRank(organization.getParentId());
+		if (organizationRank.getParentId() != null) {
+			OrganizationRank parent = organizationRankRepository.findOne(organizationRank.getParentId());
 			if (parent != null && parent.getName() != "ROOT") {
-				organization.setParentName(parent.getName());
+				organizationRank.setParentName(parent.getName());
 			} 
 		} else {
-			organization.setParentName("ROOT");
+			organizationRank.setParentName("ROOT");
 		}
-		List<OrganizationRank> territories = organizationRepository.findAllByKeyValue("campaignId", campaignId);
+		List<OrganizationRank> ranks = organizationRankRepository.findAllByKeyValue("campaignId", campaignId);
 		// Add a dummy organization to the list for selecting the option of adding a new organization
 		OrganizationRank addNewOrganizationRank = new OrganizationRank();
 		addNewOrganizationRank.setId("0");
-		addNewOrganizationRank.setName("Add a new organization");
-		territories.add(0, addNewOrganizationRank);
-		organizationRankCreator.setOrganizationRanksInCampaign(territories);
+		addNewOrganizationRank.setName("Add a new organization rank");
+		ranks.add(0, addNewOrganizationRank);
+		organizationRankCreator.setOrganizationRanksInCampaign(ranks);
 	}
 	
-	public void saveOrganizationRank(OrganizationRank organization) {
-		if (organization.getId() == null) {
-			OrganizationRank existingOrganizationRank = organizationRepository.findOneByName(organization.getName());
+	public void saveOrganizationRank(OrganizationRank organizationRank) {
+		String campaignId = organizationRank.getCampaignId();
+		if (organizationRank.getId() == null) {
+			OrganizationRank existingOrganizationRank = organizationRankRepository.findOneByNameAndOrganizationId(organizationRank.getName(), campaignId);
 			if (existingOrganizationRank != null) {
-				throw new IllegalArgumentException("OrganizationRank " + organization.getName() + " already exists");
+				throw new IllegalArgumentException("OrganizationRank " + organizationRank.getName() + " already exists");
 			}
 		}
-		String parentOrganizationRankId = organization.getParentId();
+		String parentOrganizationRankId = organizationRank.getParentId();
 		if (parentOrganizationRankId.equals(ROOT)) {
-			organization.setParentId(null);
+			organizationRank.setParentId(null);
 		}
-		organization = organizationRepository.save(organization);
-		if (organization.getParentId() != null) {
-			OrganizationRank parentOrganizationRank = organizationRepository.findOne(parentOrganizationRankId);
+		organizationRank = organizationRankRepository.save(organizationRank);
+		if (organizationRank.getParentId() != null) {
+			OrganizationRank parentOrganizationRank = organizationRankRepository.findOne(organizationRank.getParentId());
 			if (parentOrganizationRank == null) {
-				throw new IllegalArgumentException("Could not find parent organization");
+				throw new IllegalArgumentException("Could not find parent organization rank");
 			}
-			if (!canSetOrganizationRankParent(organization.getId(), parentOrganizationRank.getId())) {
-				throw new IllegalArgumentException("Illegal parent organization");
+			if (!canSetOrganizationRankParent(organizationRank.getId(), parentOrganizationRank.getId())) {
+				throw new IllegalArgumentException("Illegal parent organization rank");
 			}
-			parentOrganizationRank.addChildId(organization.getId());
-			organizationRepository.save(parentOrganizationRank);
+			parentOrganizationRank.addChildId(organizationRank.getId());
+			organizationRankRepository.save(parentOrganizationRank);
 		}
 	}
 	
@@ -128,14 +131,14 @@ public class OrganizationRankService {
 	 * @param childId
 	 * @return
 	 */
-	public boolean canSetOrganizationRankChild(String organizationId, String childId) {
-		if (organizationId.equals(childId)) {
+	public boolean canSetOrganizationRankChild(String organizationRankId, String childId, String campaignId) {
+		if (organizationRankId.equals(childId)) {
 			return false;
 		} 
-		List<OrganizationRank> organizationList = organizationRepository.findAll();
-		if (organizationList != null && !organizationList.isEmpty()) {
-			for (OrganizationRank organization : organizationList) {
-				if (organization.getChildrenIdList().contains(childId)) {
+		List<OrganizationRank> organizationRankList = organizationRankRepository.findByCampaignId(campaignId);
+		if (organizationRankList != null && !organizationRankList.isEmpty()) {
+			for (OrganizationRank organizationRank : organizationRankList) {
+				if (organizationRank.getChildrenIdList().contains(childId)) {
 					return false;
 				}
 			}
@@ -143,22 +146,22 @@ public class OrganizationRankService {
 		return true;
 	}
 
-	public String createOrganizationRankTree(String campaignId) throws Exception {
+	public String createOrganizationRankTree(String campaignId, String organizationId) throws Exception {
 		// Create a hash map of all OrganizationRanks for fast retrieval
-		List<OrganizationRank> organizationList = organizationRepository.findByCampaignId(campaignId);
+		List<OrganizationRank> organizationRankList = organizationRankRepository.findByOrganizationId(organizationId);
 		Map<String, OrganizationRank> organizationMap = new HashMap<>();
-		OrganizationRank root = new OrganizationRank(ROOT, campaignId);
+		OrganizationRank root = new OrganizationRank(ROOT, campaignId, organizationId);
 		root.setId(ROOT);
 		root.setGameDataTypeId(ROOT);
 		root.setGameDataTypeName(ROOT);
 		organizationMap.put(ROOT, root);
 		// Populate the map of organization nodes
-		for (OrganizationRank organization : organizationList) {
-			if (organization.getId() != "ROOT" && organization.getParentId() == null) {
-				root.addChildId(organization.getId());
-				organization.setParentId(ROOT);
+		for (OrganizationRank organizationRank : organizationRankList) {
+			if (organizationRank.getId() != "ROOT" && organizationRank.getParentId() == null) {
+				root.addChildId(organizationRank.getId());
+				organizationRank.setParentId(ROOT);
 			}
-			organizationMap.put(organization.getId(), organization);
+			organizationMap.put(organizationRank.getId(), organizationRank);
 		} 
 
 		HierarchyJsonBuilder rootBuilder = new HierarchyJsonBuilder(root.getId(), root.getName(),
@@ -195,18 +198,14 @@ public class OrganizationRankService {
 		return parent;
 	}
 
-	public OrganizationRank findOneOrganizationRank(String organizationId) {
-		OrganizationRank organizationRank = organizationRepository.findOne(organizationId);
+	public OrganizationRank findOneOrganizationRank(String organizationId, String name) {
+		OrganizationRank organizationRank = organizationRankRepository.findOne(organizationId);
 		if (organizationRank == null) {
 			return null;
 		}
-		String parentId = organizationRank.getParentId();
-		if (parentId != null) {
-			OrganizationRank parent = organizationRepository.findOne(parentId);
+		if (organizationRank.getParentId() != null) {
+			OrganizationRank parent = organizationRankRepository.findOne(organizationRank.getParentId());
 			organizationRank.setParentName(parent.getName());
-		}
-		String organizationTypeId = organizationRank.getGameDataTypeId();
-		if (organizationTypeId != null) {
 		}
 		return organizationRank;
 	}

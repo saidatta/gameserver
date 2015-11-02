@@ -87,7 +87,7 @@
 		$( window ).load(function() {
 			var organizationTypeId = $("#organizationTypeId");
 			if (organizationTypeId.val() != "") {
-	            $('.modifyTT').each(function(data) {
+	            $('.modifyOT').each(function(data) {
     	        	var id = $(data).attr("id");
 			        if (id == organizationTypeId) {
 			        	var value = $(data).val();
@@ -109,7 +109,7 @@
 //			});
 		});		
 
-		$(".modifyTT").click(function(event) {
+		$(".modifyOT").click(function(event) {
 			// Get the data out of the event
 			var target = $(event.target);
 			var id = $(target).attr('id');
@@ -126,14 +126,11 @@
 				var name = $(target).text();
 	
 				// Set the hidden fields
-				var addTT = $("#organizationTypeId");
-				addTT.val(id);
-				var ttName = $("#organizationTypeName");
-				ttName.val(name);
+				var addOT = $("#organizationTypeId");
+				addOT.val(id);
+				var otName = $("#organizationTypeName");
+				otName.val(name);
 				// Set the button text
-	//			var ttBtn = $("#ttBtn");
-	//			var newIH = name + ' <span class="caret"></span>';
-	//			$(ttBtn).html(newIH);
 				var organizationTypeName = $("#organizationTypeName");
 				organizationTypeName.val(name);
 			}
@@ -151,6 +148,9 @@
 				$("#organizationName").val(name);
 				$("#hiddenOrganizationId").val(id);
 			}
+			
+			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
+			orgRankOrgId.val(id);
 			
 			$.get( "/gameserver/gamemaster/getOrganization?hiddenOrganizationId="+id, function( data ) {
 //				  $( ".result" ).html( data );
@@ -279,7 +279,7 @@
 	    					Organization Type <span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="organizationType : ${organizationCreator.organizationTypesInCampaign}"><a th:id="${organizationType.id}" class="modifyTT" th:text="${organizationType.name}">Action</a></li>
+		    				<li th:each="organizationType : ${organizationCreator.organizationTypesInCampaign}"><a th:id="${organizationType.id}" class="modifyOT" th:text="${organizationType.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>
@@ -333,6 +333,7 @@
 		<form id="editOrganizationRankForm" th:object="${organizationRankCreator}" action="#" th:action="@{/gamemaster/editOrganizationRank}" method="post">
 			<input id="campaignId" type="hidden" th:field="*{organizationRank.campaignId}"></input>
 			<input id="organizationRankTreeJson" type="hidden" th:field="*{organizationRankTreeJson}"></input>
+			<input id="organizationId" type="hidden" th:field="*{organizationRank.organizationId}"></input>
 			<input id="hiddenOrgRankParentId" type="hidden" th:field="*{organizationRank.parentId}"></input>
 			<input id="hiddenOrganizationRankId" type="hidden" th:field="*{organizationRank.id}"></input>
 
@@ -357,7 +358,7 @@
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
-	  					<button id="tBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganizationRank.selectOrganizationRankDown}">
+	  					<button id="orBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganizationRank.selectOrganizationRankDown}">
 	    					Select Organization Rank<span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">

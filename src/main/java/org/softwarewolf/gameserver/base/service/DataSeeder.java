@@ -7,11 +7,13 @@ import java.util.Map;
 
 import org.softwarewolf.gameserver.base.domain.Campaign;
 import org.softwarewolf.gameserver.base.domain.Organization;
+import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.Territory;
 import org.softwarewolf.gameserver.base.domain.TerritoryType;
 import org.softwarewolf.gameserver.base.domain.User;
 import org.softwarewolf.gameserver.base.repository.CampaignRepository;
+import org.softwarewolf.gameserver.base.repository.OrganizationRankRepository;
 import org.softwarewolf.gameserver.base.repository.OrganizationRepository;
 import org.softwarewolf.gameserver.base.repository.OrganizationTypeRepository;
 import org.softwarewolf.gameserver.base.repository.SimpleGrantedAuthorityRepository;
@@ -76,6 +78,9 @@ public class DataSeeder {
 	@Autowired 
 	private OrganizationRepository organizationRepo;
 	
+	@Autowired 
+	private OrganizationRankRepository organizationRankRepo;
+	
 	public void cleanRepos() {
 		sgaRepo.deleteAll();
 		userRepo.deleteAll();
@@ -84,6 +89,7 @@ public class DataSeeder {
 		territoryTypeRepo.deleteAll();
 		organizationRepo.deleteAll();
 		organizationTypeRepo.deleteAll();
+		organizationRankRepo.deleteAll();
 	}
 	
 	public void seedData() {
@@ -93,7 +99,8 @@ public class DataSeeder {
 		Map<String, TerritoryType> territoryTypeMap = seedTerritoryType(campaignMap);
 		seedTerritories(campaignMap, territoryTypeMap);
 		Map<String, OrganizationType> organizationTypeMap = seedOrganizationType(campaignMap);
-		seedOrganizations(campaignMap, organizationTypeMap);
+		Map<String, Organization> organizationMap = seedOrganizations(campaignMap, organizationTypeMap);
+		seedOrganizationRanks(campaignMap, organizationMap);
 	}
 	
 	private Map<String, SimpleGrantedAuthority> seedRoles() {
@@ -312,49 +319,69 @@ public class DataSeeder {
 		}
 	}
 	
-	private void seedOrganizations(Map<String, Campaign> campaignMap, Map<String, OrganizationType> organizationTypeMap) {
+	private Map<String, Organization> seedOrganizations(Map<String, Campaign> campaignMap, Map<String, OrganizationType> organizationTypeMap) {
 		organizationRepo.deleteAll();
+		Map<String, Organization> orgMap = new HashMap<>();
 		String sAndSCampaignId = campaignMap.get(SWORD_AND_SORCERY).getId();
 		Organization kingdom = findAndSaveOrganization(KINGDOM + " of Midland", sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
-				organizationTypeMap.get(KINGDOM).getName(), campaignMap, "A kingdom", null);
+				organizationTypeMap.get(KINGDOM).getName(), campaignMap, "A kingdom", null, orgMap);
 
 		Organization county = findAndSaveOrganization("Kirkwall " + COUNTY, sAndSCampaignId, organizationTypeMap.get(COUNTY).getId(),
-				organizationTypeMap.get(COUNTY).getName(), campaignMap, "A county", kingdom);
+				organizationTypeMap.get(COUNTY).getName(), campaignMap, "A county", kingdom, orgMap);
 
 		findAndSaveOrganization("Morningstar", sAndSCampaignId, organizationTypeMap.get(CITY).getId(), 
-				organizationTypeMap.get(CITY).getName(), campaignMap, "A city", county);
+				organizationTypeMap.get(CITY).getName(), campaignMap, "A city", county, orgMap);
 
 		findAndSaveOrganization("Markham", sAndSCampaignId, organizationTypeMap.get(TOWN).getId(), 
-				organizationTypeMap.get(TOWN).getName(), campaignMap, "A city", county);
+				organizationTypeMap.get(TOWN).getName(), campaignMap, "A city", county, orgMap);
 
 		findAndSaveOrganization("Golden Road Trading League", sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
-				organizationTypeMap.get(MERCHANTS_GUILD).getName(), campaignMap, "A merchants guild", null);
+				organizationTypeMap.get(MERCHANTS_GUILD).getName(), campaignMap, "A merchants guild", null, orgMap);
 
 		findAndSaveOrganization(BLOOD_MOON, sAndSCampaignId, organizationTypeMap.get(COVEN).getId(), 
-				organizationTypeMap.get(COVEN).getName(), campaignMap, "A witches coven", null);
+				organizationTypeMap.get(COVEN).getName(), campaignMap, "A witches coven", null, orgMap);
 
 		/* MODERN */
 		String modernCampaignId = campaignMap.get(MODERN).getId();
 		Organization modernKingdom = findAndSaveOrganization("Kalibah", modernCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
-				organizationTypeMap.get(KINGDOM).getName(), campaignMap, "A modern kingdom", null);
+				organizationTypeMap.get(KINGDOM).getName(), campaignMap, "A modern kingdom", null, orgMap);
 
 		Organization modernCounty = findAndSaveOrganization("Kent", modernCampaignId, organizationTypeMap.get(COUNTY).getId(), 
-				organizationTypeMap.get(COUNTY).getName(), campaignMap, "A modern county", modernKingdom);
+				organizationTypeMap.get(COUNTY).getName(), campaignMap, "A modern county", modernKingdom, orgMap);
 
 		findAndSaveOrganization("York", modernCampaignId, organizationTypeMap.get(CITY).getId(), 
-				organizationTypeMap.get(CITY).getName(), campaignMap, "A modern city", modernCounty);
+				organizationTypeMap.get(CITY).getName(), campaignMap, "A modern city", modernCounty, orgMap);
 
 		findAndSaveOrganization("Space Station Group", modernCampaignId, organizationTypeMap.get(SPACE_STATION).getId(), 
-				organizationTypeMap.get(SPACE_STATION).getName(), campaignMap, "A modern space station", null);
+				organizationTypeMap.get(SPACE_STATION).getName(), campaignMap, "A modern space station", null, orgMap);
 
 		/* SPACE OPERA */
 		String spaceOperaCampaignId = campaignMap.get(SPACE_OPERA).getId();
 		findAndSaveOrganization(SPACE_STATION + " Omega", spaceOperaCampaignId, organizationTypeMap.get(SPACE_STATION).getId(),
-				organizationTypeMap.get(SPACE_STATION).getName(), campaignMap, "A space station", null);
+				organizationTypeMap.get(SPACE_STATION).getName(), campaignMap, "A space station", null, orgMap);
+		
+		return orgMap;
+	}
+	
+	private void seedOrganizationRanks(Map<String, Campaign> campaignMap, Map<String, Organization> organizationMap) {
+		String sAndSCampaignId = campaignMap.get(SWORD_AND_SORCERY).getId();
+		Organization org = organizationMap.get(KINGDOM + " of Midland");
+		findAndSaveOrganizationRank("King", sAndSCampaignId, org.getId(),  
+				campaignMap, "The ruler of the kingdom", null);
+		
+		String modernCampaignId = campaignMap.get(MODERN).getId();
+		org = organizationMap.get("Kent");
+		findAndSaveOrganizationRank("Sheriff of Kent", modernCampaignId, org.getId(), 
+				campaignMap, "The local sheriff", null);
+
+		String spaceOperaCampaignId = campaignMap.get(SPACE_OPERA).getId();
+		org = organizationMap.get("Space Station Group");
+		findAndSaveOrganizationRank("Space Station Commander", spaceOperaCampaignId, org.getId(), 
+				campaignMap, "The commander of the space station", null);
 	}
 	
 	private Organization findAndSaveOrganization(String name, String campaignId, String organizationTypeId, String organizationTypeName, 
-			Map<String, Campaign> campaignMap, String description, Organization parent) {
+			Map<String, Campaign> campaignMap, String description, Organization parent, Map<String, Organization> orgMap) {
 		Organization organization = organizationRepo.findOneByNameAndCampaignId(name, campaignId);
 		if (organization == null) {
 			organization = new Organization(name, campaignId);
@@ -368,6 +395,7 @@ public class DataSeeder {
 			}
 			organization.setParentId(parentId);
 			organization = organizationRepo.save(organization);
+			orgMap.put(organization.getName(), organization);
 			if (parent != null) {
 				parent.addChildId(organization.getId());
 				parent = organizationRepo.save(parent);
@@ -375,4 +403,26 @@ public class DataSeeder {
 		}
 		return organization;
 	}	
+
+	private OrganizationRank findAndSaveOrganizationRank(String name, String campaignId, String organizationId, 
+			Map<String, Campaign> campaignMap, String description, Organization parent) {
+		OrganizationRank organizationRank = organizationRankRepo.findOneByNameAndOrganizationId(name, campaignId);
+		if (organizationRank == null) {
+			organizationRank = new OrganizationRank(name, campaignId, organizationId);
+			organizationRank.setDescription(description);
+			// Need to get an id on territory so all the parent/child links can be set
+			String parentId = null;
+			if (parent != null) {
+				parentId = parent.getId();
+			}
+			organizationRank.setParentId(parentId);
+			organizationRank = organizationRankRepo.save(organizationRank);
+			if (parent != null) {
+				parent.addChildId(organizationRank.getId());
+				parent = organizationRepo.save(parent);
+			}
+		}
+		return organizationRank;
+	}	
+
 }
