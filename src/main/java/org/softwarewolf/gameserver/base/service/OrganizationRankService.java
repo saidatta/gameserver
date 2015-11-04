@@ -64,14 +64,8 @@ public class OrganizationRankService {
 		if (forwardingUrl != null) {
 			organizationRankCreator.setForwardingUrl(forwardingUrl);
 		}
-		try {
-			if (organizationRank.getId() != null) {
-				String json = createOrganizationRankTree(campaignId, organizationRank.getOrganizationId());
-				organizationRankCreator.setOrganizationRankTreeJson(json);
-			}
-		} catch (Exception e) {
-			logger.fine(e.getMessage());
-		}
+		String json = getOrganizationRankTree(campaignId, organizationRank);
+		organizationRankCreator.setOrganizationRankTreeJson(json);
 
 		if (campaignId != null && organizationRank.getCampaignId() == null) {
 			organizationRank.setCampaignId(campaignId);
@@ -93,6 +87,18 @@ public class OrganizationRankService {
 		addNewOrganizationRank.setName("Add a new organization rank");
 		ranks.add(0, addNewOrganizationRank);
 		organizationRankCreator.setOrganizationRanksInCampaign(ranks);
+	}
+	
+	public String getOrganizationRankTree(String campaignId, OrganizationRank organizationRank) {
+		String json = "{}";
+		try {
+			if (organizationRank.getId() != null) {
+				json = createOrganizationRankTree(campaignId, organizationRank.getOrganizationId());
+			}
+		} catch (Exception e) {
+			logger.fine(e.getMessage());
+		}
+		return json;
 	}
 	
 	public void saveOrganizationRank(OrganizationRank organizationRank) {
@@ -209,4 +215,9 @@ public class OrganizationRankService {
 		}
 		return organizationRank;
 	}
+	
+	public OrganizationRank read(String id) {
+		return organizationRankRepository.findOne(id);
+	}
+
 }

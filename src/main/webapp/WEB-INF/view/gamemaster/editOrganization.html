@@ -177,6 +177,51 @@
 				  organizationParentName.val(parentName);
 			});
 		});
+
+		$(".selectOrganizationRank").click(function(event) {
+			event.preventDefault();
+			var target = $(event.target);
+			var id = $(target).attr('id');
+			var name = $(target).text();
+			if (id == "0") { 
+				$("#organizationRankName").val(null);
+				$("#organizationRankId").val(null);
+			} else {
+				$("#organizationRankName").val(name);
+				$("#hiddenOrganizationRankId").val(id);
+			}
+			
+			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
+			orgRankOrgId.val(id);
+			
+			$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
+//				  $( ".result" ).html( data );
+//				  alert(data);
+				  // Populate the form with the data returned from the back end
+				  var organizationRankJson = jQuery.parseJSON(data);
+				  var description = organizationRankJson["description"];
+				  var organizationRankDescription = $("#organizationRankDescription");
+				  organizationRankDescription.val(description);
+				  var parentId = organizationRankJson["parentId"];
+				  var organizationRankParentId = $("#hiddenParentId");
+				  organizationRankParentId.val(parentId);
+				  var parentName = organizationRankJson["parentName"];
+				  if (parentName == null) {
+					  parentName = "ROOT";
+				  }
+				  var organizationRankParentName = $("#organizationRankParentName");
+				  organizationRankParentName.val(parentName);
+				  
+				  var organizationRankTreeJson = $("#organizationRankTreeJson").val();
+				  var organizationRankTree = jQuery.parseJSON( organizationTreeJson );
+				  var nodeParent = $("#organizationRankGroupPanel");
+				  var children = organizationTree["children"];
+				  var index = 0;
+				  var indent = 0;
+				  buildTree(organizationRankTree, $(nodeParent), index, indent);
+			});
+		});
+	
 	});		
 </script>
 </head>
@@ -362,7 +407,7 @@
 	    					Select Organization Rank<span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="organizationRank : ${organizationRankCreator.organizationRanksInCampaign}"><a th:id="${organizationRank.id}" class="selectOrganization" th:text="${organizationRank.name}">Action</a></li>
+		    				<li th:each="organizationRank : ${organizationRankCreator.organizationRanksInCampaign}"><a th:id="${organizationRank.id}" class="selectOrganizationRank" th:text="${organizationRank.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>

@@ -822,4 +822,32 @@ public class GamemasterController {
 		}
 		return organizationCreator.getForwardingUrl();
 	}	
+
+	@RequestMapping(value = "/getOrganizationRank", method = RequestMethod.GET)
+	@Secured({"GAMEMASTER"})
+	@ResponseBody
+	public String getOrganizationRank(HttpSession session, final OrganizationCreator territoryCreator, 
+			final FeFeedback feFeedback, @RequestParam(value="id", required= true) String id, 
+			@ModelAttribute("organizationRank") OrganizationRank organizationRank) {
+		
+		// id = 0 is add a new organization
+		if ("0".equals(id)) {
+			organizationRank = new OrganizationRank();
+		} else if (!("".equals(id))) {
+			organizationRank = organizationRankService.read(id);
+		}
+		// ToDo: Add error handling for no territory found
+		ObjectMapper objectMapper = new ObjectMapper();
+		String out = "{}";
+		if (organizationRank != null) {
+			try {
+				out = objectMapper.writeValueAsString(organizationRank);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return out;
+	}
+
 }
