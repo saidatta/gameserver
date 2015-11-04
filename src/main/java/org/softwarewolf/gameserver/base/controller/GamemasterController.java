@@ -778,21 +778,25 @@ public class GamemasterController {
 			@ModelAttribute("organization") Organization organization) {
 		
 		// id = 0 is add a new organization
-		if ("0".equals(organizationId)) {
-			organization = new Organization();
-		} else if (!("".equals(organizationId))) {
-			organization = organizationService.findOneOrganization(organizationId);
-		}
-		// ToDo: Add error handling for no territory found
-		ObjectMapper objectMapper = new ObjectMapper();
+//		if ("0".equals(organizationId)) {
+//			organization = new Organization();
+//		} else if (!("".equals(organizationId))) {
+//			organization = organizationService.findOneOrganization(organizationId);
+//		}
+//		// ToDo: Add error handling for no territory found
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		String out = "{}";
+//		if (organization != null) {
+//			try {
+//				out = objectMapper.writeValueAsString(organization);
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		String out = "{}";
-		if (organization != null) {
-			try {
-				out = objectMapper.writeValueAsString(organization);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (!("0".equals(organizationId))) {
+			out = organizationRankService.getOrganizationAndRanks(organizationId);
 		}
 		return out;
 	}

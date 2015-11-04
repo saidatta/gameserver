@@ -98,7 +98,7 @@
 			}
 			
 			var organizationTreeJson = $("#organizationTreeJson").val();
-			var organizationTree = jQuery.parseJSON( organizationTreeJson );
+			var organizationTree = jQuery.parseJSON(organizationTreeJson);
 			var nodeParent = $("#organizationGroupPanel");
 			var children = organizationTree["children"];
 			var index = 0;
@@ -152,35 +152,43 @@
 			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
 			orgRankOrgId.val(id);
 
-			var getOrganizationForm = $("#getOrganizationForm");
-			var action = getOrganizationForm.attr("action");
-			action = action + "?id="+id;
-			window.location.href = action;
+//			var getOrganizationForm = $("#getOrganizationForm");
+//			var action = getOrganizationForm.attr("action");
+//			action = action + "?id="+id;
+//			window.location.href = action;
 			
-//			$.get( "/gameserver/gamemaster/getOrganization?hiddenOrganizationId="+id, function( data ) {
-////				  $( ".result" ).html( data );
-////				  alert(data);
-//				  // Populate the form with the data returned from the back end
-//				  var organizationJson = jQuery.parseJSON(data);
-//				  var description = organizationJson["description"];
-//				  var organizationDescription = $("#organizationDescription");
-//				  organizationDescription.val(description);
-//				  var typeId = organizationJson["gameDataTypeId"];
-//				  var organizationTypeId = $("#organizationTypeId");
-//				  organizationTypeId.val(typeId);
-//				  var typeName = organizationJson["gameDataTypeName"];
-//				  var organizationTypeName = $("#organizationTypeName");
-//				  organizationTypeName.val(typeName);
-//				  var parentId = organizationJson["parentId"];
-//				  var organizationParentId = $("#hiddenParentId");
-//				  organizationParentId.val(parentId);
-//				  var parentName = organizationJson["parentName"];
-//				  if (parentName == null) {
-//					  parentName = "ROOT";
-//				  }
-//				  var organizationParentName = $("#organizationParentName");
-//				  organizationParentName.val(parentName);
-//			});
+			$.get( "/gameserver/gamemaster/getOrganization?hiddenOrganizationId="+id, function( data ) {
+				$( ".result" ).html( data );
+//				alert(data);
+				// Populate the form with the data returned from the back end
+				var data = jQuery.parseJSON(data);
+				var organizationJson = data["organization"];
+			    var description = organizationJson["description"];
+				var organizationDescription = $("#organizationDescription");
+				organizationDescription.val(description);
+				var typeId = organizationJson["gameDataTypeId"];
+				var organizationTypeId = $("#organizationTypeId");
+				organizationTypeId.val(typeId);
+				var typeName = organizationJson["gameDataTypeName"];
+				var organizationTypeName = $("#organizationTypeName");
+				organizationTypeName.val(typeName);
+				var parentId = organizationJson["parentId"];
+				var organizationParentId = $("#hiddenParentId");
+				organizationParentId.val(parentId);
+				var parentName = organizationJson["parentName"];
+				if (parentName == null) {
+				 parentName = "ROOT";
+				}
+				var organizationParentName = $("#organizationParentName");
+				organizationParentName.val(parentName);
+				  
+				var organizationRankTree = data["organizationRankTree"];
+				var nodeParent = $("#organizationRankGroupPanel");
+				var children = organizationRankTree["children"];
+				var index = 0;
+				var indent = 0;
+				buildTree(organizationRankTree, $(nodeParent), index, indent);
+			});
 
 		});
 
@@ -200,32 +208,32 @@
 			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
 			orgRankOrgId.val(id);
 			
-			$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
-//				  $( ".result" ).html( data );
-//				  alert(data);
-				  // Populate the form with the data returned from the back end
-				  var organizationRankJson = jQuery.parseJSON(data);
-				  var description = organizationRankJson["description"];
-				  var organizationRankDescription = $("#organizationRankDescription");
-				  organizationRankDescription.val(description);
-				  var parentId = organizationRankJson["parentId"];
-				  var organizationRankParentId = $("#hiddenParentId");
-				  organizationRankParentId.val(parentId);
-				  var parentName = organizationRankJson["parentName"];
-				  if (parentName == null) {
-					  parentName = "ROOT";
-				  }
-				  var organizationRankParentName = $("#organizationRankParentName");
-				  organizationRankParentName.val(parentName);
-				  
-				  var organizationRankTreeJson = $("#organizationRankTreeJson").val();
-				  var organizationRankTree = jQuery.parseJSON( organizationTreeJson );
-				  var nodeParent = $("#organizationRankGroupPanel");
-				  var children = organizationTree["children"];
-				  var index = 0;
-				  var indent = 0;
-				  buildTree(organizationRankTree, $(nodeParent), index, indent);
-			});
+//			$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
+////				  $( ".result" ).html( data );
+////				  alert(data);
+//				  // Populate the form with the data returned from the back end
+//				  var organizationRankJson = jQuery.parseJSON(data);
+//				  var description = organizationRankJson["description"];
+//				  var organizationRankDescription = $("#organizationRankDescription");
+//				  organizationRankDescription.val(description);
+//				  var parentId = organizationRankJson["parentId"];
+//				  var organizationRankParentId = $("#hiddenParentId");
+//				  organizationRankParentId.val(parentId);
+//				  var parentName = organizationRankJson["parentName"];
+//				  if (parentName == null) {
+//					  parentName = "ROOT";
+//				  }
+//				  var organizationRankParentName = $("#organizationRankParentName");
+//				  organizationRankParentName.val(parentName);
+//				  
+//				  var organizationRankTreeJson = $("#organizationRankTreeJson").val();
+//				  var organizationRankTree = jQuery.parseJSON( organizationTreeJson );
+//				  var nodeParent = $("#organizationRankGroupPanel");
+//				  var children = organizationTree["children"];
+//				  var index = 0;
+//				  var indent = 0;
+//				  buildTree(organizationRankTree, $(nodeParent), index, indent);
+//			});
 		});
 	
 	});		

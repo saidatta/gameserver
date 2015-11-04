@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.helper.HierarchyJsonBuilder;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationRankCreator;
 import org.softwarewolf.gameserver.base.repository.OrganizationRankRepository;
+import org.softwarewolf.gameserver.base.repository.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -23,6 +25,9 @@ public class OrganizationRankService {
 	
 	@Autowired
 	protected OrganizationRankRepository organizationRankRepository;
+	
+	@Autowired
+	protected OrganizationRepository organizationRepository;
 	
 	public List<OrganizationRank> getAllOrganizationRanks() {
 		List<OrganizationRank> organizationRankList = organizationRankRepository.findAll();
@@ -93,7 +98,9 @@ public class OrganizationRankService {
 		String json = "{}";
 		try {
 			if (organizationRank.getId() != null) {
-				json = createOrganizationRankTree(campaignId, organizationRank.getOrganizationId());
+				Map<String, Object> out = createOrganizationRankTree(campaignId, organizationRank.getOrganizationId());
+				ObjectMapper mapper = new ObjectMapper();
+				json = mapper.writeValueAsString(out);
 			}
 		} catch (Exception e) {
 			logger.fine(e.getMessage());
@@ -152,7 +159,7 @@ public class OrganizationRankService {
 		return true;
 	}
 
-	public String createOrganizationRankTree(String campaignId, String organizationId) throws Exception {
+	public Map<String, Object> createOrganizationRankTree(String campaignId, String organizationId) throws Exception {
 		// Create a hash map of all OrganizationRanks for fast retrieval
 		List<OrganizationRank> organizationRankList = organizationRankRepository.findByOrganizationId(organizationId);
 		Map<String, OrganizationRank> organizationMap = new HashMap<>();
@@ -174,16 +181,18 @@ public class OrganizationRankService {
 				root.getGameDataTypeId(), root.getGameDataTypeName());
 
 		rootBuilder = buildHierarchy(rootBuilder, organizationMap);
-				
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String, Object> out = mapper.convertValue(rootBuilder, Map.class);
+		return out;
 		//ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		ObjectWriter ow = new ObjectMapper().writer();
-		String json = null;
-		try {
-			json = ow.writeValueAsString(rootBuilder);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return json;
+//		ObjectWriter ow = new ObjectMapper().writer();
+//		String json = null;
+//		try {
+//			json = ow.writeValueAsString(rootBuilder);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		return json;
 	}
 	
 	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, OrganizationRank> organizationMap) {
@@ -220,4 +229,36 @@ public class OrganizationRankService {
 		return organizationRankRepository.findOne(id);
 	}
 
+	public String getOrganizationAndRanks(String organizationId) {
+		Map<String, Object> results = new HashMap<>();
+		if (organizationId != null) {
+			Organization org = organizationRepository.findOne(organizationId);
+			if (org != null) {
+				results.put("organization", org);
+				List<OrganizationRank> orgRankList = organizationRankRepository.findByOrganizationId(organizationId);
+				if (orgRankList != null) {
+					results.put("organizationRanks", orgRankList);
+				}
+				Map<String, Object> tree = new HashMap<>();
+				try {
+					tree = createOrganizationRankTree(org.getCampaignId(), organizationId);
+					if (tree != null) {
+						results.put("organizationRankTree", tree);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			}
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		String out = "{}";
+		try {
+			out = mapper.writeValueAsString(results);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return out;
+	}
 }
