@@ -45,7 +45,7 @@ public class OrganizationRankService {
 			String campaignId, String forwardingUrl) {
 
 		OrganizationRank organizationRank = null;
-		if (organizationId != null) {
+		if (organizationId != null && name != null) {
 			organizationRank = organizationRankRepository.findOneByNameAndOrganizationId(name, organizationId);
 			if (organizationRank == null) {
 				throw new RuntimeException("Can not find a organization rank for organization id " + organizationId);

@@ -773,7 +773,7 @@ public class GamemasterController {
 	@RequestMapping(value = "/getOrganization", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
-	public String editOrganizationId(HttpSession session, final OrganizationCreator territoryCreator, 
+	public String getOrganization(HttpSession session, final OrganizationCreator territoryCreator, 
 			final FeFeedback feFeedback, @RequestParam(value="hiddenOrganizationId", required= true) String organizationId, 
 			@ModelAttribute("organization") Organization organization) {
 		

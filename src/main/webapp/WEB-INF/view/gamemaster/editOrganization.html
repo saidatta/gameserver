@@ -114,7 +114,7 @@
 			var target = $(event.target);
 			var id = $(target).attr('id');
 			if (id == "0") {
-				var form = $("#OrganizationTypeForm");
+				var form = $("#editOrganizationTypeForm");
 				var organizationId = $("#hiddenOrganizationId").val();
 				var action = form.attr("action");
 				action += "?forwardingUrl=/gamemaster/editOrganization";
@@ -151,31 +151,37 @@
 			
 			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
 			orgRankOrgId.val(id);
+
+			var getOrganizationForm = $("#getOrganizationForm");
+			var action = getOrganizationForm.attr("action");
+			action = action + "?id="+id;
+			window.location.href = action;
 			
-			$.get( "/gameserver/gamemaster/getOrganization?hiddenOrganizationId="+id, function( data ) {
-//				  $( ".result" ).html( data );
-//				  alert(data);
-				  // Populate the form with the data returned from the back end
-				  var organizationJson = jQuery.parseJSON(data);
-				  var description = organizationJson["description"];
-				  var organizationDescription = $("#organizationDescription");
-				  organizationDescription.val(description);
-				  var typeId = organizationJson["gameDataTypeId"];
-				  var organizationTypeId = $("#organizationTypeId");
-				  organizationTypeId.val(typeId);
-				  var typeName = organizationJson["gameDataTypeName"];
-				  var organizationTypeName = $("#organizationTypeName");
-				  organizationTypeName.val(typeName);
-				  var parentId = organizationJson["parentId"];
-				  var organizationParentId = $("#hiddenParentId");
-				  organizationParentId.val(parentId);
-				  var parentName = organizationJson["parentName"];
-				  if (parentName == null) {
-					  parentName = "ROOT";
-				  }
-				  var organizationParentName = $("#organizationParentName");
-				  organizationParentName.val(parentName);
-			});
+//			$.get( "/gameserver/gamemaster/getOrganization?hiddenOrganizationId="+id, function( data ) {
+////				  $( ".result" ).html( data );
+////				  alert(data);
+//				  // Populate the form with the data returned from the back end
+//				  var organizationJson = jQuery.parseJSON(data);
+//				  var description = organizationJson["description"];
+//				  var organizationDescription = $("#organizationDescription");
+//				  organizationDescription.val(description);
+//				  var typeId = organizationJson["gameDataTypeId"];
+//				  var organizationTypeId = $("#organizationTypeId");
+//				  organizationTypeId.val(typeId);
+//				  var typeName = organizationJson["gameDataTypeName"];
+//				  var organizationTypeName = $("#organizationTypeName");
+//				  organizationTypeName.val(typeName);
+//				  var parentId = organizationJson["parentId"];
+//				  var organizationParentId = $("#hiddenParentId");
+//				  organizationParentId.val(parentId);
+//				  var parentName = organizationJson["parentName"];
+//				  if (parentName == null) {
+//					  parentName = "ROOT";
+//				  }
+//				  var organizationParentName = $("#organizationParentName");
+//				  organizationParentName.val(parentName);
+//			});
+
 		});
 
 		$(".selectOrganizationRank").click(function(event) {
@@ -257,6 +263,7 @@
 			</div>
 		</div>
 		<br></br>
+		<form id="getOrganizationForm" action="#" th:action="@{/gamemaster/editOrganization}" method="get"></form>
 		<form id="editOrganizationTypeForm" action="#" th:action="@{/gamemaster/createOrganizationType}" method="get"></form>
 		<form id="editOrganizationForm" th:object="${organizationCreator}" action="#" th:action="@{/gamemaster/editOrganization}" method="post">
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
