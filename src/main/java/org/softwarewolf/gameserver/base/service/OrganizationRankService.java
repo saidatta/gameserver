@@ -189,15 +189,6 @@ public class OrganizationRankService {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> out = mapper.convertValue(rootBuilder, Map.class);
 		return out;
-		//ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-//		ObjectWriter ow = new ObjectMapper().writer();
-//		String json = null;
-//		try {
-//			json = ow.writeValueAsString(rootBuilder);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		return json;
 	}
 	
 	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, OrganizationRank> organizationMap) {

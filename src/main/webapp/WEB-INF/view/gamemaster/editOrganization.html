@@ -19,7 +19,7 @@
     <title th:text="#{editOrganization.title}">Title</title>
     
 <script type="text/javascript">	
-	function buildTree(organizationNode, nodeParent, index, indent) {
+	function buildTree(type, organizationNode, nodeParent, index, indent) {
 		var displayName = organizationNode["displayName"];
 		// If we're looking at "Add new organization" skip it, it isn't real.
 		if (displayName == "" || displayName == null) {
@@ -37,9 +37,9 @@
 		var organizationName = organizationNode["name"];
 		var children = organizationNode["children"];
 		if (children.length > 0) {
-			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+organizationId+'\',\''+organizationName+'\');"></button> <span id="'+organizationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+organizationId+'\');">'+displayName+' <span class="caret"></span></span></div>';
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+type+'\',\''+organizationId+'\',\''+organizationName+'\');"></button> <span id="'+organizationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+organizationId+'\');">'+displayName+' <span class="caret"></span></span></div>';
 		} else {
-			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+organizationId+'\',\''+organizationName+'\');"></button> <span id="'+organizationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+organizationId+'\');">'+displayName+'</span> </div>';
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+type+'\',\''+organizationId+'\',\''+organizationName+'\');"></button> <span id="'+organizationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+organizationId+'\');">'+displayName+'</span> </div>';
 		}
 		$(listItem).html(itemHtml);
 		$(listItem).attr("id", organizationId);
@@ -53,7 +53,7 @@
 		if (children.length > 0) {
 			indent = indent + 1;
 			$(children).each(function() {
-				buildTree(this, listItem, index, indent);
+				buildTree(type, this, listItem, index, indent);
 				index = index + 1;
 			});
 		}
@@ -61,9 +61,14 @@
 	}
 	
 	// This is for selecting a parent organization
-	function clickPlus(parentOrganizationId, parentOrganizationName) {
-		$("#hiddenParentId").val(parentOrganizationId);
-		$("#organizationParentName").val(parentOrganizationName);
+	function clickPlus(type, parentOrganizationId, parentOrganizationName) {
+		if (type == "organization") {
+			$("#hiddenParentId").val(parentOrganizationId);
+			$("#organizationParentName").val(parentOrganizationName);
+		} else {
+			$("#hiddenOrgRankParentId").val(parentOrganizationId);
+			$("#organizationRankParentName").val(parentOrganizationName);
+		}
 		event.preventDefault();
 	}
 	
@@ -103,7 +108,7 @@
 			var children = organizationTree["children"];
 			var index = 0;
 			var indent = 0;
-			buildTree(organizationTree, $(nodeParent), index, indent);
+			buildTree('organization', organizationTree, $(nodeParent), index, indent);
 //			$(organizationTree.children).each(function() {
 //				index = buildTree(this, $(nodeParent), index, indent);
 //			});
@@ -187,7 +192,7 @@
 				var children = organizationRankTree["children"];
 				var index = 0;
 				var indent = 0;
-				buildTree(organizationRankTree, $(nodeParent), index, indent);
+				buildTree('organizationRank', organizationRankTree, $(nodeParent), index, indent);
 			});
 
 		});
@@ -207,33 +212,6 @@
 			
 			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
 			orgRankOrgId.val(id);
-			
-//			$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
-////				  $( ".result" ).html( data );
-////				  alert(data);
-//				  // Populate the form with the data returned from the back end
-//				  var organizationRankJson = jQuery.parseJSON(data);
-//				  var description = organizationRankJson["description"];
-//				  var organizationRankDescription = $("#organizationRankDescription");
-//				  organizationRankDescription.val(description);
-//				  var parentId = organizationRankJson["parentId"];
-//				  var organizationRankParentId = $("#hiddenParentId");
-//				  organizationRankParentId.val(parentId);
-//				  var parentName = organizationRankJson["parentName"];
-//				  if (parentName == null) {
-//					  parentName = "ROOT";
-//				  }
-//				  var organizationRankParentName = $("#organizationRankParentName");
-//				  organizationRankParentName.val(parentName);
-//				  
-//				  var organizationRankTreeJson = $("#organizationRankTreeJson").val();
-//				  var organizationRankTree = jQuery.parseJSON( organizationTreeJson );
-//				  var nodeParent = $("#organizationRankGroupPanel");
-//				  var children = organizationTree["children"];
-//				  var index = 0;
-//				  var indent = 0;
-//				  buildTree(organizationRankTree, $(nodeParent), index, indent);
-//			});
 		});
 	
 	});		

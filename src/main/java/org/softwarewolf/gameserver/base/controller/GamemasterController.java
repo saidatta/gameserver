@@ -776,24 +776,6 @@ public class GamemasterController {
 	public String getOrganization(HttpSession session, final OrganizationCreator territoryCreator, 
 			final FeFeedback feFeedback, @RequestParam(value="hiddenOrganizationId", required= true) String organizationId, 
 			@ModelAttribute("organization") Organization organization) {
-		
-		// id = 0 is add a new organization
-//		if ("0".equals(organizationId)) {
-//			organization = new Organization();
-//		} else if (!("".equals(organizationId))) {
-//			organization = organizationService.findOneOrganization(organizationId);
-//		}
-//		// ToDo: Add error handling for no territory found
-//		ObjectMapper objectMapper = new ObjectMapper();
-//		String out = "{}";
-//		if (organization != null) {
-//			try {
-//				out = objectMapper.writeValueAsString(organization);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
 		String out = "{}";
 		if (!("0".equals(organizationId))) {
 			out = organizationRankService.getOrganizationAndRanks(organizationId);
@@ -830,7 +812,7 @@ public class GamemasterController {
 	@RequestMapping(value = "/getOrganizationRank", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
-	public String getOrganizationRank(HttpSession session, final OrganizationCreator territoryCreator, 
+	public String getOrganizationRank(HttpSession session, final OrganizationCreator organizationCreator, 
 			final FeFeedback feFeedback, @RequestParam(value="id", required= true) String id, 
 			@ModelAttribute("organizationRank") OrganizationRank organizationRank) {
 		
@@ -852,6 +834,32 @@ public class GamemasterController {
 			}
 		}
 		return out;
+	}
+
+	@RequestMapping(value = "/editOrganizationRank", method = RequestMethod.POST)
+	@Secured({"GAMEMASTER"})
+	@ResponseBody
+	public String editOrganizationRank(HttpSession session, final OrganizationRankCreator organizationRankCreator, 
+			final FeFeedback feFeedback) {
+		OrganizationRank organizationRank = organizationRankCreator.getOrganizationRank();
+
+//		String errorMsg = validateOrganization(organization);
+//		if (errorMsg.length() > 0) {
+//			feFeedback.setError(errorMsg.toString());
+//			organizationService.initOrganizationCreator(organization.getId(), organizationCreator, organization.getCampaignId(), organizationCreator.getForwardingUrl());
+//			return EDIT_ORGANIZATION;
+//		}
+		
+		try {
+			String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+			organizationRankService.saveOrganizationRank(organizationRank);
+			organizationRankService.initOrganizationRankCreator(organizationRank, organizationRankCreator, campaignId, organizationRankCreator.getForwardingUrl());
+			feFeedback.setInfo("Success, you've created " + organizationRank.getName());
+		} catch (IllegalArgumentException e) {
+			feFeedback.setError(e.getMessage());
+			return EDIT_ORGANIZATION;
+		}
+		return organizationRankCreator.getForwardingUrl();
 	}
 
 }
