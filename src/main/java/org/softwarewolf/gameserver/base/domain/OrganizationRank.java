@@ -10,6 +10,7 @@ public class OrganizationRank extends GameDataImpl {
 	public OrganizationRank(String name, String campaignId, String organizationId) {
 		super(name, campaignId);
 		this.organizationId = organizationId;
+		setDisplayName(name);
 	}
 	
 	public OrganizationRank() {
@@ -24,4 +25,8 @@ public class OrganizationRank extends GameDataImpl {
 		this.organizationId = organizationId;
 	}
 	
+	@Override
+	public String getDisplayName() {
+		return getName();
+	}
 }

@@ -121,6 +121,17 @@ public class OrganizationService {
 		organizationCreator.setOrganizationsInCampaign(organizations);
 		
 		List<OrganizationType> organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValue("campaignList", campaignId);
+		Map<String, OrganizationType> map = new HashMap<String, OrganizationType>();
+		for (OrganizationType ot : organizationTypesInCampaign) map.put(ot.getId(), ot);
+		for (Organization currentOrg : organizations) {
+			String gameDataTypeId = currentOrg.getGameDataTypeId();
+			// Skip ROOT
+			if (gameDataTypeId != null) {
+				String dtId = currentOrg.getGameDataTypeId();
+				String gameDataTypeName = map.get(dtId).getName();
+				currentOrg.setGameDataTypeName(gameDataTypeName);
+			}
+		}
 		OrganizationType addNew = new OrganizationType();
 		addNew.setId("0");
 		addNew.setName("Add new organization type");

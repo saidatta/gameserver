@@ -135,4 +135,8 @@ public class GameDataImpl implements GameData, Serializable {
 		return displayNameBuilder.toString();
 	}
 	
+	// This usually should not be used
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
 }

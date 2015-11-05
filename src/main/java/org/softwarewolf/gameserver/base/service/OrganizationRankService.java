@@ -9,10 +9,12 @@ import java.util.logging.Logger;
 
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
+import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.helper.HierarchyJsonBuilder;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationRankCreator;
 import org.softwarewolf.gameserver.base.repository.OrganizationRankRepository;
 import org.softwarewolf.gameserver.base.repository.OrganizationRepository;
+import org.softwarewolf.gameserver.base.repository.OrganizationTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -28,6 +30,9 @@ public class OrganizationRankService {
 	
 	@Autowired
 	protected OrganizationRepository organizationRepository;
+	
+	@Autowired
+	protected OrganizationTypeRepository organizationTypeRepository;
 	
 	public List<OrganizationRank> getAllOrganizationRanks() {
 		List<OrganizationRank> organizationRankList = organizationRankRepository.findAll();
@@ -232,8 +237,13 @@ public class OrganizationRankService {
 	public String getOrganizationAndRanks(String organizationId) {
 		Map<String, Object> results = new HashMap<>();
 		if (organizationId != null) {
-			Organization org = organizationRepository.findOne(organizationId);
+			Organization org = organizationRepository.findOne(organizationId);		
 			if (org != null) {
+				OrganizationType orgType = organizationTypeRepository.findOne(org.getGameDataTypeId());
+				if (orgType != null) {
+					String organizationTypeName = orgType.getName(); 
+					org.setGameDataTypeName(organizationTypeName);
+				}
 				results.put("organization", org);
 				List<OrganizationRank> orgRankList = organizationRankRepository.findByOrganizationId(organizationId);
 				if (orgRankList != null) {
