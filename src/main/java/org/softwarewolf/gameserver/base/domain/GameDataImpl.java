@@ -12,19 +12,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class GameDataImpl implements GameData, Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	private String id;
-	private String name;
-	private String description;
-	private String gameDataTypeId;
+	protected String id;
+	protected String name;
+	protected String description;
+	protected String gameDataTypeId;
 	@Transient
-	private String gameDataTypeName;
-	private String campaignId;
-	private String parentId;
+	protected String gameDataTypeName;
+	protected String campaignId;
+	protected String parentId;
 	@Transient
-	private String parentName;
-	private List<String> childrenIdList;
+	protected String parentName;
+	protected List<String> childrenIdList;
 	@Transient
-	private String displayName;
+	protected String displayName;
 
 	public GameDataImpl() {
 		childrenIdList = new ArrayList<>();

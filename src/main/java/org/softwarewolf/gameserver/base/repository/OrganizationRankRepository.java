@@ -10,6 +10,8 @@ public interface OrganizationRankRepository extends MongoRepository<Organization
 
 	OrganizationRank findOneByNameAndOrganizationId(String arg0, String arg1);
 	
+	List<OrganizationRank> findByCampaignIdAndOrganizationId(String arg1, String arg2);
+	
 	List<OrganizationRank> findByOrganizationId(String arg1);
 	
 	List<OrganizationRank> findByCampaignId(String arg0);

@@ -90,7 +90,12 @@ public class OrganizationRankService {
 		} else {
 			organizationRank.setParentName("ROOT");
 		}
-		List<OrganizationRank> ranks = organizationRankRepository.findAllByKeyValue("campaignId", campaignId);
+		List<OrganizationRank> ranks = null;
+		if (organizationRank.getOrganizationId() != null ) {
+			ranks = organizationRankRepository.findByCampaignIdAndOrganizationId("campaignId", organizationRank.getOrganizationId());
+		} else {
+			ranks = new ArrayList<>();
+		}
 		// Add a dummy organization to the list for selecting the option of adding a new organization
 		OrganizationRank addNewOrganizationRank = new OrganizationRank();
 		addNewOrganizationRank.setId("0");
