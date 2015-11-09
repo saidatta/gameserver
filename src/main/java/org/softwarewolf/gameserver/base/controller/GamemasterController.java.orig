@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
+import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.Territory;
 import org.softwarewolf.gameserver.base.domain.TerritoryType;
 import org.softwarewolf.gameserver.base.domain.helper.FeFeedback;
@@ -265,6 +266,113 @@ public class GamemasterController {
 		return forwardingUrl;
 	}
 
+//	@RequestMapping(value = "/createOrganizationType", method = RequestMethod.GET)
+//	@Secured({"GAMEMASTER"})
+//	public String createOrganizationType(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		if (campaignId == null) {
+//			return USER_MENU;
+//		}
+//		
+//		String forwardingUrl = "/gamemaster/createOrganizationType";
+//		OrganizationType organizationType = new OrganizationType();
+//		organizationService.initOrganizationTypeCreator(organizationType, organizationTypeCreator, campaignId, forwardingUrl);
+//		return forwardingUrl;
+//	}
+	
+//	@RequestMapping(value = "/addOrganizationTypeToCampaign", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String addOrganizationTypeToCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String addOrganizationTypeId = organizationTypeCreator.getAddGameDataTypeId();
+//		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+//		try {
+//			if (addOrganizationTypeId != null) {
+//				OrganizationType organizationType = organizationService.getOrganizationTypeById(addOrganizationTypeId);
+//				organizationType.addCampaign(campaignId);
+//				organizationService.saveOrganizationType(organizationType);
+//				organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
+
+//	@RequestMapping(value = "/removeOrganizationTypeFromCampaign", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String removeOrganizationTypeFromCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator, 
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String removeOrganizationTypeId = organizationTypeCreator.getRemoveGameDataTypeId();
+//		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+//		try {
+//			if (removeOrganizationTypeId != null) {
+//				OrganizationType organizationType = organizationService.getOrganizationTypeById(removeOrganizationTypeId);
+//				organizationType.removeCampaign(campaignId);
+//				organizationService.saveOrganizationType(organizationType);
+//				organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
+
+//	@RequestMapping(value = "/createOrganizationType", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String postOrganizationType(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final TerritoryCreator territoryCreator,
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		OrganizationType organizationType = organizationTypeCreator.getOrganizationType();
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+//		if (campaignId != null) {
+//			organizationType.addCampaign(campaignId);
+//		}
+//		try {
+//			organizationService.saveOrganizationType(organizationType);
+//			organizationService.initOrganizationTypeCreator(new OrganizationType(), organizationTypeCreator, campaignId, forwardingUrl);
+//			feFeedback.setInfo("Success, you have created a territory type");
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
+
+//	@RequestMapping(value = "/addOrganizationTypeToOrganization", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String addOrganizationTypeToOrganization(HttpSession session, final OrganizationCreator organizationCreator,
+//			final OrganizationTypeCreator organizationTypeCreator, final TerritoryCreator territoryCreator,
+//			final TerritoryTypeCreator territoryTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String addOrganizationTypeId = organizationCreator.getAddGameDataTypeId();
+//		String forwardingUrl = organizationCreator.getForwardingUrl();
+//		try {
+//			if (addOrganizationTypeId != null) {
+//				OrganizationType organizationType = organizationService.getOrganizationTypeById(addOrganizationTypeId);
+//				if (organizationType == null) {
+//					feFeedback.setError("Invalid organization type.");
+//					return forwardingUrl;
+//				}
+//				organizationCreator.getOrganization().setGameDataTypeId(addOrganizationTypeId);
+//				organizationService.initOrganizationCreator(organizationCreator, campaignId, forwardingUrl);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
+	
 	@RequestMapping(value = "/campaignHome", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	public String campaignHome(HttpSession session, TerritoryCreator territoryCreator, 
@@ -422,18 +530,16 @@ public class GamemasterController {
 		if (campaignId == null) {
 			return USER_MENU;
 		}
-		// organization id 0 = add new organization;
-		if ("0".equals(organizationId)) {
-			organizationId = null;
+		
+		// In this case, the territory object just has the id and name, we need everything here.
+		if (organizationId != null && organizationId != "") {
+			Organization organization = organizationCreator.getOrganization();
+			organization.setId(organizationId);
+			organization = organizationService.findOneOrganization(organization.getId());
 		}
 		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, EDIT_ORGANIZATION);
 		
-		OrganizationRank orgRank = organizationRankCreator.getOrganizationRank();
-		String orgRankName = null;
-		if (orgRank != null && orgRank.getName() != "ROOT" && orgRank.getName() != "") {
-			orgRankName = orgRank.getName();
-		}
-		organizationRankService.initOrganizationRankCreator(organizationId, orgRankName, organizationRankCreator, campaignId, EDIT_ORGANIZATION);
+		organizationRankService.initOrganizationRankCreator(organizationId, null, organizationRankCreator, campaignId, EDIT_ORGANIZATION);
 
 		return EDIT_ORGANIZATION;
 	}
@@ -467,7 +573,7 @@ public class GamemasterController {
 	@RequestMapping(value = "/editOrganization", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
 	public String postEditOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
-			final OrganizationRankCreator organizationRankCreator, final FeFeedback feFeedback) {
+			final FeFeedback feFeedback) {
 		Organization organization = organizationCreator.getOrganization();
 
 		String errorMsg = validateOrganization(organization);
@@ -479,10 +585,9 @@ public class GamemasterController {
 		
 		try {
 			String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-			Organization org = organizationService.saveOrganization(organization);
-			String organizationId = org.getId();
+			organizationService.saveOrganization(organization);
+			String organizationId = null;
 			organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, organizationCreator.getForwardingUrl());
-			organizationRankService.initOrganizationRankCreator(organizationId, null, organizationRankCreator, campaignId, organizationCreator.getForwardingUrl());
 			feFeedback.setInfo("Success, you've created " + organization.getName());
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
@@ -494,7 +599,7 @@ public class GamemasterController {
 	@RequestMapping(value = "/getOrganizationRank", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
-	public String getOrganizationRank(HttpSession session, final OrganizationCreator territoryCreator, 
+	public String getOrganizationRank(HttpSession session, final OrganizationCreator organizationCreator, 
 			final FeFeedback feFeedback, @RequestParam(value="id", required= true) String id, 
 			@ModelAttribute("organizationRank") OrganizationRank organizationRank) {
 		
@@ -520,6 +625,7 @@ public class GamemasterController {
 
 	@RequestMapping(value = "/editOrganizationRank", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
+<<<<<<< HEAD
 	public String editOrganizationRank(HttpSession session, final OrganizationRankCreator organizationRankCreator, 
 			final FeFeedback feFeedback, final OrganizationCreator organizationCreator) {
 		OrganizationRank organizationRank = organizationRankCreator.getOrganizationRank();
@@ -551,11 +657,36 @@ public class GamemasterController {
 			organizationRankService.saveOrganizationRank(organizationRank);
 			organizationRankService.initOrganizationRankCreator(organizationRank.getOrganizationId(), organizationRank.getName(), 
 					organizationRankCreator, campaignId, organizationRankCreator.getForwardingUrl());
+=======
+	@ResponseBody
+	public String editOrganizationRank(HttpSession session, final OrganizationRankCreator organizationRankCreator, 
+			final FeFeedback feFeedback) {
+		OrganizationRank organizationRank = organizationRankCreator.getOrganizationRank();
+
+//		String errorMsg = validateOrganization(organization);
+//		if (errorMsg.length() > 0) {
+//			feFeedback.setError(errorMsg.toString());
+//			organizationService.initOrganizationCreator(organization.getId(), organizationCreator, organization.getCampaignId(), organizationCreator.getForwardingUrl());
+//			return EDIT_ORGANIZATION;
+//		}
+		
+		try {
+			String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+			organizationRankService.saveOrganizationRank(organizationRank);
+			organizationRankService.initOrganizationRankCreator(organizationRank, organizationRankCreator, campaignId, organizationRankCreator.getForwardingUrl());
+			feFeedback.setInfo("Success, you've created " + organizationRank.getName());
+>>>>>>> b0d082b671e20ff06954847db3f3f6aa3b2190bb
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return EDIT_ORGANIZATION;
 		}
+<<<<<<< HEAD
 		return EDIT_ORGANIZATION;
 	}
 	
+=======
+		return organizationRankCreator.getForwardingUrl();
+	}
+
+>>>>>>> b0d082b671e20ff06954847db3f3f6aa3b2190bb
 }

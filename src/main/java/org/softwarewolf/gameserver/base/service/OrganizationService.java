@@ -160,9 +160,10 @@ public class OrganizationService {
 		organizationTypeRepository.save(organizationType);
 	}	
 	
-	public void saveOrganization(Organization organization) {
-		if (organization.getId() == null) {
-			Organization existingOrganization = organizationRepository.findOneByName(organization.getName());
+	public Organization saveOrganization(Organization organization) {
+		if (organization.getId() == null || organization.getId() == "") {
+			organization.setId(null);
+			Organization existingOrganization = organizationRepository.findOneByNameAndCampaignId(organization.getName(), organization.getCampaignId());
 			if (existingOrganization != null) {
 				throw new IllegalArgumentException("Organization " + organization.getName() + " already exists");
 			}
@@ -183,6 +184,7 @@ public class OrganizationService {
 			parentOrganization.addChildId(organization.getId());
 			organizationRepository.save(parentOrganization);
 		}
+		return organization;
 	}
 	
 	public boolean canSetOrganizationParent(String organizationId, String parentId) {
