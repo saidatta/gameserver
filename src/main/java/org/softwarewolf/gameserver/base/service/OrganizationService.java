@@ -113,7 +113,7 @@ public class OrganizationService {
 			organization.setParentName("ROOT");
 		}
 		List<Organization> organizations = organizationRepository.findAllByKeyValue("campaignId", campaignId);
-		// Add a dummy organization to the list for selecting the option of adding a new organization
+		// Add a dummy Organization to the list for selecting the option of adding a new organization
 		Organization addNewOrganization = new Organization();
 		addNewOrganization.setId("0");
 		addNewOrganization.setName("Add a new organization");
@@ -122,7 +122,9 @@ public class OrganizationService {
 		
 		List<OrganizationType> organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValue("campaignList", campaignId);
 		Map<String, OrganizationType> map = new HashMap<String, OrganizationType>();
+		// Build a map of all org types, key = id, value = OrganizationType
 		for (OrganizationType ot : organizationTypesInCampaign) map.put(ot.getId(), ot);
+		// Add the OrganizationType.name to the List of OrganizationObjects in the creator 
 		for (Organization currentOrg : organizations) {
 			String gameDataTypeId = currentOrg.getGameDataTypeId();
 			// Skip ROOT
@@ -132,6 +134,15 @@ public class OrganizationService {
 				currentOrg.setGameDataTypeName(gameDataTypeName);
 			}
 		}
+		// Set the OrganizationType.name in the Organization in the creator also using the map
+		String currentOTId = organization.getGameDataTypeId();
+		if (currentOTId != null) {
+			OrganizationType currentOT = map.get(currentOTId);
+			if (currentOT != null) {
+				organization.setGameDataTypeName(currentOT.getName());
+			}
+		}
+		// Add a dummy OrganizationType to the list for selecting the option of adding a new organization
 		OrganizationType addNew = new OrganizationType();
 		addNew.setId("0");
 		addNew.setName("Add new organization type");

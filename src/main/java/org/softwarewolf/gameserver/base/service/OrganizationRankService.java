@@ -64,6 +64,8 @@ public class OrganizationRankService {
 			organizationRank = new OrganizationRank();
 			organizationRank.setParentName(ROOT);
 			organizationRank.setParentId(ROOT);
+			organizationRank.setOrganizationId(organizationId);
+			organizationRank.setCampaignId(campaignId);
 		}
 		
 		initOrganizationRankCreator(organizationRank, organizationRankCreator, campaignId, forwardingUrl);
@@ -74,15 +76,12 @@ public class OrganizationRankService {
 		if (forwardingUrl != null) {
 			organizationRankCreator.setForwardingUrl(forwardingUrl);
 		}
-		String json = getOrganizationRankTree(campaignId, organizationRank);
+		String json = getOrganizationRankTree(campaignId, organizationRank.getOrganizationId());
 		organizationRankCreator.setOrganizationRankTreeJson(json);
 
-		if (campaignId != null && organizationRank.getCampaignId() == null) {
-			organizationRank.setCampaignId(campaignId);
-		}
 		organizationRankCreator.setOrganizationRank(organizationRank);
 
-		if (organizationRank.getParentId() != null) {
+		if (organizationRank.getParentId() != null && organizationRank.getParentId() != "ROOT") {
 			OrganizationRank parent = organizationRankRepository.findOne(organizationRank.getParentId());
 			if (parent != null && parent.getName() != "ROOT") {
 				organizationRank.setParentName(parent.getName());
@@ -92,7 +91,7 @@ public class OrganizationRankService {
 		}
 		List<OrganizationRank> ranks = null;
 		if (organizationRank.getOrganizationId() != null ) {
-			ranks = organizationRankRepository.findByCampaignIdAndOrganizationId("campaignId", organizationRank.getOrganizationId());
+			ranks = organizationRankRepository.findByCampaignIdAndOrganizationId(campaignId, organizationRank.getOrganizationId());
 		} else {
 			ranks = new ArrayList<>();
 		}
@@ -101,14 +100,14 @@ public class OrganizationRankService {
 		addNewOrganizationRank.setId("0");
 		addNewOrganizationRank.setName("Add a new organization rank");
 		ranks.add(0, addNewOrganizationRank);
-		organizationRankCreator.setOrganizationRanksInCampaign(ranks);
+		organizationRankCreator.setOrganizationRanksInOrganization(ranks);
 	}
 	
-	public String getOrganizationRankTree(String campaignId, OrganizationRank organizationRank) {
+	public String getOrganizationRankTree(String campaignId, String organizationId) {
 		String json = "{}";
 		try {
-			if (organizationRank.getId() != null) {
-				Map<String, Object> out = createOrganizationRankTree(campaignId, organizationRank.getOrganizationId());
+			if (organizationId != null) {
+				Map<String, Object> out = createOrganizationRankTree(campaignId, organizationId);
 				ObjectMapper mapper = new ObjectMapper();
 				json = mapper.writeValueAsString(out);
 			}
@@ -172,25 +171,25 @@ public class OrganizationRankService {
 	public Map<String, Object> createOrganizationRankTree(String campaignId, String organizationId) throws Exception {
 		// Create a hash map of all OrganizationRanks for fast retrieval
 		List<OrganizationRank> organizationRankList = organizationRankRepository.findByOrganizationId(organizationId);
-		Map<String, OrganizationRank> organizationMap = new HashMap<>();
+		Map<String, OrganizationRank> organizationRankMap = new HashMap<>();
 		OrganizationRank root = new OrganizationRank(ROOT, campaignId, organizationId);
 		root.setId(ROOT);
 		root.setGameDataTypeId(ROOT);
 		root.setGameDataTypeName(ROOT);
-		organizationMap.put(ROOT, root);
+		organizationRankMap.put(ROOT, root);
 		// Populate the map of organization nodes
 		for (OrganizationRank organizationRank : organizationRankList) {
 			if (organizationRank.getId() != "ROOT" && organizationRank.getParentId() == null) {
 				root.addChildId(organizationRank.getId());
 				organizationRank.setParentId(ROOT);
 			}
-			organizationMap.put(organizationRank.getId(), organizationRank);
+			organizationRankMap.put(organizationRank.getId(), organizationRank);
 		} 
 
 		HierarchyJsonBuilder rootBuilder = new HierarchyJsonBuilder(root.getId(), root.getName(),
 				root.getGameDataTypeId(), root.getGameDataTypeName());
 
-		rootBuilder = buildHierarchy(rootBuilder, organizationMap);
+		rootBuilder = buildHierarchy(rootBuilder, organizationRankMap);
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> out = mapper.convertValue(rootBuilder, Map.class);
 		return out;

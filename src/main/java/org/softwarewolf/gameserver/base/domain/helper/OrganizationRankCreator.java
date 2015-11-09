@@ -6,12 +6,11 @@ import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 
 public class OrganizationRankCreator {
 	public OrganizationRank organizationRank;
-	public List<OrganizationRank> organizationRanksInCampaign;
 	public String organizationRankTreeJson;
 	public String addOrganizationRankId;
 	public String removeOrganizationRankId;
 	public String forwardingUrl;
-	public List<OrganizationRank> otherOrganizationRanks;
+	public List<OrganizationRank> organizationRanksInOrganization;
 	
 	public OrganizationRankCreator() {
 		organizationRank = new OrganizationRank();
@@ -25,12 +24,12 @@ public class OrganizationRankCreator {
 		this.organizationRank = organizationRank;
 	}
 
-	public List<OrganizationRank> getOrganizationRanksInCampaign() {
-		return organizationRanksInCampaign;
+	public List<OrganizationRank> getOrganizationRanksInOrganization() {
+		return organizationRanksInOrganization;
 	}
 	
-	public void setOrganizationRanksInCampaign(List<OrganizationRank> organizationRanksInCampaign) {
-		this.organizationRanksInCampaign = organizationRanksInCampaign;
+	public void setOrganizationRanksInOrganization(List<OrganizationRank> organizationRanksInOrganization) {
+		this.organizationRanksInOrganization = organizationRanksInOrganization;
 	}
 	
 	public String getOrganizationRankTreeJson() {
@@ -61,14 +60,6 @@ public class OrganizationRankCreator {
 		return forwardingUrl;
 	}
 
-	public List<OrganizationRank> getOtherOrganizationRanks() {
-		return otherOrganizationRanks;
-	}
-	
-	public void setOtherOrganizationRanks(List<OrganizationRank> otherOrganizationRanks) {
-		this.otherOrganizationRanks = otherOrganizationRanks;
-	}
-	
 	public void setForwardingUrl(String forwardingUrl) {
 		this.forwardingUrl = forwardingUrl;
 	}
