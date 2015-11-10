@@ -90,7 +90,7 @@ public class OrganizationRankService {
 			organizationRank.setParentName("ROOT");
 		}
 		List<OrganizationRank> ranks = null;
-		if (organizationRank.getOrganizationId() != null ) {
+  		if (organizationRank.getOrganizationId() != null ) {
 			ranks = organizationRankRepository.findByCampaignIdAndOrganizationId(campaignId, organizationRank.getOrganizationId());
 		} else {
 			ranks = new ArrayList<>();
