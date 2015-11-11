@@ -127,9 +127,8 @@
 			var id = $(target).attr('id');
 			if (id == "0") {
 				var form = $("#editOrganizationTypeForm");
-				var organizationId = $("#hiddenOrganizationId").val();
 				var action = form.attr("action");
-				action += "?forwardingUrl=/gamemaster/editOrganization";
+				action += "?organizationTypeId="+id;
 
 				window.location.href = action;
 			} else {
@@ -243,7 +242,7 @@
 		</div>
 		<br></br>
 		<form id="getOrganizationForm" action="#" th:action="@{/gamemaster/editOrganization}" method="get"></form>
-		<form id="editOrganizationTypeForm" action="#" th:action="@{/gamemaster/createOrganizationType}" method="get"></form>
+		<form id="editOrganizationTypeForm" action="#" th:action="@{/gamemaster/editOrganizationType}" method="get"></form>
 		<form id="editOrganizationForm" th:object="${organizationCreator}" action="#" th:action="@{/gamemaster/editOrganization}" method="post">
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
 			<input id="campaignId" type="hidden" th:field="*{organization.campaignId}"></input>
@@ -312,7 +311,7 @@
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
-	  					<button id="ttBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganizationType.ttBtn}">
+	  					<button id="otBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganizationType.otBtn}">
 	    					Organization Type <span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">

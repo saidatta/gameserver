@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
+import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.helper.FeFeedback;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationRankCreator;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/gamemaster")
@@ -204,6 +206,20 @@ public class GamemasterController {
 		return organizationCreator.getForwardingUrl();
 	}	
 
+	@RequestMapping(value = "/editOrganizationType", method = RequestMethod.GET)
+	@Secured({"GAMEMASTER"})
+	public String getOrganizationType(HttpSession session, final FeFeedback feFeedback,
+			OrganizationTypeCreator organizationTypeCreator,
+			@RequestParam(value="organizationTypeId", required= true) String organizationTypeId) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (organizationTypeId == "0") {
+			organizationTypeId = null;
+		}
+		organizationService.initOrganizationTypeCreator(organizationTypeId, organizationTypeCreator, campaignId, EDIT_ORGANIZATION);
+		
+		return "/gamemaster/createOrganizationType";
+	}
+	
 	@RequestMapping(value = "/getOrganizationRank", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
