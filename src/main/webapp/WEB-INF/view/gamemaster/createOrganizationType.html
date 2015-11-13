@@ -74,7 +74,7 @@
 			</div>
 		</div>
 		<br></br>
-		<form id="createOrganizationForm" th:object="${organizationTypeCreator}" action="#" th:action="@{/gamemaster/createOrganizationType}" method="post">
+		<form id="createOrganizationForm" th:object="${organizationTypeCreator}" action="#" th:action="@{/gamemaster/editOrganizationType}" method="post">
 			<input id="addGameDataTypeId" type="hidden" th:field="*{addGameDataTypeId}"></input>
 			<input id="removeGameDataTypeId" type="hidden" th:field="*{removeGameDataTypeId}"></input>
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
@@ -102,7 +102,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createOrganization.organizationDescription}">Desc</label>
+					<label class="input-margin" th:text="#{createOrganizationType.organizationTypeDescription}">Desc</label>
 				</div>
 				<div class="col-md-8">
 					<textarea rows="8" cols="100" class="input-margin" th:field="*{organizationType.description}"></textarea>

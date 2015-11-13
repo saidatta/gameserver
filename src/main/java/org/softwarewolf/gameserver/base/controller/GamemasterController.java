@@ -1,6 +1,8 @@
 package org.softwarewolf.gameserver.base.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -19,6 +21,7 @@ import org.softwarewolf.gameserver.base.repository.UserRepository;
 import org.softwarewolf.gameserver.base.service.CampaignService;
 import org.softwarewolf.gameserver.base.service.OrganizationRankService;
 import org.softwarewolf.gameserver.base.service.OrganizationService;
+import org.softwarewolf.gameserver.base.service.OrganizationTypeService;
 import org.softwarewolf.gameserver.base.service.TerritoryService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/gamemaster")
@@ -39,6 +41,7 @@ public class GamemasterController {
 	private static final String CAMPAIGN_HOME = "/gamemaster/campaignHome";
 	private static final String USER_MENU = "/user/menu";
 	private static final String EDIT_ORGANIZATION = "/gamemaster/editOrganization";
+	private static final String CREATE_ORGANIZATION_TYPE = "/gamemaster/createOrganizationType";
 			
 	@Autowired
 	protected UserRepository userRepository;
@@ -51,6 +54,9 @@ public class GamemasterController {
 	
 	@Autowired
 	protected OrganizationService organizationService;
+	
+	@Autowired
+	public OrganizationTypeService organizationTypeService;
 	
 	@Autowired
 	protected OrganizationRankService organizationRankService;
@@ -98,7 +104,7 @@ public class GamemasterController {
 
 		String organizationId = null;
 		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, CAMPAIGN_HOME);
-		organizationService.initOrganizationTypeCreator(null, organizationTypeCreator, campaignId, CAMPAIGN_HOME);
+		organizationTypeService.initOrganizationTypeCreator(null, organizationTypeCreator, campaignId, CAMPAIGN_HOME);
 
 		return CAMPAIGN_HOME;
 	}
@@ -115,7 +121,7 @@ public class GamemasterController {
 			addMessage(errorMsg, "You must have a description.");
 		}
 		if (organization.getParentId().isEmpty()) {
-			addMessage(errorMsg, "You must have a parent organization");
+			organization.setParentId("ROOT");
 		}
 		return errorMsg.toString();
 	}
@@ -154,7 +160,7 @@ public class GamemasterController {
 	}
 	
 	/**
-	 * Ajax call to get just the data on a territory when a user clicks on a territory
+	 * Ajax call to get just the data on a organization when a user clicks on an organization
 	 * in the edit territory drop-down
 	 * @param session
 	 * @param territoryCreator
@@ -169,9 +175,13 @@ public class GamemasterController {
 	@RequestMapping(value = "/getOrganization", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
-	public String getOrganization(HttpSession session, final OrganizationCreator territoryCreator, 
-			final FeFeedback feFeedback, @RequestParam(value="hiddenOrganizationId", required= true) String organizationId, 
-			@ModelAttribute("organization") Organization organization) {
+	public String getOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
+			final FeFeedback feFeedback, @RequestParam(value="hiddenOrganizationId", required= true) String organizationId) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return USER_MENU;
+		}
+		
 		String out = "{}";
 		if (!("0".equals(organizationId))) {
 			out = organizationRankService.getOrganizationAndRanks(organizationId);
@@ -183,6 +193,11 @@ public class GamemasterController {
 	@Secured({"GAMEMASTER"})
 	public String postEditOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
 			final OrganizationRankCreator organizationRankCreator, final FeFeedback feFeedback) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return USER_MENU;
+		}
+		
 		Organization organization = organizationCreator.getOrganization();
 
 		String errorMsg = validateOrganization(organization);
@@ -193,7 +208,6 @@ public class GamemasterController {
 		}
 		
 		try {
-			String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 			Organization org = organizationService.saveOrganization(organization);
 			String organizationId = org.getId();
 			organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, organizationCreator.getForwardingUrl());
@@ -212,20 +226,107 @@ public class GamemasterController {
 			OrganizationTypeCreator organizationTypeCreator,
 			@RequestParam(value="organizationTypeId", required= true) String organizationTypeId) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return USER_MENU;
+		}
+		
 		if (organizationTypeId == "0") {
 			organizationTypeId = null;
 		}
-		organizationService.initOrganizationTypeCreator(organizationTypeId, organizationTypeCreator, campaignId, EDIT_ORGANIZATION);
+		organizationTypeService.initOrganizationTypeCreator(organizationTypeId, organizationTypeCreator, campaignId, EDIT_ORGANIZATION);
 		
 		return "/gamemaster/createOrganizationType";
 	}
 	
-	@RequestMapping(value = "/getOrganizationRank", method = RequestMethod.GET)
+	@RequestMapping(value = "/editOrganizationType", method = RequestMethod.POST)
+	@Secured({"GAMEMASTER"})
+	public String editOrganizationType(HttpSession session, final FeFeedback feFeedback,
+			OrganizationTypeCreator organizationTypeCreator, final OrganizationCreator organizationCreator,
+			final OrganizationRankCreator organizationRankCreator) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return USER_MENU;
+		}
+		
+		OrganizationType organizationType = organizationTypeCreator.getOrganizationType();
+		OrganizationType oldType = organizationTypeService.findOneByName(organizationType.getName());
+		List<String> campaignList = new ArrayList<>();
+		if (oldType != null) {
+			organizationType.setId(oldType.getId());
+			campaignList = organizationType.getCampaignList();
+		}
+		if (!campaignList.contains(campaignId)) {
+			campaignList.add(campaignId);
+		}
+		organizationType.setCampaignList(campaignList);
+		organizationTypeService.saveOrganizationType(organizationType);
+		organizationTypeService.initOrganizationTypeCreator(organizationType.getId(), organizationTypeCreator, campaignId, EDIT_ORGANIZATION);
+		organizationService.initOrganizationCreator(organizationCreator.getOrganization(), organizationCreator, campaignId, 
+				organizationCreator.getForwardingUrl());
+		
+		return organizationCreator.getForwardingUrl();
+	}
+
+	@RequestMapping(value = "/addOrganizationTypeToCampaign", method = RequestMethod.POST)
+	@Secured({"GAMEMASTER"})
+	public String addOrganizationTypeToCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+			final OrganizationCreator organizationCreator, final OrganizationRankCreator organizationRankCreator, 
+			final FeFeedback feFeedback) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		String addOrganizationTypeId = organizationTypeCreator.getAddGameDataTypeId();
+		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+		try {
+			if (addOrganizationTypeId != null) {
+				OrganizationType organizationType = organizationTypeService.getOrganizationTypeById(addOrganizationTypeId);
+				organizationType.addCampaign(campaignId);
+				organizationTypeService.saveOrganizationType(organizationType);
+				organizationTypeService.initOrganizationTypeCreator(addOrganizationTypeId, organizationTypeCreator, 
+						campaignId, organizationTypeCreator.getForwardingUrl());
+				organizationRankService.initOrganizationRankCreator(null, null, organizationRankCreator, campaignId, 
+						organizationRankCreator.getForwardingUrl());
+			}
+		} catch (IllegalArgumentException e) {
+			feFeedback.setError(e.getMessage());
+			return forwardingUrl;
+		}
+		return CREATE_ORGANIZATION_TYPE;
+	}
+
+	@RequestMapping(value = "/removeOrganizationTypeFromCampaign", method = RequestMethod.POST)
+	@Secured({"GAMEMASTER"})
+	public String removeOrganizationTypeFromCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+			final OrganizationCreator organizationCreator, final OrganizationRankCreator organizationRankCreator, 
+			final FeFeedback feFeedback) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		String removeOrganizationTypeId = organizationTypeCreator.getRemoveGameDataTypeId();
+		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+		try {
+			if (removeOrganizationTypeId != null) {
+				OrganizationType organizationType = organizationTypeService.getOrganizationTypeById(removeOrganizationTypeId);
+				organizationType.removeCampaign(campaignId);
+				organizationTypeService.saveOrganizationType(organizationType);
+				organizationTypeService.initOrganizationTypeCreator(removeOrganizationTypeId, organizationTypeCreator, 
+						campaignId, organizationTypeCreator.getForwardingUrl());
+				organizationRankService.initOrganizationRankCreator(null, null, organizationRankCreator, campaignId,
+						organizationRankCreator.getForwardingUrl());
+			}
+		} catch (IllegalArgumentException e) {
+			feFeedback.setError(e.getMessage());
+			return forwardingUrl;
+		}
+		return CREATE_ORGANIZATION_TYPE;
+	}
+	
+	@RequestMapping(value = "/editOrganizationRank", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
-	public String getOrganizationRank(HttpSession session, final OrganizationCreator territoryCreator, 
+	public String getOrganizationRank(HttpSession session,
 			final FeFeedback feFeedback, @RequestParam(value="id", required= true) String id, 
 			@ModelAttribute("organizationRank") OrganizationRank organizationRank) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return USER_MENU;
+		}
 		
 		// id = 0 is add a new organization
 		if ("0".equals(id)) {
@@ -251,6 +352,11 @@ public class GamemasterController {
 	@Secured({"GAMEMASTER"})
 	public String editOrganizationRank(HttpSession session, final OrganizationRankCreator organizationRankCreator, 
 			final FeFeedback feFeedback, final OrganizationCreator organizationCreator) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return USER_MENU;
+		}
+		
 		OrganizationRank organizationRank = organizationRankCreator.getOrganizationRank();
 		StringBuilder errorMsg = new StringBuilder(); 
 		if (organizationRank.getName().isEmpty()) {
@@ -265,17 +371,16 @@ public class GamemasterController {
 		if (organizationRank.getParentId().isEmpty()) {
 			if (errorMsg.length() > 0) {
 				errorMsg.append("\n");
+				
 			}
 			errorMsg.append("You must have a parent organization rank");
 		}
 		if (errorMsg.length() > 0) {
 			feFeedback.setError(errorMsg.toString());
-			return "/gamemaster/editOrganization";
+			return EDIT_ORGANIZATION;
 		}
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		if (campaignId != null) {
-			organizationRank.setCampaignId(campaignId);
-		}
+
+		organizationRank.setCampaignId(campaignId);
 		try {
 			organizationRankService.saveOrganizationRank(organizationRank);
 			organizationRankService.initOrganizationRankCreator(organizationRank.getOrganizationId(), organizationRank.getName(), 

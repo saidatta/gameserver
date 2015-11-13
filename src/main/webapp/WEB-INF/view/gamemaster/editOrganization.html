@@ -183,7 +183,7 @@
 			var orgRankOrgId = $("#editOrganizationForm input[id=organizationId]");
 			orgRankOrgId.val(id);
 			
-			$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
+			$.get( "/gameserver/gamemaster/editOrganizationRank?id="+id, function( data ) {
 				  // Populate the form with the data returned from the back end
 				  var organizationRankJson = jQuery.parseJSON(data);
 				  var description = organizationRankJson["description"];
@@ -201,9 +201,9 @@
 			});
 		});
 	
-		$("submitOrgRank").click(function(event) { 
+		$("#submitOrgRank").click(function(event) { 
 			var form = $("#editOrganizationForm");
-			form.attr("action", "/gamemaster/editOrganizationRank");
+			form.attr("action", "/gameserver/gamemaster/editOrganizationRank");
 		});
 		
 	});		

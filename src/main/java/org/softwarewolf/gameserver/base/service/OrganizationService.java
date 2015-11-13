@@ -1,20 +1,16 @@
 package org.softwarewolf.gameserver.base.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.softwarewolf.gameserver.base.domain.GameDataType;
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.helper.HierarchyJsonBuilder;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
-import org.softwarewolf.gameserver.base.domain.helper.OrganizationTypeCreator;
 import org.softwarewolf.gameserver.base.repository.OrganizationRepository;
-import org.softwarewolf.gameserver.base.repository.OrganizationTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -29,45 +25,7 @@ public class OrganizationService {
 	protected OrganizationRepository organizationRepository;
 	
 	@Autowired
-	protected OrganizationTypeRepository organizationTypeRepository;
-	
-	public List<OrganizationType> getAllOrganizationTypes() {
-		List<OrganizationType> organizationTypeList = organizationTypeRepository.findAll();
-		if (organizationTypeList == null) {
-			organizationTypeList = new ArrayList<>();
-		}
-		return organizationTypeList;
-	}
-	
-	public List<Organization> getAllTerritories() {
-		List<Organization> organizationList = organizationRepository.findAll();
-		if (organizationList == null) {
-			organizationList = new ArrayList<>();
-		}
-		return organizationList;
-	}
-
-	// This needs to be modified to filter based on campaign id
-	public List<Organization> getTerritoriesInCampaign() {
-		List<Organization> organizationList = organizationRepository.findAll();
-		if (organizationList == null) {
-			organizationList = new ArrayList<>();
-		}
-		return organizationList;
-	}
-
-	public List<OrganizationType> getOrganizationTypesInCampaign(String campaignId) {
-		List<String> campaignIds = new ArrayList<>();
-		campaignIds.add(campaignId);
-		List<OrganizationType> organizationTypesInCampaign = null;
-		organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValues("campaignList", campaignIds.toArray());
-		return organizationTypesInCampaign;
-	}
-
-	public OrganizationType getOrganizationTypeById(String id) {
-		OrganizationType organizationType = organizationTypeRepository.findOne(id);
-		return organizationType;
-	}
+	public OrganizationTypeService organizationTypeService;
 	
 	public void initOrganizationCreator(String organizationId, OrganizationCreator organizationCreator, 
 			String campaignId, String forwardingUrl) {
@@ -120,7 +78,7 @@ public class OrganizationService {
 		organizations.add(0, addNewOrganization);
 		organizationCreator.setOrganizationsInCampaign(organizations);
 		
-		List<OrganizationType> organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValue("campaignList", campaignId);
+		List<OrganizationType> organizationTypesInCampaign = organizationTypeService.getOrganizationTypesInCampaign(campaignId);
 		Map<String, OrganizationType> map = new HashMap<String, OrganizationType>();
 		// Build a map of all org types, key = id, value = OrganizationType
 		for (OrganizationType ot : organizationTypesInCampaign) map.put(ot.getId(), ot);
@@ -149,16 +107,6 @@ public class OrganizationService {
 		organizationTypesInCampaign.add(0, addNew);
 		organizationCreator.setOrganizationTypesInCampaign(organizationTypesInCampaign);
 	}
-	
-	public void saveOrganizationType(OrganizationType organizationType) {
-		if (organizationType.getId() == null) {
-			OrganizationType existingOrganizationType = organizationTypeRepository.findOneByName(organizationType.getName());
-			if (existingOrganizationType != null) {
-				throw new IllegalArgumentException("Organization type " + organizationType.getName() + " already exists");
-			}
-		}
-		organizationTypeRepository.save(organizationType);
-	}	
 	
 	public Organization saveOrganization(Organization organization) {
 		if (organization.getId() == null || organization.getId() == "") {
@@ -233,7 +181,7 @@ public class OrganizationService {
 		HierarchyJsonBuilder rootBuilder = new HierarchyJsonBuilder(root.getId(), root.getName(),
 				root.getGameDataTypeId(), root.getGameDataTypeName());
 
-		Map<String, String> organizationTypeNameMap = getOrganizationTypeNameMap();
+		Map<String, String> organizationTypeNameMap = organizationTypeService.getOrganizationTypeNameMap();
 		rootBuilder = buildHierarchy(rootBuilder, organizationMap, organizationTypeNameMap);
 				
 		//ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -245,16 +193,6 @@ public class OrganizationService {
 			e.printStackTrace();
 		}
 		return json;
-	}
-	
-	private Map<String, String> getOrganizationTypeNameMap() {
-		Map<String, String> ttNameMap = new HashMap<>();
-		List<OrganizationType> organizationTypeList = organizationTypeRepository.findAll();
-		for (OrganizationType organizationType : organizationTypeList) {
-			ttNameMap.put(organizationType.getId(), organizationType.getName());
-		}
-		
-		return ttNameMap;
 	}
 	
 	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, Organization> organizationMap, 
@@ -276,59 +214,6 @@ public class OrganizationService {
 		return parent;
 	}
 
-	public void initOrganizationTypeCreator(String organizationTypeId, OrganizationTypeCreator organizationTypeCreator, 
-			String campaignId, String forwardingUrl) {
-		if (forwardingUrl != null) {
-			organizationTypeCreator.setForwardingUrl(forwardingUrl);
-		}
-
-		OrganizationType organizationType = null;
-		if (organizationTypeId != null) {
-			organizationType = organizationTypeRepository.findOne(organizationTypeId);
-		} else {
-			organizationType = new OrganizationType();
-		}
-		organizationTypeCreator.setOrganizationType(organizationType);
-		List<OrganizationType> organizationTypesInCampaign = null;
-		List<GameDataType> gameDataTypesInCampaign = new ArrayList<>();
-		List<GameDataType> otherGameDataTypes = new ArrayList<>();
-		List<OrganizationType> allOrganizationTypes = organizationTypeRepository.findAll();
-		if (allOrganizationTypes != null) {
-			if (campaignId != null) {
-				List<String> campaignIds = new ArrayList<>();
-				campaignIds.add(campaignId);
-				organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValue("campaignList", campaignId);
-				OrganizationType addNewTT = new OrganizationType();
-				addNewTT.setId("0");
-				addNewTT.setName("Add new organization type");
-				gameDataTypesInCampaign.add(addNewTT);
-				for (OrganizationType tt : organizationTypesInCampaign) {
-					gameDataTypesInCampaign.add(tt);
-				}
-				organizationTypeCreator.setGameDataTypesInCampaign(gameDataTypesInCampaign);
-			} else {
-				organizationTypeCreator.setGameDataTypesInCampaign(new ArrayList<>());
-			}
-			
-			List<GameDataType> allGameDataTypes = new ArrayList<>();
-			for (OrganizationType tt : allOrganizationTypes) {
-				allGameDataTypes.add(tt);
-			}
-			if (organizationTypeCreator.getGameDataTypesInCampaign().isEmpty()) {
-				organizationTypeCreator.setOtherGameDataTypes(allGameDataTypes);
-			} else {
-				for (OrganizationType tType : allOrganizationTypes) {
-					if (!organizationTypesInCampaign.contains(tType)) {
-						otherGameDataTypes.add(tType);
-					}
-				}
-			}
-		}
-		organizationTypeCreator.setCampaignId(campaignId);
-		organizationTypeCreator.setGameDataTypesInCampaign(gameDataTypesInCampaign);
-		organizationTypeCreator.setOtherGameDataTypes(otherGameDataTypes);
-	}
-
 	public Organization findOneOrganization(String organizationId) {
 		Organization organization = organizationRepository.findOne(organizationId);
 		if (organization == null) {
@@ -341,7 +226,7 @@ public class OrganizationService {
 		}
 		String organizationTypeId = organization.getGameDataTypeId();
 		if (organizationTypeId != null) {
-		    OrganizationType type = organizationTypeRepository.findOne(organization.getGameDataTypeId());
+		    OrganizationType type = organizationTypeService.getOrganizationTypeById(organization.getGameDataTypeId());
 		    organization.setGameDataTypeName(type.getName());
 		}
 		return organization;
