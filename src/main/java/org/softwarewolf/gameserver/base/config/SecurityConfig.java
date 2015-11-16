@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				// .deleteCookies("JSESSIONID")
 				// .invalidateHttpSession(true).and()				
 			.authorizeRequests()
+				.antMatchers("/ckeditor/**").permitAll()	
 				.antMatchers("/bootstrap/**").permitAll()	
 				.antMatchers("/public/**").permitAll()
 				.antMatchers("/resources/**").permitAll()

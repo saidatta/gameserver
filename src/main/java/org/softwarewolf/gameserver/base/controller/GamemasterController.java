@@ -66,6 +66,14 @@ public class GamemasterController {
 
 	private static final String CAMPAIGN_ID = "campaignId";
 	
+	@RequestMapping(value = "/ckeditor", method = RequestMethod.GET)
+	@Secured({"USER"})
+	public String ckeditor() {
+
+		return "/ckeditor/samples/index.html";
+	}
+
+	
 	@RequestMapping(value = "/selectCampaign", method = RequestMethod.GET)
 	@Secured({"USER"})
 	public String selectCampaign(final SelectCampaignHelper selectCampaignHelper) {
@@ -382,9 +390,13 @@ public class GamemasterController {
 
 		organizationRank.setCampaignId(campaignId);
 		try {
+			Organization organization = organizationCreator.getOrganization();
+			organizationRank.setOrganizationId(organization.getId());
 			organizationRankService.saveOrganizationRank(organizationRank);
 			organizationRankService.initOrganizationRankCreator(organizationRank.getOrganizationId(), organizationRank.getName(), 
 					organizationRankCreator, campaignId, organizationRankCreator.getForwardingUrl());
+			organizationService.initOrganizationCreator(organization, organizationCreator, campaignId, organizationCreator.getForwardingUrl());
+			feFeedback.setInfo("Success, you have added organization rank " + organizationRank.getName());
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return EDIT_ORGANIZATION;
