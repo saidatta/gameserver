@@ -18,7 +18,6 @@ import org.softwarewolf.gameserver.base.repository.OrganizationTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
 
 @Service
 public class OrganizationRankService {

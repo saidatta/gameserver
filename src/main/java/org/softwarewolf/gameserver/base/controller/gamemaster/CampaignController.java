@@ -1,4 +1,4 @@
-package org.softwarewolf.gameserver.base.controller;
+package org.softwarewolf.gameserver.base.controller.gamemaster;
 
 import org.softwarewolf.gameserver.base.domain.Campaign;
 import org.softwarewolf.gameserver.base.domain.User;

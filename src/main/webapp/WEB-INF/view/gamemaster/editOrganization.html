@@ -189,6 +189,8 @@
 				  var description = organizationRankJson["description"];
 				  var organizationRankDescription = $("#organizationRankDescription");
 				  organizationRankDescription.val(description);
+				  var organizationRankId = $("#organizationRankId");
+				  organizationRankId = organizationRankJson["id"];
 				  var parentId = organizationRankJson["parentId"];
 				  var organizationRankParentId = $("#hiddenParentId");
 				  organizationRankParentId.val(parentId);
