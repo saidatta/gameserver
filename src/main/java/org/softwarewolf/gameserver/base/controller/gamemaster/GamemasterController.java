@@ -60,7 +60,7 @@ public class GamemasterController {
 	@Secured({"USER"})
 	public String ckeditor() {
 
-		return "/ckeditor/samples/index.html";
+		return "/gamemaster/ckeditor";
 	}
 
 	
