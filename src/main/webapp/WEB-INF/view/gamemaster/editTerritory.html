@@ -142,12 +142,15 @@
 			var target = $(event.target);
 			var id = $(target).attr('id');
 			var name = $(target).text();
+			var territoryStatus = $("#territoryStatus");
 			if (id == "0") { 
 				$("#territoryName").val(null);
 				$("#territoryId").val(null);
+				territoryStatus.text("You are creating a new territory");
 			} else {
 				$("#territoryName").val(name);
 				$("#hiddenTerritoryId").val(id);
+				territoryStatus.text("You are editing " + name);
 			}
 			
 			$.get( "/gameserver/gamemaster/getTerritory?hiddenTerritoryId="+id, function( data ) {
@@ -232,6 +235,14 @@
 			</div>
 
 			<div class="row">
+				<div class="row">
+					<div class="row">
+						<div class="col-md-2"></div>
+						<div class="col-md-9">
+							<span id="territoryStatus" class="info-message" th:text="${feFeedback.info2}"></span>
+						</div>
+					</div>
+				</div>
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
 					<label class="input-margin" th:text="#{editTerritory.selectTerritory}">Name</label>
