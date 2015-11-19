@@ -58,6 +58,13 @@ public class GamemasterController {
 		return "/gamemaster/ckeditor";
 	}
 
+	@RequestMapping(value = "/editPage", method = RequestMethod.GET)
+	@Secured({"USER"})
+	public String editPage() {
+
+		return "/gamemaster/editPage";
+	}
+
 	
 	@RequestMapping(value = "/selectCampaign", method = RequestMethod.GET)
 	@Secured({"USER"})
