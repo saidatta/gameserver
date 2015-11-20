@@ -18,8 +18,9 @@ public class Page implements Serializable {
 	
 	@Id
 	private String id;
+	private String title;
 	private String campaignId;
-	private String page;
+	private String content;
 	private List<String> territories;
 	private List<String> organizations;
 	
@@ -33,6 +34,14 @@ public class Page implements Serializable {
 		this.id = id;
 	}
 	
+	public String getTitle() {
+		return title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
 	public String getCampaignId() {
 		return campaignId;
 	}
@@ -41,12 +50,12 @@ public class Page implements Serializable {
 		this.campaignId = campaignId;
 	}
 	
-	public String getPage() {
-		return page;
+	public String getContent() {
+		return content;
 	}
 	
-	public void setPage(String page) {
-		this.page = page;
+	public void setContent(String content) {
+		this.content = content;
 	}
 	
 	public List<String> getTerritories() {

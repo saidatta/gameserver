@@ -41,47 +41,46 @@
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-11">
-			<h1 th:text="#{territoryCreated.title}">Updated</h1>
+			<h1 th:text="#{editPage.title}">Updated</h1>
 		</div>
 	</div>
 <main>
-	<div class="adjoined-top">
-		<div class="grid-container">
-			<div class="content grid-width-100">
-				<h1>Congratulations!</h1>
-				<p>
-					If you can see CKEditor below, it means that the installation succeeded.
-					You can now try out your new editor version, see its features, and when you are ready to move on, check some of the <a href="#sample-customize">most useful resources</a> recommended below.
-				</p>
-			</div>
-		</div>
-	</div>
 	
 	<form id="createPageForm" th:object="${page}" action="#" th:action="@{/gamemaster/editPage}" method="post">
+	<input id="campaignId" type="hidden" th:field="*{campaignId}"></input>
+
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-1">
+			<label class="input-margin" th:text="#{editPage.pageTitle}">Name</label>
+		</div>
+		<div class="col-md-8">
+			<input id="pageTitle" class="input-margin" th:field="*{title}"></input>
+		</div>
+	</div>
+
 	<div class="adjoined-bottom">
 		<div class="grid-container">
 			<div class="grid-width-100">
-				<div id="editor">
+				<div id="editor" th:field="*{content}">
 					<h1>Hello world!</h1>
 					<p>I'm an instance of <a href="http://ckeditor.com">CKEditor</a>.</p>
 				</div>
 			</div>
 		</div>
 	</div>
-	<input class="basic-margin" type="submit" value="Submit" />
+
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-7">
+			<input class="basic-margin" type="submit" value="Submit" />
+		</div>
+	</div>
+
+
+	
 	</form>
 </main>
-
-<footer class="footer-a grid-container">
-	<div class="grid-container">
-		<p class="grid-width-100">
-			CKEditor &ndash; The text editor for the Internet &ndash; <a class="samples" href="http://ckeditor.com/">http://ckeditor.com</a>
-		</p>
-		<p class="grid-width-100" id="copy">
-			Copyright &copy; 2003-2015, <a class="samples" href="http://cksource.com/">CKSource</a> &ndash; Frederico Knabben. All rights reserved.
-		</p>
-	</div>
-</footer>
 <script>
 	initSample();
 </script>

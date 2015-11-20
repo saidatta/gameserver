@@ -3,6 +3,7 @@ package org.softwarewolf.gameserver.base.controller.gamemaster;
 import javax.servlet.http.HttpSession;
 
 import org.softwarewolf.gameserver.base.controller.helper.ControllerHelper;
+import org.softwarewolf.gameserver.base.domain.Page;
 import org.softwarewolf.gameserver.base.domain.helper.FeFeedback;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationTypeCreator;
@@ -60,12 +61,24 @@ public class GamemasterController {
 
 	@RequestMapping(value = "/editPage", method = RequestMethod.GET)
 	@Secured({"USER"})
-	public String editPage() {
+	public String editPage(HttpSession session, Page page) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}		
+		page = new Page();
+		page.setCampaignId(campaignId);
 
-		return "/gamemaster/editPage";
+		return ControllerHelper.EDIT_PAGE;
 	}
 
-	
+	@RequestMapping(value = "/editPage", method = RequestMethod.POST)
+	@Secured({"USER"})
+	public String postEditPage(HttpSession session, Page page) {
+
+		return ControllerHelper.EDIT_PAGE;
+	}
+
 	@RequestMapping(value = "/selectCampaign", method = RequestMethod.GET)
 	@Secured({"USER"})
 	public String selectCampaign(final SelectCampaignHelper selectCampaignHelper) {
