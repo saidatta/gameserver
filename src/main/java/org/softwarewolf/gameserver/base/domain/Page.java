@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,8 +22,7 @@ public class Page implements Serializable {
 	private String title;
 	private String campaignId;
 	private String content;
-	private List<String> territories;
-	private List<String> organizations;
+	private List<ObjectTag> tags;
 	
 	public Page() { }
 	
@@ -58,46 +58,44 @@ public class Page implements Serializable {
 		this.content = content;
 	}
 	
-	public List<String> getTerritories() {
-		if (territories == null) {
-			territories = new ArrayList<>();
+	public List<ObjectTag> getTags() {
+		if (tags == null) {
+			tags = new ArrayList<>();
 		}
-		return territories;
+		return tags;
 	}
 	
-	public void setTerritories(List<String> territories) {
-		this.territories = territories;
+	public void setTags(List<ObjectTag> tags) {
+		this.tags = tags;
 	}
 	
-	public void addTerritory(String territoryId) {
-		if (!territories.contains(territoryId)) {
-			territories.add(territoryId);
+	public void addTag(ObjectTag tag) {
+		if (tags == null) {
+			tags = new ArrayList<>();
 		}
-	}
-
-	public void removeTerritory(String territoryId) {
-		territories.remove(territoryId);
-	}
-
-	public List<String> getOrganizations() {
-		if (organizations == null) {
-			organizations = new ArrayList<>();
+		boolean foundTag = false;
+		for (ObjectTag currentTag : tags) {
+			if (currentTag.getObjectId().equals(tag.getObjectId())) {
+				currentTag.setClassName(tag.getClassName());
+				currentTag.setTagName(tag.getTagName());
+				foundTag = true;
+				break;
+			}
 		}
-		return organizations;
-	}
-	
-	public void setOrganizations(List<String> organizations) {
-		this.organizations = organizations;
-	}
-	
-	public void addOrganization(String organizationId) {
-		if (!organizations.contains(organizationId)) {
-			organizations.add(organizationId);
+		if (!foundTag) {
+			tags.add(tag);
 		}
 	}
 
-	public void removeOrganization(String organizationId) {
-		organizations.remove(organizationId);
+	public void removeTag(String objectId) {
+		if (tags != null) {
+			for (ObjectTag currentTag : tags) {
+				if (currentTag.getObjectId().equals(objectId)) {
+					tags.remove(currentTag);
+					break;
+				}
+			}
+		}
 	}
 
 }
