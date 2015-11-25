@@ -9,9 +9,11 @@ import org.softwarewolf.gameserver.base.domain.Campaign;
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
+import org.softwarewolf.gameserver.base.domain.Page;
 import org.softwarewolf.gameserver.base.domain.Territory;
 import org.softwarewolf.gameserver.base.domain.TerritoryType;
 import org.softwarewolf.gameserver.base.domain.User;
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.softwarewolf.gameserver.base.repository.CampaignRepository;
 import org.softwarewolf.gameserver.base.repository.OrganizationRankRepository;
 import org.softwarewolf.gameserver.base.repository.OrganizationRepository;
@@ -53,6 +55,8 @@ public class DataSeeder {
 	private static final String COVEN = "A witches coven";
 	private static final String BLOOD_MOON = "The Blood Moon Coven";
 	private static final String SPACE_STATION = "Space Station";
+	private static final String KINGDOM_OF_MIDLAND = KINGDOM + " of Midland";
+	private static final String GOLDEN_ROAD = "Golden Road Trading League";
 	
 	@Autowired
 	private UserRepository userRepo;
@@ -81,6 +85,9 @@ public class DataSeeder {
 	@Autowired 
 	private OrganizationRankRepository organizationRankRepo;
 	
+	@Autowired
+	private PageService pageService;
+	
 	public void cleanRepos() {
 		sgaRepo.deleteAll();
 		userRepo.deleteAll();
@@ -97,10 +104,11 @@ public class DataSeeder {
 		Map<String, User> userMap = seedUsers(roleMap);
 		Map<String, Campaign> campaignMap = seedCampaign(userMap);
 		Map<String, TerritoryType> territoryTypeMap = seedTerritoryType(campaignMap);
-		seedTerritories(campaignMap, territoryTypeMap);
+		Map<String, Territory> territoryMap = seedTerritories(campaignMap, territoryTypeMap);
 		Map<String, OrganizationType> organizationTypeMap = seedOrganizationType(campaignMap);
 		Map<String, Organization> organizationMap = seedOrganizations(campaignMap, organizationTypeMap);
 		seedOrganizationRanks(campaignMap, organizationMap);
+		seedPages(organizationMap, territoryMap);
 	}
 	
 	private Map<String, SimpleGrantedAuthority> seedRoles() {
@@ -224,24 +232,30 @@ public class DataSeeder {
 		}
 	}
 	
-	private void seedTerritories(Map<String, Campaign> campaignMap, Map<String, TerritoryType> territoryTypeMap) {
+	private Map<String, Territory> seedTerritories(Map<String, Campaign> campaignMap, Map<String, TerritoryType> territoryTypeMap) {
 		territoryRepo.deleteAll();
+		Map<String, Territory> territoryMap = new HashMap<>();
 		String sAndSCampaignId = campaignMap.get(SWORD_AND_SORCERY).getId();
 		Territory magicKingdom = findAndSave(MAGIC_KINGDOM, sAndSCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
 				territoryTypeMap.get(KINGDOM).getName(), campaignMap, "A magic kingdom", null);
-
+		territoryMap.put(magicKingdom.getName(), magicKingdom);
+		
 		Territory magicCounty = findAndSave(MAGIC_COUNTY, sAndSCampaignId, territoryTypeMap.get(COUNTY).getId(),
 				territoryTypeMap.get(COUNTY).getName(), campaignMap, "A magic county", magicKingdom);
-
-		findAndSave(MAGIC_CITY, sAndSCampaignId, territoryTypeMap.get(CITY).getId(), 
+		territoryMap.put(magicCounty.getName(), magicCounty);
+		
+		Territory magicCity = findAndSave(MAGIC_CITY, sAndSCampaignId, territoryTypeMap.get(CITY).getId(), 
 				territoryTypeMap.get(CITY).getName(), campaignMap, "A magic city", magicCounty);
-
-		findAndSave(MAGIC_TOWN, sAndSCampaignId, territoryTypeMap.get(TOWN).getId(), 
+		territoryMap.put(magicCity.getName(), magicCity);
+		
+		Territory magicTown = findAndSave(MAGIC_TOWN, sAndSCampaignId, territoryTypeMap.get(TOWN).getId(), 
 				territoryTypeMap.get(TOWN).getName(), campaignMap, "A magic city", magicCounty);
-
-		findAndSave(RIVAL_KINGDOM, sAndSCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
+		territoryMap.put(magicTown.getName(), magicTown);
+		
+		Territory rivalKingdom = findAndSave(RIVAL_KINGDOM, sAndSCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
 				territoryTypeMap.get(KINGDOM).getName(), campaignMap, "A rival kingdom", null);
-
+		territoryMap.put(rivalKingdom.getName(), rivalKingdom);
+		
 		/* MODERN */
 		String modernCampaignId = campaignMap.get(MODERN).getId();
 		Territory modernKingdom = findAndSave(MODERN_KINGDOM, modernCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
@@ -260,6 +274,8 @@ public class DataSeeder {
 		String spaceOperaCampaignId = campaignMap.get(SPACE_OPERA).getId();
 		findAndSave(SPACE_STATION, spaceOperaCampaignId, territoryTypeMap.get(SPACE_STATION).getId(),
 				territoryTypeMap.get(SPACE_STATION).getName(), campaignMap, "A space station", null);
+		
+		return territoryMap;
 	}
 	
 	private Territory findAndSave(String name, String campaignId, String territoryTypeId, String territoryTypeName, 
@@ -323,7 +339,7 @@ public class DataSeeder {
 		organizationRepo.deleteAll();
 		Map<String, Organization> orgMap = new HashMap<>();
 		String sAndSCampaignId = campaignMap.get(SWORD_AND_SORCERY).getId();
-		Organization kingdom = findAndSaveOrganization(KINGDOM + " of Midland", sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
+		Organization kingdom = findAndSaveOrganization(KINGDOM_OF_MIDLAND, sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
 				organizationTypeMap.get(KINGDOM).getName(), campaignMap, "A kingdom", null, orgMap);
 
 		Organization county = findAndSaveOrganization("Kirkwall " + COUNTY, sAndSCampaignId, organizationTypeMap.get(COUNTY).getId(),
@@ -335,7 +351,7 @@ public class DataSeeder {
 		findAndSaveOrganization("Markham", sAndSCampaignId, organizationTypeMap.get(TOWN).getId(), 
 				organizationTypeMap.get(TOWN).getName(), campaignMap, "A city", county, orgMap);
 
-		findAndSaveOrganization("Golden Road Trading League", sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
+		findAndSaveOrganization(GOLDEN_ROAD, sAndSCampaignId, organizationTypeMap.get(KINGDOM).getId(), 
 				organizationTypeMap.get(MERCHANTS_GUILD).getName(), campaignMap, "A merchants guild", null, orgMap);
 
 		findAndSaveOrganization(BLOOD_MOON, sAndSCampaignId, organizationTypeMap.get(COVEN).getId(), 
@@ -365,7 +381,7 @@ public class DataSeeder {
 	
 	private void seedOrganizationRanks(Map<String, Campaign> campaignMap, Map<String, Organization> organizationMap) {
 		String sAndSCampaignId = campaignMap.get(SWORD_AND_SORCERY).getId();
-		Organization org = organizationMap.get(KINGDOM + " of Midland");
+		Organization org = organizationMap.get(KINGDOM_OF_MIDLAND);
 		findAndSaveOrganizationRank("King", sAndSCampaignId, org.getId(),  
 				campaignMap, "The ruler of the kingdom", null);
 		
@@ -425,4 +441,20 @@ public class DataSeeder {
 		return organizationRank;
 	}	
 
+	private void seedPages(Map<String, Organization> organizationMap, Map<String, Territory> territoryMap) {
+		Page goldenRoadPage = new Page();
+		Organization goldenRoad = organizationMap.get(GOLDEN_ROAD);		
+		goldenRoadPage.setCampaignId(goldenRoad.getCampaignId());
+		ObjectTag goldenRoadTag = goldenRoad.createTag();
+		goldenRoadPage.addTag(goldenRoadTag);
+		Organization kindomOfMidland = organizationMap.get(KINGDOM_OF_MIDLAND);
+		ObjectTag midlandTag = kindomOfMidland.createTag();
+		goldenRoadPage.addTag(midlandTag);
+		Territory midland = territoryMap.get(MAGIC_KINGDOM);
+		ObjectTag kingdomTag = midland.createTag();
+		goldenRoadPage.addTag(kingdomTag);
+		goldenRoadPage.setTitle("Golden Road Trading League Intro");
+		goldenRoadPage.setContent("<H1>The Golden Road Trading League</H1><p>This is a big merchant guild</p>");
+		pageService.save(goldenRoadPage);
+	}
 }

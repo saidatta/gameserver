@@ -15,6 +15,7 @@ import org.softwarewolf.gameserver.base.service.CampaignService;
 import org.softwarewolf.gameserver.base.service.OrganizationRankService;
 import org.softwarewolf.gameserver.base.service.OrganizationService;
 import org.softwarewolf.gameserver.base.service.OrganizationTypeService;
+import org.softwarewolf.gameserver.base.service.PageService;
 import org.softwarewolf.gameserver.base.service.TerritoryService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,9 @@ public class GamemasterController {
 	
 	@Autowired
 	protected UserService userService;
+	
+	@Autowired
+	protected PageService pageService;
 
 	private static final String CAMPAIGN_ID = "campaignId";
 	
@@ -66,9 +70,10 @@ public class GamemasterController {
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
-		page = new Page();
-		page.setCampaignId(campaignId);
+//		page = new Page();
+//		page.setCampaignId(campaignId);
 
+		page = pageService.findAll().get(0);
 		return ControllerHelper.EDIT_PAGE;
 	}
 

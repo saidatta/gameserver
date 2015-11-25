@@ -13,6 +13,15 @@ public class ObjectTag implements Serializable {
 	private String tagName;
 	private String campaignId;
 	
+	public ObjectTag() { }
+	
+	public ObjectTag(String className, String objectId, String tagName, String campaignId) {
+		this.className = className;
+		this.objectId = objectId;
+		this.tagName = tagName;
+		this.campaignId = campaignId;
+	}
+	
 	public String getClassName() {
 		return className;
 	}

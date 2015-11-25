@@ -4,21 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class GameDataImpl implements GameData, Serializable {
+public class GameDataImpl extends TagBase implements GameData, Serializable {
 	private static final long serialVersionUID = 1L;
-	@Id
-	protected String id;
-	protected String name;
+
 	protected String description;
 	protected String gameDataTypeId;
 	@Transient
 	protected String gameDataTypeName;
-	protected String campaignId;
 	protected String parentId;
 	@Transient
 	protected String parentName;
@@ -34,22 +30,6 @@ public class GameDataImpl implements GameData, Serializable {
 		this.name = name;
 		this.campaignId = campaignId;
 		childrenIdList = new ArrayList<>();
-	}
-	
-	public String getId() {
-		return id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
 	}
 	
 	public String getDescription() {
@@ -76,14 +56,6 @@ public class GameDataImpl implements GameData, Serializable {
 		this.gameDataTypeName = gameDataTypeName;
 	}
 		
-	public String getCampaignId() {
-		return campaignId;
-	}
-	
-	public void setCampaignId(String campaignId) {
-		this.campaignId = campaignId;
-	}
-	
 	public String getParentId() {
 		return parentId;
 	}
