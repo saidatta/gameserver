@@ -47,72 +47,7 @@ public class TerritoryController {
 	protected UserService userService;
 
 	private static final String CAMPAIGN_ID = "campaignId";
-	
-//	@RequestMapping(value = "/createTerritory", method = RequestMethod.GET)
-//	@Secured({"GAMEMASTER"})
-//	public String createTerritory(HttpSession session, final TerritoryCreator territoryCreator, 
-//			final TerritoryTypeCreator territoryTypeCreator, final OrganizationCreator organizationCreator,
-//			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback) {
-//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-//		if (campaignId == null) {
-//			return ControllerHelper.USER_MENU;
-//		}
-//		
-//		String forwardingUrl = ControllerHelper.CREATE_TERRITORY;
-//		String territoryId = null;
-//		territoryService.initTerritoryCreator(territoryId, territoryCreator, campaignId, forwardingUrl);
-//		territoryCreator.setForwardingUrl(forwardingUrl);
-//		territoryService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, forwardingUrl);
-//		return forwardingUrl;
-//	}
-//	
-//	@RequestMapping(value = "/createTerritory", method = RequestMethod.POST)
-//	@Secured({"GAMEMASTER"})
-//	public String postTerritory(HttpSession session, final TerritoryCreator territoryCreator, 
-//			final TerritoryTypeCreator territoryTypeCreator, final OrganizationCreator organizationCreator,
-//			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback) {
-//		Territory territory = territoryCreator.getTerritory();
-//		StringBuilder errorMsg = new StringBuilder(); 
-//		if (territory.getName().isEmpty()) {
-//			errorMsg.append("You must have a territory name.");
-//		}
-//		if (territory.getGameDataTypeId() == null || territory.getGameDataTypeId().isEmpty()) {
-//			if (errorMsg.length() > 0) {
-//				errorMsg.append("\n");
-//			}
-//			errorMsg.append("You must have a territory type.");
-//		}
-//		if (territory.getDescription().isEmpty()) {
-//			if (errorMsg.length() > 0) {
-//				errorMsg.append("\n");
-//			}
-//			errorMsg.append("You must have a description.");
-//		}
-//		if (territory.getParentId().isEmpty()) {
-//			if (errorMsg.length() > 0) {
-//				errorMsg.append("\n");
-//			}
-//			errorMsg.append("You must have a parent territory");
-//		}
-//		if (errorMsg.length() > 0) {
-//			feFeedback.setError(errorMsg.toString());
-//			return "/gamemaster/createTerritory";
-//		}
-//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-//		if (campaignId != null) {
-//			territory.setCampaignId(campaignId);
-//		}
-//		try {
-//			territoryService.saveTerritory(territory);
-//			territoryService.initTerritoryCreator(territory.getId(), territoryCreator, campaignId, territoryCreator.getForwardingUrl());
-//			feFeedback.setInfo("You have successfully created a territory");
-//		} catch (IllegalArgumentException e) {
-//			feFeedback.setError(e.getMessage());
-//			return ControllerHelper.CREATE_TERRITORY;
-//		}
-//		return territoryCreator.getForwardingUrl();
-//	}
-//
+
 	@RequestMapping(value = "/editTerritory", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	public String editTerritory(HttpSession session, final TerritoryCreator territoryCreator, 

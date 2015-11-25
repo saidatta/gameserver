@@ -16,6 +16,11 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     
+	<script src="/gameserver/resources/ckeditor/ckeditor.js"></script>
+	<script src="/gameserver/resources/ckeditor/gameserver/js/sample.js"></script>
+	<link rel="stylesheet" href="/gameserver/resources/ckeditor/gameserver/css/samples.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/ckeditor/gameserver/toolbarconfigurator/lib/codemirror/neo.css"></link>
+
     <title th:text="#{createCampaign.title}">Title</title>
     
 	<script th:inline="javascript">
@@ -25,12 +30,7 @@
 		});		
 	});		
 	</script>   
-	<meta charset="utf-8"></meta>
-	<title>CKEditor Sample</title>
-	<script src="/gameserver/resources/ckeditor/ckeditor.js"></script>
-	<script src="/gameserver/resources/ckeditor/gameserver/js/sample.js"></script>
-	<link rel="stylesheet" href="/gameserver/resources/ckeditor/gameserver/css/samples.css"></link>
-	<link rel="stylesheet" href="/gameserver/resources/ckeditor/gameserver/toolbarconfigurator/lib/codemirror/neo.css"></link>
+
 </head>
 <body id="main">
 	<div th:include="/public/navbar :: navbar"></div>
@@ -41,53 +41,50 @@
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-11">
-			<h1 th:text="#{editPage.title}">Updated</h1>
+			<h1 th:text="#{editFolio.title}">Updated</h1>
 		</div>
 	</div>
-<main>
+
 	
-	<form id="createPageForm" th:object="${page}" action="#" th:action="@{/gamemaster/editPage}" method="post">
-	<input id="campaignId" type="hidden" th:field="*{campaignId}"></input>
-
-	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-1">
-			<label class="input-margin" th:text="#{editPage.pageTitle}">Name</label>
-		</div>
-		<div class="col-md-8">
-			<input id="pageTitle" class="input-margin" th:field="*{title}"></input>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-1">
-			<label th:text="#{editPage.tags}">Tags</label>
-		</div>
-		<div class="col-md-10">
- 				<input  th:disabled="disabled"></input>			 
-		</div>
-	</div>		 
-
-	<div class="adjoined-bottom">
-		<div class="grid-container">
-			<div class="grid-width-100">
-				<textarea id="editor" th:field="*{content}"></textarea>
+	<form id="createPageForm" th:object="${folioCreator}" action="#" th:action="@{/gamemaster/editFolio}" method="post">
+		<input id="campaignId" type="hidden" th:field="*{page.campaignId}"></input>
+	
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin" th:text="#{editFolio.pageTitle}">Name</label>
+			</div>
+			<div class="col-md-8">
+				<input id="pageTitle" class="input-margin" th:field="*{page.title}"></input>
 			</div>
 		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-7">
-			<input class="basic-margin" type="submit" value="Submit" />
-		</div>
-	</div>
-
-
 	
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label th:text="#{editFolio.tags}">Tags</label>
+			</div>
+			<div class="col-md-10">
+	 				<input class="input-margin" th:disabled="disabled"></input>			 
+			</div>
+		</div>		 
+	
+		<div class="adjoined-bottom input-margin">
+			<div class="grid-container">
+				<div class="grid-width-100">
+					<textarea id="editor" th:field="*{page.content}"></textarea>
+				</div>
+			</div>
+		</div>
+	
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-7">
+				<input class="basic-margin" type="submit" value="Submit" />
+			</div>
+		</div>
+
 	</form>
-</main>
 <script>
 	initSample();
 </script>

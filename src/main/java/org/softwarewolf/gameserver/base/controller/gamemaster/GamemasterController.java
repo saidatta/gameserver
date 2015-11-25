@@ -3,10 +3,11 @@ package org.softwarewolf.gameserver.base.controller.gamemaster;
 import javax.servlet.http.HttpSession;
 
 import org.softwarewolf.gameserver.base.controller.helper.ControllerHelper;
-import org.softwarewolf.gameserver.base.domain.Page;
+import org.softwarewolf.gameserver.base.domain.Folio;
 import org.softwarewolf.gameserver.base.domain.helper.FeFeedback;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationTypeCreator;
+import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
 import org.softwarewolf.gameserver.base.domain.helper.SelectCampaignHelper;
 import org.softwarewolf.gameserver.base.domain.helper.TerritoryCreator;
 import org.softwarewolf.gameserver.base.domain.helper.TerritoryTypeCreator;
@@ -15,7 +16,7 @@ import org.softwarewolf.gameserver.base.service.CampaignService;
 import org.softwarewolf.gameserver.base.service.OrganizationRankService;
 import org.softwarewolf.gameserver.base.service.OrganizationService;
 import org.softwarewolf.gameserver.base.service.OrganizationTypeService;
-import org.softwarewolf.gameserver.base.service.PageService;
+import org.softwarewolf.gameserver.base.service.FolioService;
 import org.softwarewolf.gameserver.base.service.TerritoryService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class GamemasterController {
 	protected UserService userService;
 	
 	@Autowired
-	protected PageService pageService;
+	protected FolioService folioService;
 
 	private static final String CAMPAIGN_ID = "campaignId";
 	
@@ -63,25 +64,25 @@ public class GamemasterController {
 		return "/gamemaster/ckeditor";
 	}
 
-	@RequestMapping(value = "/editPage", method = RequestMethod.GET)
+	@RequestMapping(value = "/editFolio", method = RequestMethod.GET)
 	@Secured({"USER"})
-	public String editPage(HttpSession session, Page page) {
+	public String editPage(HttpSession session, FolioCreator pageCreator) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
 //		page = new Page();
 //		page.setCampaignId(campaignId);
-
-		page = pageService.findAll().get(0);
-		return ControllerHelper.EDIT_PAGE;
+		Folio folio = folioService.findAll().get(0);
+		folioService.initFolioCreator(pageCreator, folio);
+		return ControllerHelper.EDIT_FOLIO;
 	}
 
-	@RequestMapping(value = "/editPage", method = RequestMethod.POST)
+	@RequestMapping(value = "/editFolio", method = RequestMethod.POST)
 	@Secured({"USER"})
-	public String postEditPage(HttpSession session, Page page) {
+	public String postEditPage(HttpSession session, Folio page) {
 
-		return ControllerHelper.EDIT_PAGE;
+		return ControllerHelper.EDIT_FOLIO;
 	}
 
 	@RequestMapping(value = "/selectCampaign", method = RequestMethod.GET)

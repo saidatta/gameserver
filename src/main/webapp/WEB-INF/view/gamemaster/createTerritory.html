@@ -19,49 +19,7 @@
     <title th:text="#{createTerritory.title}">Title</title>
     
 <script type="text/javascript">	
-<!--
-	function buildTree(territoryNode, dataParentId, nodeParent, index, indent) {
-		var indentClass = "indent" + indent;
-	    var subMenu = "subMenu" + index;
-	    index = index + 1;
-		var newAnchor = document.createElement("a");
-		var anchorClasses = "list-group-item " + indentClass;
-		$(newAnchor).attr("class", anchorClasses);
-		$(newAnchor).attr("data-parent", dataParentId);
 
-		var buttonDiv = document.createElement("div");
-		var territoryId = territoryNode["territoryId"];
-		var territoryName = territoryNode["territoryName"];
-		var displayName = territoryNode["displayName"];
-		var divHtml;
-		var children = territoryNode["children"];
-		if (children != "") {
-			divHtml = '<div class="on-same-line"><button class="addParent fa fa-plus" id="'+territoryId+'" name="'+territoryName+'"></button> '+displayName+' <span class="caret"></span></div>';
-		} else {
-			divHtml = '<div class="on-same-line"><button class="addParent fa fa-plus" id="'+territoryId+'" name="'+territoryName+'"></button> '+displayName+' </div>';
-		}
-		$(buttonDiv).html(divHtml);
-		$(newAnchor).append(buttonDiv);
-		$(nodeParent).append(newAnchor);
-		
-		if (children != "") {
-			$(newAnchor).attr("href", "#"+subMenu);
-			$(newAnchor).attr("data-toggle", "collapse");
-
-			var newNodeParent = document.createElement("div");
-			var newNodeParentClasses = "collapse list-group-submenu " + indentClass;
-			$(newNodeParent).attr("class", newNodeParentClasses);
-			$(newNodeParent).attr("id", subMenu);
-			$(nodeParent).append(newNodeParent);
-			indent = indent + 1;
-			$(children).each(function() {
-				buildTree(this, subMenu, newNodeParent, index, indent);
-				index = index + 1;
-			});
-		}
-		return index;
-	}
-	-->
 	function buildTree(territoryNode, nodeParent, index, indent) {
 		var parentId = $(nodeParent).attr("id");
 		var indentClass = "indent" + indent;

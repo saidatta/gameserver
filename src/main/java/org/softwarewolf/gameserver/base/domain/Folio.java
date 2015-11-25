@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author tmanchester
  */
 @Document
-public class Page implements Serializable {
+public class Folio implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -24,7 +24,7 @@ public class Page implements Serializable {
 	private String content;
 	private List<ObjectTag> tags;
 	
-	public Page() { }
+	public Folio() { }
 	
 	public String getId() {
 		return id;

@@ -9,7 +9,7 @@ import org.softwarewolf.gameserver.base.domain.Campaign;
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
-import org.softwarewolf.gameserver.base.domain.Page;
+import org.softwarewolf.gameserver.base.domain.Folio;
 import org.softwarewolf.gameserver.base.domain.Territory;
 import org.softwarewolf.gameserver.base.domain.TerritoryType;
 import org.softwarewolf.gameserver.base.domain.User;
@@ -86,7 +86,7 @@ public class DataSeeder {
 	private OrganizationRankRepository organizationRankRepo;
 	
 	@Autowired
-	private PageService pageService;
+	private FolioService pageService;
 	
 	public void cleanRepos() {
 		sgaRepo.deleteAll();
@@ -108,7 +108,7 @@ public class DataSeeder {
 		Map<String, OrganizationType> organizationTypeMap = seedOrganizationType(campaignMap);
 		Map<String, Organization> organizationMap = seedOrganizations(campaignMap, organizationTypeMap);
 		seedOrganizationRanks(campaignMap, organizationMap);
-		seedPages(organizationMap, territoryMap);
+		seedFolios(organizationMap, territoryMap);
 	}
 	
 	private Map<String, SimpleGrantedAuthority> seedRoles() {
@@ -441,8 +441,8 @@ public class DataSeeder {
 		return organizationRank;
 	}	
 
-	private void seedPages(Map<String, Organization> organizationMap, Map<String, Territory> territoryMap) {
-		Page goldenRoadPage = new Page();
+	private void seedFolios(Map<String, Organization> organizationMap, Map<String, Territory> territoryMap) {
+		Folio goldenRoadPage = new Folio();
 		Organization goldenRoad = organizationMap.get(GOLDEN_ROAD);		
 		goldenRoadPage.setCampaignId(goldenRoad.getCampaignId());
 		ObjectTag goldenRoadTag = goldenRoad.createTag();
