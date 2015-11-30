@@ -33,17 +33,8 @@ public class OrganizationRankService {
 	@Autowired
 	protected OrganizationTypeRepository organizationTypeRepository;
 	
-	public List<OrganizationRank> getAllOrganizationRanks() {
-		List<OrganizationRank> organizationRankList = organizationRankRepository.findAll();
-		if (organizationRankList == null) {
-			organizationRankList = new ArrayList<>();
-		}
-		return organizationRankList;
-	}
-
-	// This needs to be modified to filter based on campaign id
-	public List<OrganizationRank> getOrganizationRanksInCampaign() {
-		List<OrganizationRank> organizationRankList = organizationRankRepository.findAll();
+	public List<OrganizationRank> getOrganizationRanksInOrganization(String organizationId) {
+		List<OrganizationRank> organizationRankList = organizationRankRepository.findByOrganizationId(organizationId);
 		if (organizationRankList == null) {
 			organizationRankList = new ArrayList<>();
 		}
@@ -53,6 +44,7 @@ public class OrganizationRankService {
 	public void initOrganizationRankCreator(String organizationId, String name, OrganizationRankCreator organizationRankCreator, 
 			String campaignId, String forwardingUrl) {
 
+		// init the named organization rank
 		OrganizationRank organizationRank = null;
 		if (organizationId != null && name != null) {
 			organizationRank = organizationRankRepository.findOneByNameAndOrganizationId(name, organizationId);
@@ -64,6 +56,37 @@ public class OrganizationRankService {
 			organizationRank.setParentName(ROOT);
 			organizationRank.setParentId(ROOT);
 			organizationRank.setOrganizationId(organizationId);
+			organizationRank.setCampaignId(campaignId);
+		}
+		// init the list of org ranks
+		List<OrganizationRank> organizationRanksInOrganization = null;
+		if (organizationId != null) {
+			organizationRanksInOrganization = getOrganizationRanksInOrganization(organizationId);
+		} else {
+			organizationRanksInOrganization = new ArrayList<>();
+		}
+		organizationRankCreator.setOrganizationRanksInOrganization(organizationRanksInOrganization);
+		// init the list of organizations
+		List<Organization> organizationsInCampaign = organizationRepository.findAllByKeyValue("campaignId", campaignId);
+		organizationRankCreator.setOrganizationsInCampaign(organizationsInCampaign);
+		
+		initOrganizationRankCreator(organizationRank, organizationRankCreator, campaignId, forwardingUrl);
+	}
+	
+	public void initOrganizationRankCreator(String organizationRankId, OrganizationRankCreator organizationRankCreator, 
+			String campaignId, String forwardingUrl) {
+
+		OrganizationRank organizationRank = null;
+		if (organizationRankId != null && !organizationRankId.isEmpty()) {
+			organizationRank = read(organizationRankId);
+			if (organizationRank == null) {
+				throw new RuntimeException("Can not find a organization rank for organization rank id " + organizationRankId);
+			}
+		} else {
+			organizationRank = new OrganizationRank();
+			organizationRank.setParentName(ROOT);
+			organizationRank.setParentId(ROOT);
+			organizationRank.setOrganizationId(null);
 			organizationRank.setCampaignId(campaignId);
 		}
 		

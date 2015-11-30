@@ -2,6 +2,7 @@ package org.softwarewolf.gameserver.base.domain.helper;
 
 import java.util.List;
 
+import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 
 public class OrganizationRankCreator {
@@ -11,6 +12,7 @@ public class OrganizationRankCreator {
 	public String removeOrganizationRankId;
 	public String forwardingUrl;
 	public List<OrganizationRank> organizationRanksInOrganization;
+	public List<Organization> organizationsInCampaign;
 	
 	public OrganizationRankCreator() {
 		organizationRank = new OrganizationRank();
@@ -56,6 +58,14 @@ public class OrganizationRankCreator {
 		this.removeOrganizationRankId = removeOrganizationRankId;
 	}
 
+	public List<Organization> getOrganizationsInCampaign() {
+		return organizationsInCampaign;
+	}
+	
+	public void setOrganizationsInCampaign(List<Organization> organizationsInCampaign) {
+		this.organizationsInCampaign = organizationsInCampaign;
+	}
+	
 	public String getForwardingUrl() {
 		return forwardingUrl;
 	}

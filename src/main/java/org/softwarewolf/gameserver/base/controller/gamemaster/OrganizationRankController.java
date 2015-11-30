@@ -56,9 +56,39 @@ public class OrganizationRankController {
 	
 	@RequestMapping(value = "/editOrganizationRank", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
+	public String editOrganizationRank(HttpSession session,  
+			final OrganizationRankCreator organizationRankCreator, final FeFeedback feFeedback, 
+			@RequestParam(value="id", required= false) String organizationRankId) {
+		// If we haven't selected a campaign, get to the menu!
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}
+		organizationRankService.initOrganizationRankCreator(organizationRankId, organizationRankCreator, campaignId, ControllerHelper.EDIT_ORGANIZATION_RANK);
+		String organizationId = null;
+		// organizationRank id 0 = add new organizationRank;
+		if ("0".equals(organizationRankId) || organizationRankId == null) {
+			feFeedback.setInfo2("You are editing a new organization rank");
+		} else {
+			String name = organizationRankCreator.getOrganizationRank().getName();
+			feFeedback.setInfo2("You are editing " + name);
+		}
+		
+		OrganizationRank orgRank = organizationRankCreator.getOrganizationRank();
+		String orgRankName = null;
+		if (orgRank != null && orgRank.getName() != "ROOT" && orgRank.getName() != "") {
+			orgRankName = orgRank.getName();
+		}
+		organizationRankService.initOrganizationRankCreator(organizationId, orgRankName, organizationRankCreator, campaignId, ControllerHelper.EDIT_ORGANIZATION_RANK);
+
+		return ControllerHelper.EDIT_ORGANIZATION_RANK;
+	}
+	
+	@RequestMapping(value = "/getOrganizationRank", method = RequestMethod.GET)
+	@Secured({"GAMEMASTER"})
 	@ResponseBody
 	public String getOrganizationRank(HttpSession session,
-			final FeFeedback feFeedback, @RequestParam(value="id", required= true) String id, 
+			final FeFeedback feFeedback, @RequestParam(value="id", required=false) String id, 
 			@ModelAttribute("organizationRank") OrganizationRank organizationRank) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
@@ -66,7 +96,7 @@ public class OrganizationRankController {
 		}
 		
 		// id = 0 is add a new organization
-		if ("0".equals(id)) {
+		if (id == null || "0".equals(id)) {
 			organizationRank = new OrganizationRank();
 		} else if (!("".equals(id))) {
 			organizationRank = organizationRankService.read(id);
@@ -114,7 +144,7 @@ public class OrganizationRankController {
 		}
 		if (errorMsg.length() > 0) {
 			feFeedback.setError(errorMsg.toString());
-			return ControllerHelper.EDIT_ORGANIZATION;
+			return ControllerHelper.EDIT_ORGANIZATION_RANK;
 		}
 
 		organizationRank.setCampaignId(campaignId);
@@ -131,8 +161,8 @@ public class OrganizationRankController {
 			feFeedback.setInfo("Success, you have added organization rank " + organizationRank.getName());
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
-			return ControllerHelper.EDIT_ORGANIZATION;
+			return ControllerHelper.EDIT_ORGANIZATION_RANK;
 		}
-		return ControllerHelper.EDIT_ORGANIZATION;
+		return ControllerHelper.EDIT_ORGANIZATION_RANK;
 	}
 }

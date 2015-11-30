@@ -161,8 +161,8 @@
 			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
 			orgRankOrgId.val(id);
 
-			var getOrganizationForm = $("#getOrganizationForm");
-			var action = getOrganizationForm.attr("action");
+			var getOrganizationRankForm = $("#getOrganizationRankForm");
+			var action = getOrganizationRankForm.attr("action");
 			action = action + "?id="+id;
 			window.location.href = action;
 		});
@@ -180,10 +180,10 @@
 				$("#organizationRankId").val(id);
 			}
 			
-			var orgRankOrgId = $("#editOrganizationForm input[id=organizationId]");
+			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
 			orgRankOrgId.val(id);
 			
-			$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
+			$.get( "/gameserver/gamemaster/editOrganizationRank?id="+id, function( data ) {
 				  // Populate the form with the data returned from the back end
 				  var organizationRankJson = jQuery.parseJSON(data);
 				  var description = organizationRankJson["description"];
@@ -204,7 +204,7 @@
 		});
 	
 		$("#submitOrgRank").click(function(event) { 
-			var form = $("#editOrganizationForm");
+			var form = $("#editOrganizationRankForm");
 			form.attr("action", "/gameserver/gamemaster/editOrganizationRank");
 		});
 		
@@ -213,14 +213,14 @@
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>
-	<div th:fragment="createOrganization">
+	<div th:fragment="createOrganizationRank">
 		<br></br>
 	
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-7">
 				<div>
-					<h1 th:text="#{editOrganization.title}">Create</h1>
+					<h1 th:text="#{editOrganizationRank.title}">Create</h1>
 				</div>
 			</div>
 			<div class="col-md-3">
@@ -243,137 +243,15 @@
 			</div>
 		</div>
 		<br></br>
-		<form id="getOrganizationForm" action="#" th:action="@{/gamemaster/editOrganization}" method="get"></form>
-		<form id="editOrganizationTypeForm" action="#" th:action="@{/gamemaster/editOrganizationType}" method="get"></form>
-		<form id="editOrganizationForm" th:object="${organizationCreator}" action="#" th:action="@{/gamemaster/editOrganization}" method="post">
+		<form id="getOrganizationRankForm" action="#" th:action="@{/gamemaster/editOrganization}" method="get"></form>
+		<form id="editOrganizationRankForm" th:object="${organizationRankCreator}" action="#" th:action="@{/gamemaster/editOrganizationRank}" method="post">
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
-			<input id="campaignId" type="hidden" th:field="*{organization.campaignId}"></input>
-			<input id="organizationTypeId" type="hidden" th:field="*{organization.gameDataTypeId}"></input>
-			<input id="organizationTreeJson" type="hidden" th:field="*{organizationTreeJson}"></input>
-			<input id="hiddenParentId" type="hidden" th:field="*{organization.parentId}"></input>
-			<input id="hiddenOrganizationId" type="hidden" th:field="*{organization.id}"></input>
+			<input id="campaignId" type="hidden" th:field="*{organizationRank.campaignId}"></input>
 
-			<input id="organizationRankTreeJson" type="hidden" th:field="${organizationRankCreator.organizationRankTreeJson}"></input>
-			<input id="organizationId" type="hidden" th:field="${organizationRankCreator.organizationRank.organizationId}"></input>
-			<input id="hiddenOrgRankParentId" type="hidden" th:field="${organizationRankCreator.organizationRank.parentId}"></input>
-			<input id="organizationRankId" type="hidden" th:field="${organizationRankCreator.organizationRank.id}"></input>
-
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-9">
-					<span th:text="#{createOrganization.description}">description</span>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-9">
-					<hr></hr>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="row">
-					<div class="col-md-2"></div>
-					<div class="col-md-9">
-						<button id="organizationStatus" type="button" class="input-margin btn btn-info dropdown-toggle" aria-expanded="false" th:text="${feFeedback.info2}"></button>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganization.selectOrganization}">Name</label>
-				</div>
-				<div class="col-md-8">
-					<div class="btn-group">
-	  					<button id="tBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganization.selectOrganizationDown}">
-	    					Select Organization <span class="caret"></span>
-	  					</button>
-		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="organization : ${organizationCreator.organizationsInCampaign}"><a th:id="${organization.id}" class="selectOrganization" th:text="${organization.name}">Action</a></li>
-		  				</ul>
-					</div>				
-				</div>
-			</div>
-						
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganization.organizationName}">Name</label>
-				</div>
-				<div class="col-md-8">
-					<input id="organizationName" class="input-margin" th:field="*{organization.name}"></input>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganization.parentOrganization}">Name</label>
-				</div>
-				<div class="col-md-8">
-					<input id="organizationParentName" class="input-margin" th:field="*{organization.parentName}" disabled="disabled"></input>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganization.organizationType}"></label>
-				</div>
-				<div class="col-md-8">
-					<div class="btn-group">
-	  					<button id="otBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganizationType.otBtn}">
-	    					Organization Type <span class="caret"></span>
-	  					</button>
-		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="organizationType : ${organizationCreator.organizationTypesInCampaign}"><a th:id="${organizationType.id}" class="modifyOT" th:text="${organizationType.name}">Action</a></li>
-		  				</ul>
-					</div>				
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganization.organizationType}">Name</label>
-				</div>
-				<div class="col-md-8">
-					<input id="organizationTypeName" class="input-margin" disabled="disabled" th:field="*{organization.gameDataTypeName}"></input>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganization.organizationDescription}">Desc</label>
-				</div>
-				<div class="col-md-8">
-					<textarea id="organizationDescription" rows="8" cols="100" class="input-margin" th:field="*{organization.description}"></textarea>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-3">			
-					<h4>Select parent organization in campaign</h4>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-10">
-					<div id="organizationRoot">
-						<div id="organizationGroupPanel" class="list-group panel"></div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-2">
-	           		<input class="basic-margin" type="submit" value="Submit" />
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-9">
-					<hr></hr>
-				</div>
-			</div>
+			<input id="organizationRankTreeJson" type="hidden" th:field="*{organizationRankTreeJson}"></input>
+			<input id="organizationId" type="hidden" th:field="*{organizationRank.organizationId}"></input>
+			<input id="hiddenOrgRankParentId" type="hidden" th:field="*{organizationRank.parentId}"></input>
+			<input id="organizationRankId" type="hidden" th:field="*{organizationRank.id}"></input>
 
 			<div class="row">
 				<div class="col-md-1"></div>
@@ -408,7 +286,7 @@
 	    					Select Organization Rank<span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="organizationRank : ${organizationRankCreator.organizationRanksInOrganization}"><a th:id="${organizationRank.id}" class="selectOrganizationRank" th:text="${organizationRank.name}">Action</a></li>
+		    				<li th:each="organizationRank : *{organizationRanksInOrganization}"><a th:id="${organizationRank.id}" class="selectOrganizationRank" th:text="${organizationRank.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>
@@ -420,7 +298,7 @@
 					<label class="input-margin" th:text="#{editOrganizationRank.organizationRankName}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input id="organizationRankName" class="input-margin" th:field="${organizationRankCreator.organizationRank.name}"></input>
+					<input id="organizationRankName" class="input-margin" th:field="*{organizationRank.name}"></input>
 				</div>
 			</div>
 			<div class="row">
@@ -429,7 +307,7 @@
 					<label class="input-margin" th:text="#{editOrganizationRank.parentOrganizationRank}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input id="organizationRankParentName" class="input-margin" th:field="${organizationRankCreator.organizationRank.parentName}" disabled="disabled"></input>
+					<input id="organizationRankParentName" class="input-margin" th:field="*{organizationRank.parentName}" disabled="disabled"></input>
 				</div>
 			</div>
 			<div class="row">
@@ -438,7 +316,7 @@
 					<label class="input-margin" th:text="#{editOrganizationRank.organizationRankDescription}">Desc</label>
 				</div>
 				<div class="col-md-8">
-					<textarea id="organizationRankDescription" rows="8" cols="100" class="input-margin" th:field="${organizationRankCreator.organizationRank.description}"></textarea>
+					<textarea id="organizationRankDescription" rows="8" cols="100" class="input-margin" th:field="*{organizationRank.description}"></textarea>
 				</div>
 			</div>
 			<div class="row">
