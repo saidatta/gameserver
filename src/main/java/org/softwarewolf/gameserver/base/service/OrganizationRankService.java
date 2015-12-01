@@ -125,6 +125,14 @@ public class OrganizationRankService {
 		organizationRankCreator.setOrganizationRanksInOrganization(ranks);
 	}
 	
+	public List<OrganizationRank> getOrganizationRankList(String organizationId) {
+		List<OrganizationRank> ranks = organizationRankRepository.findByOrganizationId(organizationId);
+		if (ranks == null) {
+			ranks = new ArrayList<>();
+		}
+		return ranks;
+	}
+	
 	public String getOrganizationRankTree(String campaignId, String organizationId) {
 		String json = "{}";
 		try {

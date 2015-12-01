@@ -44,6 +44,42 @@
 				form.submit();
 			});
 			
+			$(".selectOrganizationRank").click(function(event) {
+				event.preventDefault();
+				var target = $(event.target);
+				var id = $(target).attr('id');
+				var name = $(target).text();
+				if (id == "0") { 
+					$("#organizationRankName").val(null);
+					$("#organizationRankId").val(null);
+				} else {
+					$("#organizationRankName").val(name);
+					$("#organizationRankId").val(id);
+				}
+				
+				var orgRankOrgId = $("#editOrganizationForm input[id=organizationId]");
+				orgRankOrgId.val(id);
+				
+				$.get("/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
+					  // Populate the form with the data returned from the back end
+					  var organizationRankJson = jQuery.parseJSON(data);
+					  var description = organizationRankJson["description"];
+					  var organizationRankDescription = $("#organizationRankDescription");
+					  organizationRankDescription.val(description);
+					  var organizationRankId = $("#organizationRankId");
+					  organizationRankId = organizationRankJson["id"];
+					  var parentId = organizationRankJson["parentId"];
+					  var organizationRankParentId = $("#hiddenParentId");
+					  organizationRankParentId.val(parentId);
+					  var parentName = organizationRankJson["parentName"];
+					  if (parentName == null) {
+						  parentName = "ROOT";
+					  }
+					  var organizationRankParentName = $("#organizationRankParentName");
+					  organizationRankParentName.val(parentName);
+				});
+			});
+			
 		});		
 	});		
 </script>  
@@ -90,6 +126,25 @@
 					<hr></hr>
 				</div>
 			</div>
+			
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin" th:text="#{editOrganization.selectOrganization}">Name</label>
+				</div>
+				<div class="col-md-8">
+					<div class="btn-group">
+	  					<button id="tBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganization.selectOrganizationDown}">
+	    					Select Organization <span class="caret"></span>
+	  					</button>
+		  				<ul class="dropdown-menu" role="menu">
+		    				<li th:each="organization : *{organizationsInCampaign}"><a th:id="${organization.id}" class="selectOrganization" th:text="${organization.name}">Action</a></li>
+		  				</ul>
+					</div>				
+				</div>
+			</div>
+			
+			
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">

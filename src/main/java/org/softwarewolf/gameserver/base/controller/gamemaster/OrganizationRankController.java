@@ -1,6 +1,8 @@
 package org.softwarewolf.gameserver.base.controller.gamemaster;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -115,6 +117,33 @@ public class OrganizationRankController {
 		return out;
 	}
 
+	@RequestMapping(value = "/selectOrganization", method = RequestMethod.GET)
+	@Secured({"GAMEMASTER"})
+	@ResponseBody
+	public String selectOrganization(HttpSession session,
+			final FeFeedback feFeedback, @RequestParam(value="id", required=true) String organizationId, 
+			@ModelAttribute("organizationRankList") ArrayList<OrganizationRank> organizationRankList) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}
+		
+		List<OrganizationRank> orgRankList = organizationRankService.getOrganizationRankList(organizationId);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		String out = "{}";
+		
+		if (!orgRankList.isEmpty()) {
+			try {
+				out = objectMapper.writeValueAsString(orgRankList);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return out;
+	}
+	
 	@RequestMapping(value = "/editOrganizationRank", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
 	public String editOrganizationRank(HttpSession session, final OrganizationRankCreator organizationRankCreator, 
