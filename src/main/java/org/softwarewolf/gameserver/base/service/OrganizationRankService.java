@@ -259,6 +259,17 @@ public class OrganizationRankService {
 		return organizationRankRepository.findOne(id);
 	}
 
+	public OrganizationRank get(String id) {
+		OrganizationRank organizationRank = organizationRankRepository.findOne(id);
+		if (organizationRank.getParentId() != null) {
+			OrganizationRank parent = organizationRankRepository.findOne(organizationRank.getParentId());
+			if (parent != null) {
+				organizationRank.setParentName(parent.getName());
+			}
+		}
+		return organizationRank;
+	}
+
 	public String getOrganizationAndRanks(String organizationId) {
 		Map<String, Object> results = new HashMap<>();
 		if (organizationId != null) {

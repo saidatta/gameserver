@@ -90,60 +90,49 @@
 <script th:inline="javascript">
 	$(document).ready(function() {
 		$( window ).load(function() {
-			var organizationTypeId = $("#organizationTypeId");
-			if (organizationTypeId.val() != "") {
-	            $('.modifyOT').each(function(data) {
-    	        	var id = $(data).attr("id");
-			        if (id == organizationTypeId) {
-			        	var value = $(data).val();
-			        	var elem = $("#addOrganizationTypeId");
-			        	$(elem).val(id);
-			        }
-		    	});
-			}
-			
-			var organizationTreeJson = $("#organizationTreeJson").val();
-			if (organizationTreeJson != null) {
-				var organizationTree = jQuery.parseJSON(organizationTreeJson);
-				var nodeParent = $("#organizationGroupPanel");
-				nodeParent.empty();
-				var children = organizationTree["children"];
+			var data = $("#organizationRankTreeJson").val();
+			var organizationRankTree = jQuery.parseJSON(data);
+			var length = Object.keys(organizationRankTree).length;
+			if (length > 0) {
+				var nodeRankParent = $("#organizationRankGroupPanel");
+				nodeRankParent.empty();
+				var children = organizationRankTree["children"];
 				var index = 0;
 				var indent = 0;
-				buildTree('organization', organizationTree, $(nodeParent), index, indent);
+				buildTree('organizationRank', organizationRankTree, $(nodeRankParent), index, indent);
 			}
-			var organizationRankTreeJson = $("#organizationRankTreeJson").val();
-			var organizationRankTree = jQuery.parseJSON(organizationRankTreeJson);
-			var nodeRankParent = $("#organizationRankGroupPanel");
-			nodeRankParent.empty();
-			var children = organizationRankTree["children"];
-			var index = 0;
-			var indent = 0;
-			buildTree('organizationRank', organizationRankTree, $(nodeRankParent), index, indent);
 		});		
+		
 
-		$(".modifyOT").click(function(event) {
-			// Get the data out of the event
+		$(".selectOrgRank").click(function(event) {
+			alert("hi");
+			event.preventDefault();
 			var target = $(event.target);
 			var id = $(target).attr('id');
-			if (id == "0") {
-				var form = $("#editOrganizationTypeForm");
-				var action = form.attr("action");
-				action += "?organizationTypeId="+id;
-
-				window.location.href = action;
+			var name = $(target).text();
+			var organizationRankStatus = $("#organizationStatus");
+			if (id == "0" || id == null) { 
+				$("#organizationRankName").val(null);
+				$("#organizationRankId").val(null);
+				organizationRankStatus.val("You are creating a new organization rank"); 
 			} else {
-				var name = $(target).text();
-	
-				// Set the hidden fields
-				var addOT = $("#organizationTypeId");
-				addOT.val(id);
-				var otName = $("#organizationTypeName");
-				otName.val(name);
-				// Set the button text
-				var organizationTypeName = $("#organizationTypeName");
-				organizationTypeName.val(name);
+				$("#organizationRankName").val(name);
+				$("#organizationRankId").val(id);
+				organizationRankStatus.val("You are editing organization rank " + name);
 			}
+			
+			$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
+				// Populate the form with the data returned from the back end
+				var organizationRank = jQuery.parseJSON(data);
+				var organizationRankParentName = $("#organizationRankParentName");
+				organizationRankParentName.var = organziationRank.get("parentName");
+				var description = $("#organizationRankDescription");
+				description = organziationRank.get("description");
+			});
+			
+			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
+			orgRankOrgId.val(id);
+
 		});
 		
 		$(".selectOrganization").click(function(event) {
@@ -165,36 +154,16 @@
 			$.get( "/gameserver/gamemaster/selectOrganization?id="+id, function( data ) {
 				// Populate the form with the data returned from the back end
 				var organizationRankList = jQuery.parseJSON(data);
-				var orgList = $("#organizationRankList");
-				orgList.empty();
+				var orgRankList = $("#organizationRankList");
+				orgRankList.empty();
 				$.each(organizationRankList, function() {
 					var organizationRankName = $(this).attr("name");
 					var organizationRankId = $(this).attr("id");
-					var li = '<li><a id="'+organizationRankId+'" class="selectOrganization">'+organizationRankName+'</a></li>';
-					orgList.append(li);
+					var li = '<li><a class="selectOrgRank" id="'+organizationRankId+'" onclick="selectOrgRank(\''+organizationRankId+'\',\''+organizationRankName+'\');">'+organizationRankName+'</a></li>';
+//					var li = '<li><a class="selectOrgRank" id="'+organizationRankId+'" onclick="selectOrgRank('+organizationRankId+','+organizationRankName+');" >'+organizationRankName+'</a></li>';
+					orgRankList.append(li);
 				});
 			});
-		});
-
-		$(".selectOrganizationRank").click(function(event) {
-			event.preventDefault();
-			var target = $(event.target);
-			var id = $(target).attr('id');
-			var name = $(target).text();
-			var organizationRankStatus = $("#organizationStatus");
-			if (id == "0" || id == null) { 
-				$("#organizationRankName").val(null);
-				$("#organizationRankId").val(null);
-				organizationRankStatus.val("You are creating a new organization rank"); 
-			} else {
-				$("#organizationRankName").val(name);
-				$("#organizationRankId").val(id);
-				organizationRankStatus.val("You are editing organization rank " + name);
-			}
-			
-			var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
-			orgRankOrgId.val(id);
-
 		});
 	
 		$("#submitOrgRank").click(function(event) { 
@@ -203,6 +172,33 @@
 		});
 		
 	});		
+</script>
+<script>
+	function selectOrgRank(id, name) {
+		alert("hi");
+		var organizationRankStatus = $("#organizationStatus");
+		if (id == "0" || id == null) { 
+			$("#organizationRankName").val(null);
+			$("#organizationRankId").val(null);
+			organizationRankStatus.val("You are creating a new organization rank"); 
+		} else {
+			$("#organizationRankName").val(name);
+			$("#organizationRankId").val(id);
+			organizationRankStatus.val("You are editing organization rank " + name);
+		}
+		
+		$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
+			// Populate the form with the data returned from the back end
+			var organizationRank = jQuery.parseJSON(data);
+			var organizationRankParentName = $("#organizationRankParentName");
+			organizationRankParentName.val(organizationRank["parentName"]);
+			var description = $("#organizationRankDescription");
+			description.val(organizationRank["description"]);
+		});
+		
+		var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
+		orgRankOrgId.val(id);
+	}
 </script>
 </head>
 <body>
@@ -277,13 +273,22 @@
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
-	  					<button id="tBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganization.selectOrganizationDown}">
+	  					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganization.selectOrganizationDown}">
 	    					Select Organization <span class="caret"></span>
 	  					</button>
 		  				<ul id="organizationList" class="dropdown-menu" role="menu">
 		    				<li th:each="organization : *{organizationsInCampaign}"><a th:id="${organization.id}" class="selectOrganization" th:text="${organization.name}">Action</a></li>
 		  				</ul>
 					</div>				
+				</div>
+			</div>			
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-1">
+					<label class="input-margin"></label>
+				</div>
+				<div class="col-md-8">
+					<input id="organizationName" class="input-margin" disabled="disabled"></input>
 				</div>
 			</div>			
 			
@@ -294,11 +299,11 @@
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
-	  					<button id="orBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganizationRank.selectOrganizationRankDown}">
+	  					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganizationRank.selectOrganizationRankDown}">
 	    					Select Organization Rank<span class="caret"></span>
 	  					</button>
 		  				<ul id="organizationRankList" class="dropdown-menu" role="menu">
-		    				<li th:each="organizationRank : *{organizationRanksInOrganization}"><a th:id="${organizationRank.id}" class="selectOrganizationRank" th:text="${organizationRank.name}">Action</a></li>
+		    				<li th:each="organizationRank : *{organizationRanksInOrganization}"><a th:id="${organizationRank.id}" class="selectOrgRank" th:text="${organizationRank.name}" onclick="alert('hi');">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>

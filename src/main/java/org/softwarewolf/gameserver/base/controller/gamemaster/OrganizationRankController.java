@@ -101,7 +101,7 @@ public class OrganizationRankController {
 		if (id == null || "0".equals(id)) {
 			organizationRank = new OrganizationRank();
 		} else if (!("".equals(id))) {
-			organizationRank = organizationRankService.read(id);
+			organizationRank = organizationRankService.get(id);
 		}
 		// ToDo: Add error handling for no territory found
 		ObjectMapper objectMapper = new ObjectMapper();
