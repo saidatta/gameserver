@@ -19,7 +19,7 @@
     <title th:text="#{editOrganization.title}">Title</title>
     
 <script type="text/javascript">	
-	function buildTree(type, organizationNode, nodeParent, index, indent) {
+	function buildTree(organizationNode, nodeParent, index, indent) {
 		var displayName = organizationNode["displayName"];
 		// If we're looking at "Add new organization" skip it, it isn't real.
 		if (displayName == "" || displayName == null) {
@@ -37,9 +37,9 @@
 		var organizationName = organizationNode["name"];
 		var children = organizationNode["children"];
 		if (children.length > 0) {
-			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+type+'\',\''+organizationId+'\',\''+organizationName+'\');"></button> <span id="'+organizationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+organizationId+'\');">'+displayName+' <span class="caret"></span></span></div>';
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+organizationId+'\',\''+organizationName+'\');"></button> <span id="'+organizationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+organizationId+'\');">'+displayName+' <span class="caret"></span></span></div>';
 		} else {
-			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+type+'\',\''+organizationId+'\',\''+organizationName+'\');"></button> <span id="'+organizationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+organizationId+'\');">'+displayName+'</span> </div>';
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+organizationId+'\',\''+organizationName+'\');"></button> <span id="'+organizationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+organizationId+'\');">'+displayName+'</span> </div>';
 		}
 		$(listItem).html(itemHtml);
 		$(listItem).attr("id", organizationId);
@@ -53,7 +53,7 @@
 		if (children.length > 0) {
 			indent = indent + 1;
 			$(children).each(function() {
-				buildTree(type, this, listItem, index, indent);
+				buildTree(this, listItem, index, indent);
 				index = index + 1;
 			});
 		}
@@ -99,7 +99,7 @@
 				var children = organizationRankTree["children"];
 				var index = 0;
 				var indent = 0;
-				buildTree('organizationRank', organizationRankTree, $(nodeRankParent), index, indent);
+				buildTree(organizationRankTree, $(nodeRankParent), index, indent);
 			}
 		});		
 		
@@ -153,16 +153,24 @@
 			
 			$.get( "/gameserver/gamemaster/selectOrganization?id="+id, function( data ) {
 				// Populate the form with the data returned from the back end
-				var organizationRankList = jQuery.parseJSON(data);
+				var organizationRankCreator = jQuery.parseJSON(data);
+				var organizationRankList = organizationRankCreator["organizationRanksInOrganization"];
 				var orgRankList = $("#organizationRankList");
 				orgRankList.empty();
 				$.each(organizationRankList, function() {
 					var organizationRankName = $(this).attr("name");
 					var organizationRankId = $(this).attr("id");
 					var li = '<li><a class="selectOrgRank" id="'+organizationRankId+'" onclick="selectOrgRank(\''+organizationRankId+'\',\''+organizationRankName+'\');">'+organizationRankName+'</a></li>';
-//					var li = '<li><a class="selectOrgRank" id="'+organizationRankId+'" onclick="selectOrgRank('+organizationRankId+','+organizationRankName+');" >'+organizationRankName+'</a></li>';
 					orgRankList.append(li);
 				});
+				
+				var orgRankTreeString = organizationRankCreator["organizationRankTreeJson"];
+				var orgRankTree = jQuery.parseJSON(orgRankTreeString);
+				var nodeParent = $("#organizationRankGroupPanel");
+				var children = orgRankTree["children"];
+				var index = 0;
+				var indent = 0;
+				buildTree(orgRankTree, $(nodeParent), index, indent);
 			});
 		});
 	
@@ -175,16 +183,16 @@
 </script>
 <script>
 	function selectOrgRank(id, name) {
-		alert("hi");
+		alert("id: " + id + "\nname: " + name);
 		var organizationRankStatus = $("#organizationStatus");
 		if (id == "0" || id == null) { 
 			$("#organizationRankName").val(null);
 			$("#organizationRankId").val(null);
-			organizationRankStatus.val("You are creating a new organization rank"); 
+			organizationRankStatus.text("You are creating a new organization rank"); 
 		} else {
 			$("#organizationRankName").val(name);
 			$("#organizationRankId").val(id);
-			organizationRankStatus.val("You are editing organization rank " + name);
+			organizationRankStatus.text("You are editing organization rank " + name);
 		}
 		
 		$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
@@ -345,7 +353,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-10">
-					<div id="organizationRoot">
+					<div id="organizationRankRoot">
 						<div id="organizationRankGroupPanel" class="list-group panel"></div>
 					</div>
 				</div>

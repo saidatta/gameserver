@@ -122,20 +122,23 @@ public class OrganizationRankController {
 	@ResponseBody
 	public String selectOrganization(HttpSession session,
 			final FeFeedback feFeedback, @RequestParam(value="id", required=true) String organizationId, 
-			@ModelAttribute("organizationRankList") ArrayList<OrganizationRank> organizationRankList) {
+			@ModelAttribute("organizationRankCreator") OrganizationRankCreator organizationRankCreator) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}
 		
 		List<OrganizationRank> orgRankList = organizationRankService.getOrganizationRankList(organizationId);
+		organizationRankCreator.setOrganizationRanksInOrganization(orgRankList);
+		String orgRankTree = organizationRankService.getOrganizationRankTree(campaignId, organizationId);
+		organizationRankCreator.setOrganizationRankTreeJson(orgRankTree);
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		String out = "{}";
 		
 		if (!orgRankList.isEmpty()) {
 			try {
-				out = objectMapper.writeValueAsString(orgRankList);
+				out = objectMapper.writeValueAsString(organizationRankCreator);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

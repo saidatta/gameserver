@@ -213,6 +213,7 @@ public class OrganizationRankService {
 				root.addChildId(organizationRank.getId());
 				organizationRank.setParentId(ROOT);
 			}
+			organizationRank.setDisplayName(organizationRank.getName());
 			organizationRankMap.put(organizationRank.getId(), organizationRank);
 		} 
 
@@ -265,7 +266,10 @@ public class OrganizationRankService {
 			OrganizationRank parent = organizationRankRepository.findOne(organizationRank.getParentId());
 			if (parent != null) {
 				organizationRank.setParentName(parent.getName());
-			}
+			} 
+		} 
+		if (organizationRank.getParentName() == null) {
+			organizationRank.setParentName("ROOT");
 		}
 		return organizationRank;
 	}
