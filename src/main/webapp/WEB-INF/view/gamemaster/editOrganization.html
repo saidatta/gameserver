@@ -166,48 +166,7 @@
 			action = action + "?id="+id;
 			window.location.href = action;
 		});
-
-		$(".selectOrganizationRank").click(function(event) {
-			event.preventDefault();
-			var target = $(event.target);
-			var id = $(target).attr('id');
-			var name = $(target).text();
-			if (id == "0") { 
-				$("#organizationRankName").val(null);
-				$("#organizationRankId").val(null);
-			} else {
-				$("#organizationRankName").val(name);
-				$("#organizationRankId").val(id);
-			}
-			
-			var orgRankOrgId = $("#editOrganizationForm input[id=organizationId]");
-			orgRankOrgId.val(id);
-			
-			$.get( "/gameserver/gamemaster/getOrganizationRank?id="+id, function( data ) {
-				  // Populate the form with the data returned from the back end
-				  var organizationRankJson = jQuery.parseJSON(data);
-				  var description = organizationRankJson["description"];
-				  var organizationRankDescription = $("#organizationRankDescription");
-				  organizationRankDescription.val(description);
-				  var organizationRankId = $("#organizationRankId");
-				  organizationRankId = organizationRankJson["id"];
-				  var parentId = organizationRankJson["parentId"];
-				  var organizationRankParentId = $("#hiddenParentId");
-				  organizationRankParentId.val(parentId);
-				  var parentName = organizationRankJson["parentName"];
-				  if (parentName == null) {
-					  parentName = "ROOT";
-				  }
-				  var organizationRankParentName = $("#organizationRankParentName");
-				  organizationRankParentName.val(parentName);
-			});
-		});
 	
-		$("#submitOrgRank").click(function(event) { 
-			var form = $("#editOrganizationForm");
-			form.attr("action", "/gameserver/gamemaster/editOrganizationRank");
-		});
-		
 	});		
 </script>
 </head>
@@ -252,11 +211,6 @@
 			<input id="organizationTreeJson" type="hidden" th:field="*{organizationTreeJson}"></input>
 			<input id="hiddenParentId" type="hidden" th:field="*{organization.parentId}"></input>
 			<input id="hiddenOrganizationId" type="hidden" th:field="*{organization.id}"></input>
-
-			<input id="organizationRankTreeJson" type="hidden" th:field="${organizationRankCreator.organizationRankTreeJson}"></input>
-			<input id="organizationId" type="hidden" th:field="${organizationRankCreator.organizationRank.organizationId}"></input>
-			<input id="hiddenOrgRankParentId" type="hidden" th:field="${organizationRankCreator.organizationRank.parentId}"></input>
-			<input id="organizationRankId" type="hidden" th:field="${organizationRankCreator.organizationRank.id}"></input>
 
 			<div class="row">
 				<div class="col-md-1"></div>
@@ -368,99 +322,7 @@
 	           		<input class="basic-margin" type="submit" value="Submit" />
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-9">
-					<hr></hr>
-				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-9">
-					<h2>Organization Ranks</h2>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-9">
-					<span th:text="#{createOrganizationRank.description}">description</span>
-				</div>
-			</div>
-
-			<div class="row">
-			<div class="row">
-				<div class="row">
-					<div class="col-md-1"></div>
-					<div class="col-md-9">
-						<span id="organizationRankStatus" class="info-message"></span>
-					</div>
-				</div>
-			</div>
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganizationRank.selectOrganizationRank}">Name</label>
-				</div>
-				<div class="col-md-8">
-					<div class="btn-group">
-	  					<button id="orBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editOrganizationRank.selectOrganizationRankDown}">
-	    					Select Organization Rank<span class="caret"></span>
-	  					</button>
-		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="organizationRank : ${organizationRankCreator.organizationRanksInOrganization}"><a th:id="${organizationRank.id}" class="selectOrganizationRank" th:text="${organizationRank.name}">Action</a></li>
-		  				</ul>
-					</div>				
-				</div>
-			</div>
-						
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganizationRank.organizationRankName}">Name</label>
-				</div>
-				<div class="col-md-8">
-					<input id="organizationRankName" class="input-margin" th:field="${organizationRankCreator.organizationRank.name}"></input>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganizationRank.parentOrganizationRank}">Name</label>
-				</div>
-				<div class="col-md-8">
-					<input id="organizationRankParentName" class="input-margin" th:field="${organizationRankCreator.organizationRank.parentName}" disabled="disabled"></input>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editOrganizationRank.organizationRankDescription}">Desc</label>
-				</div>
-				<div class="col-md-8">
-					<textarea id="organizationRankDescription" rows="8" cols="100" class="input-margin" th:field="${organizationRankCreator.organizationRank.description}"></textarea>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-3">			
-					<h4>Select parent organization rank in campaign</h4>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-1"></div>
-				<div class="col-md-10">
-					<div id="organizationRoot">
-						<div id="organizationRankGroupPanel" class="list-group panel"></div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-2"></div>
-				<div class="col-md-2">
-	           		<input id="submitOrgRank" class="basic-margin" type="submit" value="Submit" />
-				</div>
-			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-9">

@@ -236,13 +236,14 @@
 
 			<div class="row">
 				<div class="row">
-					<div class="row">
-						<div class="col-md-2"></div>
-						<div class="col-md-9">
-							<span id="territoryStatus" class="info-message" th:text="${feFeedback.info2}"></span>
-						</div>
+					<div class="col-md-2"></div>
+					<div class="col-md-9">
+						<button id="territoryStatus" type="button" class="input-margin btn btn-info dropdown-toggle" aria-expanded="false" th:text="${feFeedback.info2}"></button>
 					</div>
 				</div>
+			</div>
+
+			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
 					<label class="input-margin" th:text="#{editTerritory.selectTerritory}">Name</label>

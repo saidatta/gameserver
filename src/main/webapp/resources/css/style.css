@@ -171,6 +171,12 @@ hr {
   text-align: center;
 }
 
+#territoryStatus {
+	margin-left: 10px;
+	margin-top: 5 px;
+	margin-bottom: 5px;	
+}
+
 .tooltip{
     position:relative;
 }

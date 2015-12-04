@@ -77,8 +77,7 @@ public class OrganizationController {
 	@RequestMapping(value = "/editOrganization", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	public String editOrganization(HttpSession session, final OrganizationCreator organizationCreator, 
-			final OrganizationRankCreator organizationRankCreator, final FeFeedback feFeedback, 
-			@RequestParam(value="id", required= false) String organizationId) {
+			final FeFeedback feFeedback, @RequestParam(value="id", required= false) String organizationId) {
 		// If we haven't selected a campaign, get to the menu!
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
@@ -94,13 +93,6 @@ public class OrganizationController {
 		}
 		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, ControllerHelper.EDIT_ORGANIZATION);
 		
-		OrganizationRank orgRank = organizationRankCreator.getOrganizationRank();
-		String orgRankName = null;
-		if (orgRank != null && orgRank.getName() != "ROOT" && orgRank.getName() != "") {
-			orgRankName = orgRank.getName();
-		}
-		organizationRankService.initOrganizationRankCreator(organizationId, orgRankName, organizationRankCreator, campaignId, ControllerHelper.EDIT_ORGANIZATION);
-
 		return ControllerHelper.EDIT_ORGANIZATION;
 	}
 	
