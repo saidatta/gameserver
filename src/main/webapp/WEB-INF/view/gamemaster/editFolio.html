@@ -13,7 +13,8 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
 	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> 
+	<!-- <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>  -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     
 	<script src="/gameserver/resources/ckeditor/ckeditor.js"></script>
@@ -27,10 +28,25 @@
 	$(document).ready(function() {
 		$( window ).load(function() {
 			// placeholder
-		});		
+		});	
+		
+
+		$(function() {
+			$( "#dialog" ).dialog();
+		});
+		
 	});		
+
+
 	</script>   
 
+	<script>
+		function selectTag(id) {
+			var selectedTag = $("#"+id);
+			var name = selectedTag.text();
+			alert("Selected: " + name);
+		}
+	</script>
 </head>
 <body id="main">
 	<div th:include="/public/navbar :: navbar"></div>
@@ -65,11 +81,31 @@
 				<label th:text="#{editFolio.tags}">Tags</label>
 			</div>
 			<div class="col-md-10">
-	 				<input class="input-margin" th:disabled="disabled"></input>			 
+				<div class="btn-group input-margin">
+  					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    					Tags<span class="caret"></span>
+  					</button>
+	  				<ul class="dropdown-menu">
+    					<li><a id="0" class="selectTag" onclick="selectTag('0')">Add a tag</a>
+	    				</li>
+  					</ul>
+				</div>			 
 			</div>
 		</div>		 
-	
-		<div class="adjoined-bottom input-margin">
+
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label th:text="#{editFolio.tags}">Tags</label>
+			</div>
+			<div class="col-md-10">
+    					<div id="dialog" title="Basic dialog">
+  							<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+						</div>
+			</div>
+		</div>		 
+							
+		<div class="input-margin">
 			<div class="grid-container">
 				<div class="grid-width-100">
 					<textarea id="editor" th:field="*{page.content}"></textarea>
