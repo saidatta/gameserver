@@ -15,6 +15,7 @@ import org.softwarewolf.gameserver.base.service.CampaignService;
 import org.softwarewolf.gameserver.base.service.OrganizationRankService;
 import org.softwarewolf.gameserver.base.service.OrganizationService;
 import org.softwarewolf.gameserver.base.service.TerritoryService;
+import org.softwarewolf.gameserver.base.service.TerritoryTypeService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -35,6 +36,9 @@ public class TerritoryTypeController {
 	
 	@Autowired
 	protected TerritoryService territoryService;
+	
+	@Autowired
+	protected TerritoryTypeService territoryTypeService;
 	
 	@Autowired
 	protected OrganizationService organizationService;
@@ -61,7 +65,7 @@ public class TerritoryTypeController {
 		if (forwardingUrl == null || forwardingUrl.isEmpty()) {
 			forwardingUrl = ControllerHelper.CREATE_TERRITORY_TYPE;
 		}
-		territoryService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, forwardingUrl);
+		territoryTypeService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, forwardingUrl);
 		return ControllerHelper.CREATE_TERRITORY_TYPE;
 	}
 	
@@ -76,8 +80,8 @@ public class TerritoryTypeController {
 			territoryType.addCampaign(campaignId);
 		}
 		try {
-			territoryService.saveTerritoryType(territoryType);
-			territoryService.initTerritoryTypeCreator(territoryType.getId(), territoryTypeCreator, campaignId, forwardingUrl);
+			territoryTypeService.saveTerritoryType(territoryType);
+			territoryTypeService.initTerritoryTypeCreator(territoryType.getId(), territoryTypeCreator, campaignId, forwardingUrl);
 			Territory territory = territoryCreator.getTerritory();
 			String territoryId = territory.getId();
 			territoryService.initTerritoryCreator(territoryId, territoryCreator, campaignId, territoryCreator.getForwardingUrl());
@@ -99,10 +103,10 @@ public class TerritoryTypeController {
 		String forwardingUrl = territoryTypeCreator.getForwardingUrl();
 		try {
 			if (addTerritoryTypeId != null) {
-				TerritoryType territoryType = territoryService.getTerritoryTypeById(addTerritoryTypeId);
+				TerritoryType territoryType = territoryTypeService.findOne(addTerritoryTypeId);
 				territoryType.addCampaign(campaignId);
-				territoryService.saveTerritoryType(territoryType);
-				territoryService.initTerritoryTypeCreator(territoryType.getId(), territoryTypeCreator, campaignId, forwardingUrl);
+				territoryTypeService.saveTerritoryType(territoryType);
+				territoryTypeService.initTerritoryTypeCreator(territoryType.getId(), territoryTypeCreator, campaignId, forwardingUrl);
 			}
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
@@ -121,10 +125,10 @@ public class TerritoryTypeController {
 		String forwardingUrl = territoryTypeCreator.getForwardingUrl();
 		try {
 			if (removeTerritoryTypeId != null) {
-				TerritoryType territoryType = territoryService.getTerritoryTypeById(removeTerritoryTypeId);
+				TerritoryType territoryType = territoryTypeService.findOne(removeTerritoryTypeId);
 				territoryType.removeCampaign(campaignId);
-				territoryService.saveTerritoryType(territoryType);
-				territoryService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, forwardingUrl);
+				territoryTypeService.saveTerritoryType(territoryType);
+				territoryTypeService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, forwardingUrl);
 			}
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
@@ -143,7 +147,7 @@ public class TerritoryTypeController {
 		String forwardingUrl = territoryCreator.getForwardingUrl();
 		try {
 			if (addTerritoryTypeId != null) {
-				TerritoryType territoryType = territoryService.getTerritoryTypeById(addTerritoryTypeId);
+				TerritoryType territoryType = territoryTypeService.findOne(addTerritoryTypeId);
 				if (territoryType == null) {
 					feFeedback.setError("Invalid territory type.");
 					return forwardingUrl;

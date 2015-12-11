@@ -18,6 +18,7 @@ import org.softwarewolf.gameserver.base.service.OrganizationService;
 import org.softwarewolf.gameserver.base.service.OrganizationTypeService;
 import org.softwarewolf.gameserver.base.service.FolioService;
 import org.softwarewolf.gameserver.base.service.TerritoryService;
+import org.softwarewolf.gameserver.base.service.TerritoryTypeService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -39,6 +40,9 @@ public class GamemasterController {
 	
 	@Autowired
 	protected TerritoryService territoryService;
+	
+	@Autowired
+	protected TerritoryTypeService territoryTypeService;
 	
 	@Autowired
 	protected OrganizationService organizationService;
@@ -119,7 +123,7 @@ public class GamemasterController {
 		}
 		String territoryId = null;
 		territoryService.initTerritoryCreator(territoryId, territoryCreator, campaignId, ControllerHelper.CAMPAIGN_HOME);
-		territoryService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, ControllerHelper.CAMPAIGN_HOME);
+		territoryTypeService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, ControllerHelper.CAMPAIGN_HOME);
 
 		String organizationId = null;
 		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, ControllerHelper.CAMPAIGN_HOME);

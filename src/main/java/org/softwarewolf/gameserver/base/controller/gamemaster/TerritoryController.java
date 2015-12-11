@@ -63,7 +63,7 @@ public class TerritoryController {
 		if (territoryId != null && territoryId != "" && territoryId != "0") {
 			territory = territoryCreator.getTerritory();
 			territory.setId(territoryId);
-			territory = territoryService.findOneTerritory(territory.getId());
+			territory = territoryService.findOne(territory.getId());
 		} else {
 			territory = new Territory();
 			feFeedback.setInfo2("You are creating a new territory");
@@ -97,7 +97,7 @@ public class TerritoryController {
 			territory = new Territory();
 			feFeedback.setInfo2("You are creating a new territory");
 		} else if (!("".equals(territoryId))) {
-			territory = territoryService.findOneTerritory(territoryId);
+			territory = territoryService.findOne(territoryId);
 			feFeedback.setInfo2("You are editing " + territory.getName());
 		}
 		// ToDo: Add error handling for no territory found
