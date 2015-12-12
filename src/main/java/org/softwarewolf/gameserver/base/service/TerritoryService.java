@@ -40,9 +40,8 @@ public class TerritoryService {
 		return territoryList;
 	}
 
-	// This needs to be modified to filter based on campaign id
-	public List<Territory> getTerritoriesInCampaign() {
-		List<Territory> territoryList = territoryRepository.findAll();
+	public List<Territory> getTerritoriesInCampaign(String campaignId) {
+		List<Territory> territoryList = territoryRepository.findByCampaignId(campaignId);
 		if (territoryList == null) {
 			territoryList = new ArrayList<>();
 		}

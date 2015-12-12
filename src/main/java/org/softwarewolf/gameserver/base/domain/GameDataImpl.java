@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.NotImplementedException;
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -110,5 +112,9 @@ public class GameDataImpl extends TagBase implements GameData, Serializable {
 	// This usually should not be used
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+	
+	public ObjectTag getTag() {
+		throw new NotImplementedException();
 	}
 }

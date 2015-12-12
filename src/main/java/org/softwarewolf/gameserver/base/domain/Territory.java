@@ -1,5 +1,6 @@
 package org.softwarewolf.gameserver.base.domain;
 
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -13,5 +14,9 @@ public class Territory extends GameDataImpl {
 	public Territory() {
 		super();
 	}
-	
+
+	@Override
+	public ObjectTag getTag() {
+		return new ObjectTag(this.getClass().toString(), id, displayName, campaignId);
+	}	
 }

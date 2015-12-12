@@ -41,6 +41,14 @@ public class OrganizationRankService {
 		return organizationRankList;
 	}
 
+	public List<OrganizationRank> findAllByCampaignId(String campaignId) {
+		List<OrganizationRank> organizationRankList = organizationRankRepository.findByCampaignId(campaignId);
+		if (organizationRankList == null) {
+			organizationRankList = new ArrayList<>();
+		}
+		return organizationRankList;
+	}
+
 	public void initOrganizationRankCreator(String organizationId, String name, OrganizationRankCreator organizationRankCreator, 
 			String campaignId, String forwardingUrl) {
 

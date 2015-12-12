@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.NotImplementedException;
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -66,6 +68,10 @@ public class GameDataTypeImpl implements GameDataType, Serializable {
 		if (campaignId != null) {
 			campaignList.remove(campaignId);
 		}
+	}
+	
+	public ObjectTag createTag(String campaignId) {
+		throw new NotImplementedException();
 	}
 	
 	@Override

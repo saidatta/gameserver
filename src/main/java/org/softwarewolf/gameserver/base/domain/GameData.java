@@ -2,6 +2,8 @@ package org.softwarewolf.gameserver.base.domain;
 
 import java.util.List;
 
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
+
 public interface GameData {
 	public String getId();	
 	public void setId(String id);
@@ -36,6 +38,8 @@ public interface GameData {
 	public void removeChildId(String childId);	
 	
 	public boolean hasChildren();
+	
+	public ObjectTag getTag();
 	
 	@Override
 	public int hashCode();

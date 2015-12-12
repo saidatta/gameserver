@@ -88,7 +88,7 @@ public class OrganizationController {
 			organizationId = null;
 			feFeedback.setInfo2("You are editing a new organization");
 		} else {
-			Organization org = organizationService.findOneOrganization(organizationId);
+			Organization org = organizationService.findOne(organizationId);
 			feFeedback.setInfo2("You are editing " + org.getName());
 		}
 		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, ControllerHelper.EDIT_ORGANIZATION);

@@ -1,5 +1,6 @@
 package org.softwarewolf.gameserver.base.domain;
 
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -9,4 +10,9 @@ public class TerritoryType extends GameDataTypeImpl {
 	public TerritoryType() {
 		super();
 	}
+
+	@Override
+	public ObjectTag createTag(String campaignId) {
+		return new ObjectTag(this.getClass().toString(), this.getId(), this.getName(), campaignId);
+	}	
 }

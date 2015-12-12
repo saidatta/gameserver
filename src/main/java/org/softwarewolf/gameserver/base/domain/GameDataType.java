@@ -2,6 +2,8 @@ package org.softwarewolf.gameserver.base.domain;
 
 import java.util.List;
 
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
+
 public interface GameDataType {
 	public String getId();	
 	public void setId(String id);
@@ -17,6 +19,8 @@ public interface GameDataType {
 	
 	public void addCampaign(String campaignId);
 	public void removeCampaign(String campaignId);
+	
+	public ObjectTag createTag(String campaignId);
 	
 	@Override
 	public int hashCode();

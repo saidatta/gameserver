@@ -1,5 +1,6 @@
 package org.softwarewolf.gameserver.base.domain;
 
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -12,5 +13,10 @@ public class Organization extends GameDataImpl {
 	
 	public Organization() {
 		super();
+	}
+	
+	@Override
+	public ObjectTag getTag() {
+		return new ObjectTag(this.getClass().toString(), id, displayName, campaignId);
 	}
 }

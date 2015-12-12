@@ -63,7 +63,7 @@ public class OrganizationService {
 		organizationCreator.setOrganization(organization);
 
 		if (organization.getParentId() != null) {
-			Organization parent = findOneOrganization(organization.getParentId());
+			Organization parent = findOne(organization.getParentId());
 			if (parent != null && parent.getName() != "ROOT") {
 				organization.setParentName(parent.getName());
 			} 
@@ -214,7 +214,7 @@ public class OrganizationService {
 		return parent;
 	}
 
-	public Organization findOneOrganization(String organizationId) {
+	public Organization findOne(String organizationId) {
 		Organization organization = organizationRepository.findOne(organizationId);
 		if (organization == null) {
 			return null;
@@ -231,4 +231,9 @@ public class OrganizationService {
 		}
 		return organization;
 	}
+
+	public List<Organization> findAllByCampaignId(String campaignId) {
+		return organizationRepository.findAllByKeyValue("campaignId", campaignId);
+	}
+
 }
