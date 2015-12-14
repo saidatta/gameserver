@@ -85,13 +85,14 @@
 				<label th:text="#{editFolio.tags}">Tags</label>
 			</div>
 			<div class="col-md-10">
-				<div class="btn-group input-margin">
-  					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<div class="btn-group input-margin" role="group">
+  					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
     					Tags<span class="caret"></span>
   					</button>
 	  				<ul class="dropdown-menu">
-    					<li><a id="0" class="selectTag" onclick="selectTag('0')">Add a tag</a>
-	    				</li>
+    					<li><a id="0" class="selectTag" onclick="selectTag('0');">Add a tag</a></li>
+    					<li class="divider"></li>
+   						<li><a id="1" class="selectTag" onclick="selectTag('1');">The kingdom of Midland</a></li>
   					</ul>
 				</div>			 
 			</div>

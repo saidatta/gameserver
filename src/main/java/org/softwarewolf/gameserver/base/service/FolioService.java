@@ -50,21 +50,40 @@ public class FolioService implements Serializable {
 		List<OrganizationType> orgTypeList = organizationTypeService.getOrganizationTypesInCampaign(campaignId);
 		List<Territory> territoryList = territoryService.getTerritoriesInCampaign(campaignId);
 		List<TerritoryType> territoryTypeList = territoryTypeService.getTerritoryTypesInCampaign(campaignId);
+		
+		List<ObjectTag> tagsInFolio = folio.getTags();
 		List<ObjectTag> tagList = new ArrayList<>();
+		ObjectTag addTag = new ObjectTag("AddTag", "0", "Add a tag", campaignId);
+		tagList.add(addTag);
 		for (Organization org : orgList) {
-			tagList.add(org.createTag());
+			ObjectTag tag = org.createTag();
+			if (!tagsInFolio.contains(tag)) {
+				tagList.add(tag);
+			}
 		}
 		for (OrganizationRank orgRank : orgRankList) {
-			tagList.add(orgRank.createTag());
+			ObjectTag tag = orgRank.createTag();
+			if (!tagsInFolio.contains(tag)) {
+				tagList.add(orgRank.createTag());
+			}
 		}
 		for (OrganizationType orgType : orgTypeList) {
-			tagList.add(orgType.createTag(campaignId));
+			ObjectTag tag = orgType.createTag(campaignId);
+			if (!tagsInFolio.contains(tag)) {
+				tagList.add(orgType.createTag(campaignId));
+			}
 		}
 		for (Territory territory : territoryList) {
-			tagList.add(territory.createTag());
+			ObjectTag tag = territory.createTag();
+			if (!tagsInFolio.contains(tag)) {
+				tagList.add(territory.createTag());
+			}
 		}
 		for (TerritoryType territoryType : territoryTypeList) {
-			tagList.add(territoryType.createTag(campaignId));
+			ObjectTag tag = territoryType.createTag(campaignId);
+			if (!tagsInFolio.contains(tag)) {
+				tagList.add(territoryType.createTag(campaignId));
+			}
 		}
 		folioCreator.setAllTags(tagList);
 	}

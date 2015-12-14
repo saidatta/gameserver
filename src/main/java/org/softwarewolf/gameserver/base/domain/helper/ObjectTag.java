@@ -49,5 +49,51 @@ public class ObjectTag implements Serializable {
 	public void setCampaignId(String campaignId) {
 		this.campaignId = campaignId;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((campaignId == null) ? 0 : campaignId.hashCode());
+		result = prime * result
+				+ ((className == null) ? 0 : className.hashCode());
+		result = prime * result
+				+ ((objectId == null) ? 0 : objectId.hashCode());
+		result = prime * result + ((tagName == null) ? 0 : tagName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ObjectTag other = (ObjectTag) obj;
+		if (campaignId == null) {
+			if (other.campaignId != null)
+				return false;
+		} else if (!campaignId.equals(other.campaignId))
+			return false;
+		if (className == null) {
+			if (other.className != null)
+				return false;
+		} else if (!className.equals(other.className))
+			return false;
+		if (objectId == null) {
+			if (other.objectId != null)
+				return false;
+		} else if (!objectId.equals(other.objectId))
+			return false;
+		if (tagName == null) {
+			if (other.tagName != null)
+				return false;
+		} else if (!tagName.equals(other.tagName))
+			return false;
+		return true;
+	}
 	
 }
