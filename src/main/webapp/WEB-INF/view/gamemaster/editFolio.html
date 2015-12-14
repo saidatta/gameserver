@@ -38,7 +38,19 @@
 
 	<script>
 		$(function() {
-			$( "#dialog" ).dialog();
+		    $( "#dialog-confirm" ).dialog({
+		        resizable: false,
+		        height:240,
+  		        modal: true,
+		        buttons: {
+		            "Remove tag": function() {
+		                $( this ).dialog( "close" );
+		        	},
+		        	Cancel: function() {
+		          		$( this ).dialog( "close" );
+		        	}
+		      	}
+		    });
 		});
 	
 		$(function() {
@@ -104,9 +116,9 @@
 				<label>Dialog test</label>
 			</div>
 			<div class="col-md-10">
-    			<div id="dialog" title="Basic dialog">
-  					<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
-				</div>
+				<div id="dialog-confirm" title="Remove this tag?">
+					<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Should this tag be removed?</p>
+				</div>			
 			</div>
 		</div>		 
 							
