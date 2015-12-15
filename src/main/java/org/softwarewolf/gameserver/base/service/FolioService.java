@@ -1,9 +1,13 @@
 package org.softwarewolf.gameserver.base.service;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.domain.Folio;
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
@@ -44,7 +48,7 @@ public class FolioService implements Serializable {
 	
 	public void initFolioCreator(FolioCreator folioCreator, Folio folio) {
 		String campaignId = folio.getCampaignId();
-		folioCreator.setPage(folio);
+		folioCreator.setFolio(folio);
 		List<Organization> orgList = orgainzationService.findAllByCampaignId(campaignId);
 		List<OrganizationRank> orgRankList = organizationRankService.findAllByCampaignId(campaignId);
 		List<OrganizationType> orgTypeList = organizationTypeService.getOrganizationTypesInCampaign(campaignId);
@@ -85,6 +89,29 @@ public class FolioService implements Serializable {
 				tagList.add(territoryType.createTag(campaignId));
 			}
 		}
-		folioCreator.setAllTags(tagList);
+		ObjectMapper mapper = new ObjectMapper();
+		String json = null;
+		try {
+			json = mapper.writeValueAsString(tagList);
+			folioCreator.setAllTags(json);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			folioCreator.setAllTags("{}");
+		}
+
+		if (folio != null) {
+			tagList = folio.getTags();  
+			if (tagList != null && !tagList.isEmpty()) {
+				try {
+					json = mapper.writeValueAsString(tagList);
+					folioCreator.setSelectedTags(json);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					folioCreator.setAllTags("{}");
+				}
+			}
+		}
 	}
 }

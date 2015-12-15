@@ -28,7 +28,13 @@
 	<script th:inline="javascript">
 	$(document).ready(function() {
 		$( window ).load(function() {
-			// placeholder
+
+			var value = $("#selectedTags").val();
+			var data = jQuery.parseJSON(value);
+			data.every(function(tag) {
+				var tagName = tag["tagName"];
+				alert(tagName);
+			});
 		});	
 		
 	});		
@@ -78,8 +84,10 @@
 	</div>
 
 	
-	<form id="createPageForm" th:object="${folioCreator}" action="#" th:action="@{/gamemaster/editFolio}" method="post">
-		<input id="campaignId" type="hidden" th:field="*{page.campaignId}"></input>
+	<form id="createFolioForm" th:object="${folioCreator}" action="#" th:action="@{/gamemaster/editFolio}" method="post">
+		<input id="campaignId" type="hidden" th:field="*{folio.campaignId}"></input>
+		<input id="allTags" type="hidden" th:field="*{allTags}"></input>
+		<input id="selectedTags" type="hidden" th:field="*{selectedTags}"></input>
 	
 		<div class="row">
 			<div class="col-md-1"></div>
@@ -87,7 +95,7 @@
 				<label class="input-margin" th:text="#{editFolio.pageTitle}">Name</label>
 			</div>
 			<div class="col-md-8">
-				<input id="pageTitle" class="input-margin" th:field="*{page.title}"></input>
+				<input id="pageTitle" class="input-margin" th:field="*{folio.title}"></input>
 			</div>
 		</div>
 	
@@ -135,7 +143,7 @@
 		<div class="input-margin">
 			<div class="grid-container">
 				<div class="grid-width-100">
-					<textarea id="editor" th:field="*{page.content}"></textarea>
+					<textarea id="editor" th:field="*{folio.content}"></textarea>
 				</div>
 			</div>
 		</div>

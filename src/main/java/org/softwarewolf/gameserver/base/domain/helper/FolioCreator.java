@@ -1,30 +1,38 @@
 package org.softwarewolf.gameserver.base.domain.helper;
 
-import java.util.List;
-
 import org.softwarewolf.gameserver.base.domain.Folio;
 
 public class FolioCreator {
-	private Folio page;
-	private List<ObjectTag> allTags;
+	private Folio folio;
+	private String allTags;
+	private String selectedTags;
 	
 	public FolioCreator() {
-		page = new Folio();
+		folio = new Folio();
 	}
 	
-	public Folio getPage() {
-		 return page;
+	public Folio getFolio() {
+		 return folio;
 	}
 
-	public void setPage(Folio page) {
-		this.page = page;
+	public void setFolio(Folio folio) {
+		this.folio = folio;
 	}
 	
-	public List<ObjectTag> getAllTags() {
+	public String getAllTags() {
 		return allTags;
 	}
 	
-	public void setAllTags(List<ObjectTag> allTags) {
+	public void setAllTags(String allTags) {
 		this.allTags = allTags;
 	}
+
+	public String getSelectedTags() {
+		return selectedTags;
+	}
+	
+	public void setSelectedTags(String selectedTags) {
+		this.selectedTags = selectedTags;
+	}
+	
 }
