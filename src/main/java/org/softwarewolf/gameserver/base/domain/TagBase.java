@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -13,6 +14,9 @@ public class TagBase implements Serializable {
 	protected String id;
 	protected String name;
 	protected String campaignId;
+	protected String gameDataTypeId;
+	@Transient
+	protected String gameDataTypeName;
 
 	public TagBase() {
 	}
@@ -46,7 +50,23 @@ public class TagBase implements Serializable {
 		this.campaignId = campaignId;
 	}
 	
+	public String getGameDataTypeId() {
+		return gameDataTypeId;
+	}
+	public void setGameDataTypeId(String gameDataTypeId) {
+		this.gameDataTypeId = gameDataTypeId;
+	}
+		
+	public String getGameDataTypeName() {
+		return gameDataTypeName;
+	}
+	public void setGameDataTypeName(String gameDataTypeName) {
+		this.gameDataTypeName = gameDataTypeName;
+	}
+		
+	
 	public ObjectTag createTag() {
-		return new ObjectTag(this.getClass().getSimpleName(), this.getId(), this.getName(), this.getCampaignId());
+		return new ObjectTag(this.getClass().getSimpleName(), this.getId(), this.getName(), 
+				this.getCampaignId(), this.gameDataTypeId, this.gameDataTypeName);
 	}
 }

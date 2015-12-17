@@ -12,14 +12,20 @@ public class ObjectTag implements Serializable {
 	/** The name of the instance of the class */
 	private String tagName;
 	private String campaignId;
+	private String gameDataTypeId;
+	private String gameDataTypeName;
 	
-	public ObjectTag() { }
+	public ObjectTag() { 
+	}
 	
-	public ObjectTag(String className, String objectId, String tagName, String campaignId) {
+	public ObjectTag(String className, String objectId, String tagName, String campaignId, 
+			String gameDataTypeId, String gameDataTypeName) {
 		this.className = className;
 		this.objectId = objectId;
 		this.tagName = tagName;
 		this.campaignId = campaignId;
+		this.gameDataTypeId = gameDataTypeId;
+		this.gameDataTypeName = gameDataTypeName;
 	}
 	
 	public String getClassName() {
@@ -49,6 +55,20 @@ public class ObjectTag implements Serializable {
 	public void setCampaignId(String campaignId) {
 		this.campaignId = campaignId;
 	}
+	
+	public String getGameDataTypeId() {
+		return gameDataTypeId;
+	}
+	public void setGameDataTypeId(String gameDataTypeId) {
+		this.gameDataTypeId = gameDataTypeId;
+	}
+	
+	public String getGameDataTypeName() {
+		return gameDataTypeName;
+	}
+	public void setGameDataTypeName(String gameDataTypeName) {
+		this.gameDataTypeName = gameDataTypeName;
+	}
 
 	@Override
 	public int hashCode() {
@@ -61,6 +81,8 @@ public class ObjectTag implements Serializable {
 		result = prime * result
 				+ ((objectId == null) ? 0 : objectId.hashCode());
 		result = prime * result + ((tagName == null) ? 0 : tagName.hashCode());
+		result = prime * result + ((gameDataTypeId == null) ? 0 : gameDataTypeId.hashCode());
+		result = prime * result + ((gameDataTypeName == null) ? 0 : gameDataTypeName.hashCode());
 		return result;
 	}
 
@@ -92,6 +114,16 @@ public class ObjectTag implements Serializable {
 			if (other.tagName != null)
 				return false;
 		} else if (!tagName.equals(other.tagName))
+			return false;
+		if (gameDataTypeId == null) {
+			if (other.gameDataTypeId != null)
+				return false;
+		} else if (!gameDataTypeId.equals(other.gameDataTypeId))
+			return false;
+		if (gameDataTypeName == null) {
+			if (other.gameDataTypeName != null)
+				return false;
+		} else if (!gameDataTypeName.equals(other.gameDataTypeName))
 			return false;
 		return true;
 	}

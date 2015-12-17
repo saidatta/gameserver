@@ -14,9 +14,6 @@ public class GameDataImpl extends TagBase implements GameData, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	protected String description;
-	protected String gameDataTypeId;
-	@Transient
-	protected String gameDataTypeName;
 	protected String parentId;
 	@Transient
 	protected String parentName;
@@ -40,22 +37,6 @@ public class GameDataImpl extends TagBase implements GameData, Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-		
-	public String getGameDataTypeId() {
-		return gameDataTypeId;
-	}
-
-	public void setGameDataTypeId(String gameDataTypeId) {
-		this.gameDataTypeId = gameDataTypeId;
-	}
-		
-	public String getGameDataTypeName() {
-		return gameDataTypeName;
-	}
-
-	public void setGameDataTypeName(String gameDataTypeName) {
-		this.gameDataTypeName = gameDataTypeName;
 	}
 		
 	public String getParentId() {

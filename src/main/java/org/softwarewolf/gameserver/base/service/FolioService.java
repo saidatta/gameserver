@@ -57,8 +57,6 @@ public class FolioService implements Serializable {
 		
 		List<ObjectTag> tagsInFolio = folio.getTags();
 		List<ObjectTag> tagList = new ArrayList<>();
-		ObjectTag addTag = new ObjectTag("AddTag", "0", "Add a tag", campaignId);
-		tagList.add(addTag);
 		for (Organization org : orgList) {
 			ObjectTag tag = org.createTag();
 			if (!tagsInFolio.contains(tag)) {
