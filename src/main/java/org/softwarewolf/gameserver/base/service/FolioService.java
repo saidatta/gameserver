@@ -35,6 +35,8 @@ public class FolioService implements Serializable {
 	private TerritoryService territoryService;
 	@Autowired
 	private TerritoryTypeService territoryTypeService;
+	@Autowired
+	private ObjectTagService objectTagService;
 	
 	private static final long serialVersionUID = 1L;
 
@@ -49,44 +51,8 @@ public class FolioService implements Serializable {
 	public void initFolioCreator(FolioCreator folioCreator, Folio folio) {
 		String campaignId = folio.getCampaignId();
 		folioCreator.setFolio(folio);
-		List<Organization> orgList = orgainzationService.findAllByCampaignId(campaignId);
-		List<OrganizationRank> orgRankList = organizationRankService.findAllByCampaignId(campaignId);
-		List<OrganizationType> orgTypeList = organizationTypeService.getOrganizationTypesInCampaign(campaignId);
-		List<Territory> territoryList = territoryService.getTerritoriesInCampaign(campaignId);
-		List<TerritoryType> territoryTypeList = territoryTypeService.getTerritoryTypesInCampaign(campaignId);
-		
-		List<ObjectTag> tagsInFolio = folio.getTags();
-		List<ObjectTag> tagList = new ArrayList<>();
-		for (Organization org : orgList) {
-			ObjectTag tag = org.createTag();
-			if (!tagsInFolio.contains(tag)) {
-				tagList.add(tag);
-			}
-		}
-		for (OrganizationRank orgRank : orgRankList) {
-			ObjectTag tag = orgRank.createTag();
-			if (!tagsInFolio.contains(tag)) {
-				tagList.add(orgRank.createTag());
-			}
-		}
-		for (OrganizationType orgType : orgTypeList) {
-			ObjectTag tag = orgType.createTag(campaignId);
-			if (!tagsInFolio.contains(tag)) {
-				tagList.add(orgType.createTag(campaignId));
-			}
-		}
-		for (Territory territory : territoryList) {
-			ObjectTag tag = territory.createTag();
-			if (!tagsInFolio.contains(tag)) {
-				tagList.add(territory.createTag());
-			}
-		}
-		for (TerritoryType territoryType : territoryTypeList) {
-			ObjectTag tag = territoryType.createTag(campaignId);
-			if (!tagsInFolio.contains(tag)) {
-				tagList.add(territoryType.createTag(campaignId));
-			}
-		}
+		List<ObjectTag> tagList = objectTagService.createTagList(campaignId, folio.getTags());
+
 		ObjectMapper mapper = new ObjectMapper();
 		String json = null;
 		try {

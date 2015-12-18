@@ -14,6 +14,7 @@ public class ObjectTag implements Serializable {
 	private String campaignId;
 	private String gameDataTypeId;
 	private String gameDataTypeName;
+	private boolean hasChildren = false;
 	
 	public ObjectTag() { 
 	}
@@ -70,6 +71,13 @@ public class ObjectTag implements Serializable {
 		this.gameDataTypeName = gameDataTypeName;
 	}
 
+	public boolean getHasChildren() {
+		return hasChildren;
+	}
+	public void setHasChildren(boolean hasChildren) {
+		this.hasChildren = hasChildren;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
