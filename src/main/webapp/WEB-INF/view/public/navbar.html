@@ -72,8 +72,8 @@
 		            </ul>
 		          </div>
 		          <div class="navbar-form navbar-right">
-		            <span sec:authorize="isAnonymous()"><a data-toggle="modal" href="#myModal" >Login</a></span>
-		            <span sec:authorize="isAuthenticated()"><a th:href="@{/logout}" th:text="#{logout.text}">Log out</a></span>
+		            <span sec:authorize="isAnonymous()"><a class="login-logout" data-toggle="modal" href="#myModal" >Login</a></span>
+		            <span sec:authorize="isAuthenticated()"><a class="login-logout" th:href="@{/logout}" th:text="#{logout.text}">Log out</a></span>
 		          </div>
 		        </div><!--/.navbar-collapse -->
 		      </div>

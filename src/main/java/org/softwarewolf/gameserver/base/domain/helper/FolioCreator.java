@@ -4,7 +4,7 @@ import org.softwarewolf.gameserver.base.domain.Folio;
 
 public class FolioCreator {
 	private Folio folio;
-	private String allTags;
+	private String unassignedTags;
 	private String selectedTags;
 	
 	public FolioCreator() {
@@ -19,12 +19,12 @@ public class FolioCreator {
 		this.folio = folio;
 	}
 	
-	public String getAllTags() {
-		return allTags;
+	public String getUnassignedTags() {
+		return unassignedTags;
 	}
 	
-	public void setAllTags(String allTags) {
-		this.allTags = allTags;
+	public void setUnassignedTags(String unassignedTags) {
+		this.unassignedTags = unassignedTags;
 	}
 
 	public String getSelectedTags() {

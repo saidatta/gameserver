@@ -28,13 +28,50 @@
 	<script th:inline="javascript">
 	$(document).ready(function() {
 		$( window ).load(function() {
-
+			
 			var value = $("#selectedTags").val();
 			var data = jQuery.parseJSON(value);
-			data.every(function(tag) {
-				var tagName = tag["tagName"];
-				alert(tagName);
+
+			var ul = '<ul class="dropdown-menu"></ul>';
+			$(".dropdown-toggle").after(ul);
+			var string0 = '<li id="0" class="selectTag"><a href="#">Add a tag</a></li>';
+			$(".dropdown-menu").append(string0);
+			var string1 = '<li class="divider"></li>';
+			$(".dropdown-menu").append(string1);
+				
+			$.each(data, function(index, currentTag) {
+				var objectId = currentTag['objectId'];
+				var tagName = currentTag['tagName'];
+				var current = '<li id="'+objectId+'" class="selectTag"><a href="#">'+tagName+'</a></li>'; 
+				$(".dropdown-menu").append(current);
 			});
+/*			
+			var li1 = $('<li/>')
+				.addClass("selectTag")
+    	    	.attr("id", "0")
+    	    	.text("Add a tag");
+			selectedTagsDropdown.append(selectedTagsDropdown);
+			$('#0').bind("click", function() {
+				//functionality that you were trying to add using attr can now go inside here.
+				selectTag("0");
+			});
+			
+			var li2 = $('<li/>')
+				.addClass("divider");
+			selectedTagsDropdown.append(selectedTagsDropdown);
+
+			data.every(function(tag) {
+				var li = $('<li/>')
+					.addClass("selectTag")
+		        	.attr('id', tag["objectId"])
+		        	.text(tag["tagName"]);
+				selectedTagsDropdown.append(selectedTagsDropdown);
+				$('#' + tag["objectId"]).bind("click", function() {
+					//functionality that you were trying to add using attr can now go inside here.
+					selectTag(tag["objectId"]);
+				});
+			});
+*/
 		});	
 		
 	});		
@@ -86,7 +123,7 @@
 	
 	<form id="createFolioForm" th:object="${folioCreator}" action="#" th:action="@{/gamemaster/editFolio}" method="post">
 		<input id="campaignId" type="hidden" th:field="*{folio.campaignId}"></input>
-		<input id="allTags" type="hidden" th:field="*{allTags}"></input>
+		<input id="unassignedTags" type="hidden" th:field="*{unassignedTags}"></input>
 		<input id="selectedTags" type="hidden" th:field="*{selectedTags}"></input>
 	
 		<div class="row">
@@ -110,9 +147,6 @@
     					Tags<span class="caret"></span>
   					</button>
 	  				<ul class="dropdown-menu">
-    					<li><a id="0" class="selectTag" onclick="selectTag('0');">Add a tag</a></li>
-    					<li class="divider"></li>
-   						<li><a id="1" class="selectTag" onclick="selectTag('1');">The kingdom of Midland</a></li>
   					</ul>
 				</div>			 
 			</div>

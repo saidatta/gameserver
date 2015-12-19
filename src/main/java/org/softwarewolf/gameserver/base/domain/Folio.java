@@ -25,6 +25,9 @@ public class Folio implements Serializable {
 	private List<ObjectTag> tags;
 	
 	public Folio() { }
+	public Folio(String campaignId) {
+		this.campaignId = campaignId;
+	}
 	
 	public String getId() {
 		return id;

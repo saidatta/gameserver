@@ -50,32 +50,38 @@ public class FolioService implements Serializable {
 	
 	public void initFolioCreator(FolioCreator folioCreator, Folio folio) {
 		String campaignId = folio.getCampaignId();
-		folioCreator.setFolio(folio);
-		List<ObjectTag> tagList = objectTagService.createTagList(campaignId, folio.getTags());
 
+		folioCreator.setFolio(folio);
+		List<ObjectTag> selectedTags = folio.getTags();
 		ObjectMapper mapper = new ObjectMapper();
-		String json = null;
+		if (selectedTags != null && !selectedTags.isEmpty()) {
+			String json;
+			try {
+				json = mapper.writeValueAsString(selectedTags);
+				folioCreator.setSelectedTags(json);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				folioCreator.setSelectedTags("{}");
+			}
+		}
+
+		List<ObjectTag> tagList = objectTagService.createTagList(campaignId, selectedTags);
+		Map<String, Object> unassignedTags = new HashMap<>();
 		try {
-			json = mapper.writeValueAsString(tagList);
-			folioCreator.setAllTags(json);
+			unassignedTags = objectTagService.createObjectTagTree(tagList);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String json;
+		try {
+			json = mapper.writeValueAsString(unassignedTags);
+			folioCreator.setUnassignedTags(json);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			folioCreator.setAllTags("{}");
-		}
-
-		if (folio != null) {
-			tagList = folio.getTags();  
-			if (tagList != null && !tagList.isEmpty()) {
-				try {
-					json = mapper.writeValueAsString(tagList);
-					folioCreator.setSelectedTags(json);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					folioCreator.setAllTags("{}");
-				}
-			}
+			folioCreator.setUnassignedTags("{}");
 		}
 	}
 }
