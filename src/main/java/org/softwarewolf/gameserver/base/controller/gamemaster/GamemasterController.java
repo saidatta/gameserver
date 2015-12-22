@@ -70,15 +70,27 @@ public class GamemasterController {
 
 	@RequestMapping(value = "/editFolio", method = RequestMethod.GET)
 	@Secured({"USER"})
-	public String editPage(HttpSession session, FolioCreator pageCreator) {
+	public String editFolio(HttpSession session, FolioCreator folioCreator) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
-//		page = new Page();
-//		page.setCampaignId(campaignId);
+
 		Folio folio = folioService.findAll().get(0);
-		folioService.initFolioCreator(pageCreator, folio);
+		folioService.initFolioCreator(folioCreator, folio);
+		return ControllerHelper.EDIT_FOLIO;
+	}
+	
+	@RequestMapping(value = "/removeTagFromFolio", method = RequestMethod.POST)
+	@Secured({"USER"})
+	public String removeTagFromFolio(HttpSession session, FolioCreator folioCreator) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}		
+
+		Folio folio = folioService.findAll().get(0);
+		folioService.initFolioCreator(folioCreator, folio);
 		return ControllerHelper.EDIT_FOLIO;
 	}
 

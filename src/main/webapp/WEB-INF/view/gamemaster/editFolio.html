@@ -34,7 +34,7 @@
 
 			var ul = '<ul class="dropdown-menu"></ul>';
 			$(".dropdown-toggle").after(ul);
-			var string0 = '<li id="0" class="selectTag"><a href="#">Add a tag</a></li>';
+			var string0 = '<li id="0" class="selectTag"><a href="#" onclick="alert(\'hi\');">Add a tag</a></li>';
 			$(".dropdown-menu").append(string0);
 			var string1 = '<li class="divider"></li>';
 			$(".dropdown-menu").append(string1);
@@ -42,38 +42,34 @@
 			$.each(data, function(index, currentTag) {
 				var objectId = currentTag['objectId'];
 				var tagName = currentTag['tagName'];
-				var current = '<li id="'+objectId+'" class="selectTag"><a href="#">'+tagName+'</a></li>'; 
+				var current = '<li id="'+objectId+'" class="selectTag"><a href="#" onclick="selectTag(\''+objectId+'\');">'+tagName+'</a></li>'; 
 				$(".dropdown-menu").append(current);
 			});
-/*			
-			var li1 = $('<li/>')
-				.addClass("selectTag")
-    	    	.attr("id", "0")
-    	    	.text("Add a tag");
-			selectedTagsDropdown.append(selectedTagsDropdown);
-			$('#0').bind("click", function() {
-				//functionality that you were trying to add using attr can now go inside here.
-				selectTag("0");
-			});
-			
-			var li2 = $('<li/>')
-				.addClass("divider");
-			selectedTagsDropdown.append(selectedTagsDropdown);
 
-			data.every(function(tag) {
-				var li = $('<li/>')
-					.addClass("selectTag")
-		        	.attr('id', tag["objectId"])
-		        	.text(tag["tagName"]);
-				selectedTagsDropdown.append(selectedTagsDropdown);
-				$('#' + tag["objectId"]).bind("click", function() {
-					//functionality that you were trying to add using attr can now go inside here.
-					selectTag(tag["objectId"]);
-				});
-			});
-*/
 		});	
+
+		$("#dialog").dialog({
+  	    	autoOpen: false,
+	  	    modal: true
+  		});
 		
+		$(".confirmLink").click(function(e) {
+			e.preventDefault();
+			var targetUrl = $(this).attr("href");
+	
+			$("#dialog").dialog({
+				buttons : {
+			    	"Confirm" : function() {
+			        	window.location.href = targetUrl;
+			        },
+			        "Cancel" : function() {
+			        	$(this).dialog("close");
+			        }
+			    }
+			});
+	
+			$("#dialog").dialog("open");
+		});	
 	});		
 
 
@@ -81,29 +77,28 @@
 
 	<script>
 		$(function() {
-		    $( "#dialog-confirm" ).dialog({
-		        resizable: false,
-		        height:240,
-  		        modal: true,
-		        buttons: {
-		            "Remove tag": function() {
-		                $( this ).dialog( "close" );
-		        	},
-		        	Cancel: function() {
-		          		$( this ).dialog( "close" );
-		        	}
-		      	}
-		    });
-		});
-	
-		$(function() {
 		    $( "#datepicker" ).datepicker();
 		});
 		  
 		function selectTag(id) {
 			var selectedTag = $("#"+id);
 			var name = selectedTag.text();
-			alert("Selected: " + name);
+//			alert("Selected: " + name);
+//			e.preventDefault();
+			var targetUrl = $(this).attr("href");
+	
+			$("#dialog").dialog({
+				buttons : {
+			    	"Confirm" : function() {
+			        	window.location.href = targetUrl;
+			        },
+			        "Cancel" : function() {
+			        	$(this).dialog("close");
+			        }
+			    }
+			});
+	
+			$("#dialog").dialog("open");			
 		}
 	</script>
 </head>
@@ -125,7 +120,18 @@
 		<input id="campaignId" type="hidden" th:field="*{folio.campaignId}"></input>
 		<input id="unassignedTags" type="hidden" th:field="*{unassignedTags}"></input>
 		<input id="selectedTags" type="hidden" th:field="*{selectedTags}"></input>
-	
+		<input id="removeTag" type="hidden" th:field="*{removeTag}"></input>
+		<input id="addTag" type="hidden" th:field="*{addTag}"></input>
+
+		<div class="row">
+			<div class="col-md-10">
+				<div id="dialog" title="Confirmation Required">
+  					Remove tag from folio?
+				</div>	
+		 	</div>
+		</div>
+
+
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-1">
@@ -152,18 +158,6 @@
 			</div>
 		</div>		 
 
-		<div class="row">
-			<div class="col-md-1"></div>
-			<div class="col-md-1">
-				<label>Dialog test</label>
-			</div>
-			<div class="col-md-10">
-				<div id="dialog-confirm" title="Remove this tag?">
-					<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Should this tag be removed?</p>
-				</div>			
-			</div>
-		</div>		 
-							
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-1">
