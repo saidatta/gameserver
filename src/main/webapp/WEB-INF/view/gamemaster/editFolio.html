@@ -34,7 +34,7 @@
 
 			var ul = '<ul class="dropdown-menu"></ul>';
 			$(".dropdown-toggle").after(ul);
-			var string0 = '<li id="0" class="selectTag"><a href="#" onclick="alert(\'hi\');">Add a tag</a></li>';
+			var string0 = '<li id="0" class="selectTag"><a href="#" onclick="addTag();">Add a tag</a></li>';
 			$(".dropdown-menu").append(string0);
 			var string1 = '<li class="divider"></li>';
 			$(".dropdown-menu").append(string1);
@@ -50,7 +50,8 @@
 
 		$("#dialog").dialog({
   	    	autoOpen: false,
-	  	    modal: true
+	  	    modal: true,
+	  	  	position: { my: "left top", at: "right top", of: "#tagsBtn", collision: "flip flip" }
   		});
 		
 		$(".confirmLink").click(function(e) {
@@ -83,6 +84,7 @@
 		function selectTag(id) {
 			var selectedTag = $("#"+id);
 			var name = selectedTag.text();
+			$("#dialog").text("Remove the tag " + name + "?");
 //			alert("Selected: " + name);
 //			e.preventDefault();
 			var targetUrl = $(this).attr("href");
@@ -99,6 +101,18 @@
 			});
 	
 			$("#dialog").dialog("open");			
+		}
+		
+		function addTag() {
+			var unassignedTagsField = $("#unassignedTags");
+			var unassignedTagsText = unassignedTagsField.val();
+			var unassignedTags = jQuery.parseJSON(unassignedTagsText);
+			var newText = "";
+			$.each(unassignedTags.children, function(index, currentTag) {
+				newText += currentTag["displayName"] + "\n";
+			});
+			$("#dialog").text(newText);
+			$("#dialog").dialog("open");	
 		}
 	</script>
 </head>
@@ -149,7 +163,7 @@
 			</div>
 			<div class="col-md-10">
 				<div class="btn-group input-margin" role="group">
-  					<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+  					<button id="tagsBtn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
     					Tags<span class="caret"></span>
   					</button>
 	  				<ul class="dropdown-menu">
