@@ -67,6 +67,6 @@ public class TagBase implements Serializable {
 	
 	public ObjectTag createTag() {
 		return new ObjectTag(this.getClass().getSimpleName(), this.getId(), this.getName(), 
-				this.getCampaignId(), this.gameDataTypeId, this.gameDataTypeName);
+				this.getCampaignId(), this.getGameDataTypeId(), this.getGameDataTypeName(), null);
 	}
 }

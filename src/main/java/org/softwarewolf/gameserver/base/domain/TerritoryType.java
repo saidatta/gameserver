@@ -14,6 +14,6 @@ public class TerritoryType extends GameDataTypeImpl {
 	@Override
 	public ObjectTag createTag(String campaignId) {
 		return new ObjectTag(this.getClass().getSimpleName(), this.getId(), this.getName(), campaignId,
-				null, null);
+				null, null, null);
 	}	
 }

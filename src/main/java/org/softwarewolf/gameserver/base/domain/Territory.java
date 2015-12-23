@@ -18,6 +18,6 @@ public class Territory extends GameDataImpl {
 	@Override
 	public ObjectTag getTag() {
 		return new ObjectTag(this.getClass().getSimpleName(), id, displayName, campaignId,
-				gameDataTypeId, gameDataTypeName);
+				gameDataTypeId, gameDataTypeName, null);
 	}	
 }

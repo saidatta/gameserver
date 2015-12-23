@@ -9,6 +9,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
    	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+	
     <!-- Bootstrap & JQuery-->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
@@ -71,6 +72,10 @@
 	
 			$("#dialog").dialog("open");
 		});	
+		
+		$(function() {
+			$( "#selectable" ).selectable();
+		});
 	});		
 
 
@@ -104,15 +109,19 @@
 		}
 		
 		function addTag() {
+			$("#dialog").text("Add the tag " + name + "?");
 			var unassignedTagsField = $("#unassignedTags");
 			var unassignedTagsText = unassignedTagsField.val();
 			var unassignedTags = jQuery.parseJSON(unassignedTagsText);
-			var newText = "";
+			var newText = '<ol id="selectable">';
 			$.each(unassignedTags.children, function(index, currentTag) {
-				newText += currentTag["displayName"] + "\n";
+				newText += '<li class="ui-widget-content">'+currentTag['displayName']+'</li>';
 			});
-			$("#dialog").text(newText);
-			$("#dialog").dialog("open");	
+			newText += '</ol>';
+			$("#dialog").append(newText);
+			$("#dialog").dialog("open").find('ol').selectable({selected: function(event,ui) {
+                  alert('here');
+            }});;	
 		}
 	</script>
 </head>

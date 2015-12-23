@@ -15,18 +15,20 @@ public class ObjectTag implements Serializable {
 	private String gameDataTypeId;
 	private String gameDataTypeName;
 	private boolean hasChildren = false;
+	private String parentId = null;
 	
 	public ObjectTag() { 
 	}
 	
 	public ObjectTag(String className, String objectId, String tagName, String campaignId, 
-			String gameDataTypeId, String gameDataTypeName) {
+			String gameDataTypeId, String gameDataTypeName, String parentId) {
 		this.className = className;
 		this.objectId = objectId;
 		this.tagName = tagName;
 		this.campaignId = campaignId;
 		this.gameDataTypeId = gameDataTypeId;
 		this.gameDataTypeName = gameDataTypeName;
+		this.parentId = parentId;
 	}
 	
 	public String getClassName() {
@@ -78,6 +80,13 @@ public class ObjectTag implements Serializable {
 		this.hasChildren = hasChildren;
 	}
 	
+	public String getParentId() {
+		return parentId;
+	}
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -91,6 +100,7 @@ public class ObjectTag implements Serializable {
 		result = prime * result + ((tagName == null) ? 0 : tagName.hashCode());
 		result = prime * result + ((gameDataTypeId == null) ? 0 : gameDataTypeId.hashCode());
 		result = prime * result + ((gameDataTypeName == null) ? 0 : gameDataTypeName.hashCode());
+		result = prime * result + ((parentId == null) ? 0 : parentId.hashCode());
 		return result;
 	}
 
@@ -132,6 +142,11 @@ public class ObjectTag implements Serializable {
 			if (other.gameDataTypeName != null)
 				return false;
 		} else if (!gameDataTypeName.equals(other.gameDataTypeName))
+			return false;
+		if (parentId == null) {
+			if (other.parentId != null)
+				return false;
+		} else if (!parentId.equals(other.parentId))
 			return false;
 		return true;
 	}

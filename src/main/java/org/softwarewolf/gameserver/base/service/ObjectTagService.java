@@ -30,6 +30,12 @@ public class ObjectTagService {
 	@Autowired
 	private TerritoryTypeService territoryTypeService;
 	
+	/**
+	 * This is not scalable. I need a better way to do this.
+	 * @param campaignId
+	 * @param excludeTags
+	 * @return
+	 */
 	public List<ObjectTag> createTagList(String campaignId, List<ObjectTag> excludeTags) {
 		if (excludeTags == null) {
 			excludeTags = new ArrayList<>();
@@ -82,7 +88,7 @@ public class ObjectTagService {
 		
 		String campaignId = objectTagList.get(0).getCampaignId();
 		// Create a hash map of all Tags for fast retrieval
-		ObjectTag root = new ObjectTag(ROOT, ROOT, ROOT, campaignId, null, null);
+		ObjectTag root = new ObjectTag(ROOT, ROOT, ROOT, campaignId, null, null, null);
 		objectTagMap.put(ROOT, root);
 		// Populate the map of organization nodes
 		for (ObjectTag objectTag : objectTagList) {
@@ -93,12 +99,16 @@ public class ObjectTagService {
 		} 
 
 		HierarchyJsonBuilder rootBuilder = new HierarchyJsonBuilder(root.getObjectId(), root.getTagName(),
-				root.getGameDataTypeId(), root.getGameDataTypeName());
+				root.getGameDataTypeId(), root.getTagName());
 
 		for (ObjectTag tag : objectTagMap.values()) {
 			String parentId = tag.getGameDataTypeId();
 			if (parentId != null) {
-				(objectTagMap.get(parentId)).setHasChildren(true);
+				ObjectTag parent = objectTagMap.get(parentId);
+				if (parent != null) {
+					parent.setHasChildren(true);
+					tag.setParentId(parent.getObjectId());
+				}
 			}
 		}
 
@@ -114,8 +124,13 @@ public class ObjectTagService {
 			for (String childId : getChildrenIdList(objectTag, objectTagMap)) {
 				ObjectTag childObjectTag = objectTagMap.get(childId);
 //				childOrganizationRank.setGameDataTypeName(organizationTypeNameMap.get(childOrganizationRank.getGameDataTypeId()));
+				String displayName = childObjectTag.getTagName();
+				if (childObjectTag.getParentId() != null && !childObjectTag.getParentId().equals("Root")) {
+					ObjectTag parentTag = objectTagMap.get(childObjectTag.getParentId());
+					displayName += "(" + parentTag.getTagName() + ")";
+				}
 				HierarchyJsonBuilder child = new HierarchyJsonBuilder(childId, childObjectTag.getClassName(),
-						childObjectTag.getGameDataTypeId(), childObjectTag.getTagName());
+						childObjectTag.getGameDataTypeId(), displayName);
 				if (childObjectTag.getHasChildren()) {
 					child = buildHierarchy(child, objectTagMap);
 				}
