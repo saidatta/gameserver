@@ -121,6 +121,7 @@ public class ObjectTagService {
 	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, ObjectTag> objectTagMap) {
 		ObjectTag objectTag = objectTagMap.get(parent.getId());
 		if (objectTag.getHasChildren()) {
+			List<String> childIdList = getChildrenIdList(objectTag, objectTagMap);
 			for (String childId : getChildrenIdList(objectTag, objectTagMap)) {
 				ObjectTag childObjectTag = objectTagMap.get(childId);
 //				childOrganizationRank.setGameDataTypeName(organizationTypeNameMap.get(childOrganizationRank.getGameDataTypeId()));

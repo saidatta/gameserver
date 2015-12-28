@@ -57,7 +57,8 @@
 		$("#addDialog").dialog({
   	    	autoOpen: false,
 	  	    modal: true,
-	  	  	position: { my: "left top", at: "right top", of: "#tagsBtn", collision: "flip flip" }
+	  	  	position: { my: "left top", at: "right top", of: "#tagsBtn", collision: "flip flip" },
+			"width": 460
   		});
 		
 
@@ -104,13 +105,13 @@
 			var unassignedTagsField = $("#unassignedTags");
 			var unassignedTagsText = unassignedTagsField.val();
 			var unassignedTags = jQuery.parseJSON(unassignedTagsText);
-			var newText = '<ul id="selectable">';
+			var newText = '<ol id="selectable">';
 			$.each(unassignedTags.children, function(index, currentTag) {
-				newText += '<li class="ui-widget-content confirmLink">'+currentTag['displayName']+'</li>';
+				newText += '<li class="ui-widget-content">'+currentTag['displayName']+'</li>';
 			});
-			newText += '</ul>';
+			newText += '</ol>';
 			$("#addDialog").append(newText);
-			$("#addDialog").dialog("open").find('ul').selectable({selected: function(event,ui) {
+			$("#addDialog").dialog("open").find('ol').selectable({selected: function(event,ui) {
                   alert('here');
             }});;	
 		}
@@ -146,7 +147,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-10">
-				<div id="addDialog" title="Add tag"></div>	
+				<div id="addDialog" style="display:none;" title="Add tag"></div>	
 		 	</div>
 		</div>
 
