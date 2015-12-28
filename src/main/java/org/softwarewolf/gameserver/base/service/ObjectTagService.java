@@ -128,6 +128,8 @@ public class ObjectTagService {
 				if (childObjectTag.getParentId() != null && !childObjectTag.getParentId().equals("Root")) {
 					ObjectTag parentTag = objectTagMap.get(childObjectTag.getParentId());
 					displayName += "(" + parentTag.getTagName() + ")";
+				} else {
+					displayName += "(" + splitCamelCase(childObjectTag.getClassName()) + ")"; 
 				}
 				HierarchyJsonBuilder child = new HierarchyJsonBuilder(childId, childObjectTag.getClassName(),
 						childObjectTag.getGameDataTypeId(), displayName);
@@ -140,6 +142,16 @@ public class ObjectTagService {
 		
 		return parent;
 	}	
+	
+	static String splitCamelCase(String s) {
+		return s.replaceAll(
+			String.format("%s|%s|%s",
+				 "(?<=[A-Z])(?=[A-Z][a-z])",
+				 "(?<=[^A-Z])(?=[A-Z])",
+				 "(?<=[A-Za-z])(?=[^A-Za-z])"
+			), " "
+		);
+	}
 	
 	private List<String> getChildrenIdList(ObjectTag parent, Map<String, ObjectTag> objectTagMap) {
 		List<String> childList = new ArrayList<>();

@@ -49,29 +49,18 @@
 
 		});	
 
-		$("#dialog").dialog({
+		$("#removeDialog").dialog({
+  	    	autoOpen: false,
+	  	    modal: true,
+	  	  	position: { my: "left top", at: "right top", of: "#tagsBtn", collision: "flip flip" }
+  		});
+		$("#addDialog").dialog({
   	    	autoOpen: false,
 	  	    modal: true,
 	  	  	position: { my: "left top", at: "right top", of: "#tagsBtn", collision: "flip flip" }
   		});
 		
-		$(".confirmLink").click(function(e) {
-			e.preventDefault();
-			var targetUrl = $(this).attr("href");
-	
-			$("#dialog").dialog({
-				buttons : {
-			    	"Confirm" : function() {
-			        	window.location.href = targetUrl;
-			        },
-			        "Cancel" : function() {
-			        	$(this).dialog("close");
-			        }
-			    }
-			});
-	
-			$("#dialog").dialog("open");
-		});	
+
 		
 		$(function() {
 			$( "#selectable" ).selectable();
@@ -89,12 +78,12 @@
 		function selectTag(id) {
 			var selectedTag = $("#"+id);
 			var name = selectedTag.text();
-			$("#dialog").text("Remove the tag " + name + "?");
+			$("#removeDialog").text("Remove the tag " + name + "?");
 //			alert("Selected: " + name);
 //			e.preventDefault();
 			var targetUrl = $(this).attr("href");
 	
-			$("#dialog").dialog({
+			$("#removeDialog").dialog({
 				buttons : {
 			    	"Confirm" : function() {
 			        	window.location.href = targetUrl;
@@ -105,21 +94,23 @@
 			    }
 			});
 	
-			$("#dialog").dialog("open");			
+			$("#removeDialog").dialog("open");			
 		}
 		
 		function addTag() {
-			$("#dialog").text("Add the tag " + name + "?");
+			$("#addDialog").empty();
+//			$("#addDialog").text("Add the tag " + name + "?");
+
 			var unassignedTagsField = $("#unassignedTags");
 			var unassignedTagsText = unassignedTagsField.val();
 			var unassignedTags = jQuery.parseJSON(unassignedTagsText);
-			var newText = '<ol id="selectable">';
+			var newText = '<ul id="selectable">';
 			$.each(unassignedTags.children, function(index, currentTag) {
-				newText += '<li class="ui-widget-content">'+currentTag['displayName']+'</li>';
+				newText += '<li class="ui-widget-content confirmLink">'+currentTag['displayName']+'</li>';
 			});
-			newText += '</ol>';
-			$("#dialog").append(newText);
-			$("#dialog").dialog("open").find('ol').selectable({selected: function(event,ui) {
+			newText += '</ul>';
+			$("#addDialog").append(newText);
+			$("#addDialog").dialog("open").find('ul').selectable({selected: function(event,ui) {
                   alert('here');
             }});;	
 		}
@@ -148,9 +139,14 @@
 
 		<div class="row">
 			<div class="col-md-10">
-				<div id="dialog" title="Confirmation Required">
+				<div id="removeDialog" title="Confirmation Required">
   					Remove tag from folio?
 				</div>	
+		 	</div>
+		</div>
+		<div class="row">
+			<div class="col-md-10">
+				<div id="addDialog" title="Add tag"></div>	
 		 	</div>
 		</div>
 
