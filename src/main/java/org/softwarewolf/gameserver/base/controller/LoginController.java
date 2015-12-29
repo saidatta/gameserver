@@ -2,7 +2,7 @@ package org.softwarewolf.gameserver.base.controller;
 
 import org.softwarewolf.gameserver.base.repository.CampaignRepository;
 import org.softwarewolf.gameserver.base.repository.SimpleGrantedAuthorityRepository;
-import org.softwarewolf.gameserver.base.repository.TerritoryRepository;
+import org.softwarewolf.gameserver.base.repository.LocationRepository;
 import org.softwarewolf.gameserver.base.repository.TerritoryTypeRepository;
 import org.softwarewolf.gameserver.base.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class LoginController {
 	private TerritoryTypeRepository territoryTypeRepo;
 	
 	@Autowired 
-	private TerritoryRepository territoryRepo;
+	private LocationRepository territoryRepo;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {

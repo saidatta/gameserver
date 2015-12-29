@@ -9,7 +9,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
-import org.softwarewolf.gameserver.base.domain.Territory;
+import org.softwarewolf.gameserver.base.domain.Location;
 import org.softwarewolf.gameserver.base.domain.TerritoryType;
 import org.softwarewolf.gameserver.base.domain.helper.HierarchyJsonBuilder;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
@@ -26,7 +26,7 @@ public class ObjectTagService {
 	@Autowired
 	private OrganizationTypeService organizationTypeService;
 	@Autowired
-	private TerritoryService territoryService;
+	private LocationService locationService;
 	@Autowired
 	private TerritoryTypeService territoryTypeService;
 	
@@ -43,7 +43,7 @@ public class ObjectTagService {
 		List<Organization> orgList = organizationService.findAllByCampaignId(campaignId);
 		List<OrganizationRank> orgRankList = organizationRankService.findAllByCampaignId(campaignId);
 		List<OrganizationType> orgTypeList = organizationTypeService.getOrganizationTypesInCampaign(campaignId);
-		List<Territory> territoryList = territoryService.getTerritoriesInCampaign(campaignId);
+		List<Location> territoryList = locationService.getLocationsInCampaign(campaignId);
 		List<TerritoryType> territoryTypeList = territoryTypeService.getTerritoryTypesInCampaign(campaignId);
 		
 		List<ObjectTag> tagList = new ArrayList<>();
@@ -65,10 +65,10 @@ public class ObjectTagService {
 				tagList.add(orgType.createTag(campaignId));
 			}
 		}
-		for (Territory territory : territoryList) {
-			ObjectTag tag = territory.createTag();
+		for (Location location : territoryList) {
+			ObjectTag tag = location.createTag();
 			if (!excludeTags.contains(tag)) {
-				tagList.add(territory.createTag());
+				tagList.add(location.createTag());
 			}
 		}
 		for (TerritoryType territoryType : territoryTypeList) {

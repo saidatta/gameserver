@@ -9,7 +9,7 @@ import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationTypeCreator;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
 import org.softwarewolf.gameserver.base.domain.helper.SelectCampaignHelper;
-import org.softwarewolf.gameserver.base.domain.helper.TerritoryCreator;
+import org.softwarewolf.gameserver.base.domain.helper.LocationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.TerritoryTypeCreator;
 import org.softwarewolf.gameserver.base.repository.UserRepository;
 import org.softwarewolf.gameserver.base.service.CampaignService;
@@ -17,7 +17,7 @@ import org.softwarewolf.gameserver.base.service.OrganizationRankService;
 import org.softwarewolf.gameserver.base.service.OrganizationService;
 import org.softwarewolf.gameserver.base.service.OrganizationTypeService;
 import org.softwarewolf.gameserver.base.service.FolioService;
-import org.softwarewolf.gameserver.base.service.TerritoryService;
+import org.softwarewolf.gameserver.base.service.LocationService;
 import org.softwarewolf.gameserver.base.service.TerritoryTypeService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class GamemasterController {
 	protected CampaignService campaignService;
 	
 	@Autowired
-	protected TerritoryService territoryService;
+	protected LocationService locationService;
 	
 	@Autowired
 	protected TerritoryTypeService territoryTypeService;
@@ -126,7 +126,7 @@ public class GamemasterController {
 
 	@RequestMapping(value = "/campaignHome", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
-	public String campaignHome(HttpSession session, TerritoryCreator territoryCreator, 
+	public String campaignHome(HttpSession session, LocationCreator locationCreator, 
 			TerritoryTypeCreator territoryTypeCreator, final OrganizationCreator organizationCreator,
 			final OrganizationTypeCreator organizationTypeCreator, FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
@@ -134,7 +134,7 @@ public class GamemasterController {
 			return ControllerHelper.USER_MENU;
 		}
 		String territoryId = null;
-		territoryService.initTerritoryCreator(territoryId, territoryCreator, campaignId, ControllerHelper.CAMPAIGN_HOME);
+		locationService.initLocationCreator(territoryId, locationCreator, campaignId, ControllerHelper.CAMPAIGN_HOME);
 		territoryTypeService.initTerritoryTypeCreator(null, territoryTypeCreator, campaignId, ControllerHelper.CAMPAIGN_HOME);
 
 		String organizationId = null;

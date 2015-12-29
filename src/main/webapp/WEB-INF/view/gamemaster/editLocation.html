@@ -16,12 +16,12 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     
-    <title th:text="#{createTerritory.title}">Title</title>
+    <title th:text="#{createLocation.title}">Title</title>
     
 <script type="text/javascript">	
-	function buildTree(territoryNode, nodeParent, index, indent) {
-		var displayName = territoryNode["displayName"];
-		// If we're looking at "Add new territory" skip it, it isn't real.
+	function buildTree(locationNode, nodeParent, index, indent) {
+		var displayName = locationNode["displayName"];
+		// If we're looking at "Add new location" skip it, it isn't real.
 		if (displayName == "" || displayName == null) {
 			return index;
 		}
@@ -31,21 +31,21 @@
 	    index = index + 1;
 		var newList = document.createElement("ul");
 		var listItem = document.createElement("li");
-		var territoryId = territoryNode["id"];
-		var territoryName = territoryNode["name"];
+		var locationId = locationNode["id"];
+		var locationName = locationNode["name"];
 		var itemHtml;
-		var children = territoryNode["children"];
+		var children = locationNode["children"];
 		if (children.length > 0) {
-			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+territoryId+'\',\''+territoryName+'\');"></button> <span id="'+territoryId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+territoryId+'\');">'+displayName+' <span class="caret"></span></span></div>';
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+locationId+'\',\''+locationName+'\');"></button> <span id="'+locationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+locationId+'\');">'+displayName+' <span class="caret"></span></span></div>';
 		} else {
-			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+territoryId+'\',\''+territoryName+'\');"></button> <span id="'+territoryId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+territoryId+'\');">'+displayName+'</span> </div>';
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+locationId+'\',\''+locationName+'\');"></button> <span id="'+locationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+locationId+'\');">'+displayName+'</span> </div>';
 		}
 		$(listItem).html(itemHtml);
-		$(listItem).attr("id", territoryId);
+		$(listItem).attr("id", locationId);
 		$(listItem).addClass(parentId);
 		$(newList).append(listItem);
 		$(nodeParent).append(newList);
-		if ($(territoryNode).attr("id") != "ROOT") {
+		if ($(locationNode).attr("id") != "ROOT") {
 			$(listItem).attr("hidden", "hidden");
 		}
 		
@@ -59,16 +59,16 @@
 		return index;
 	}
 	
-	// This is for selecting a parent territory
-	function clickPlus(parentTerritoryId, parentTerritoryName) {
-		$("#hiddenParentId").val(parentTerritoryId);
-		$("#territoryParentName").val(parentTerritoryName);
+	// This is for selecting a parent location
+	function clickPlus(parentLocationId, parentLocationName) {
+		$("#hiddenParentId").val(parentLocationId);
+		$("#locationParentName").val(parentLocationName);
 		event.preventDefault();
 	}
 	
-	// This is for collapsing the parent territory hierarchy
-	function clickText(territoryId) {
-        var search = "."+territoryId;
+	// This is for collapsing the parent location hierarchy
+	function clickText(locationId) {
+        var search = "."+locationId;
 		var children = $(search);
 		$.each(children, function() {
 			var hidden = $(this).attr("hidden");
@@ -95,14 +95,14 @@
 		    	});
 			}
 			
-			var territoryTreeJson = $("#territoryTreeJson").val();
-			var territoryTree = jQuery.parseJSON( territoryTreeJson );
-			var nodeParent = $("#territoryGroupPanel");
-			var children = territoryTree["children"];
+			var locationTreeJson = $("#locationTreeJson").val();
+			var locationTree = jQuery.parseJSON( locationTreeJson );
+			var nodeParent = $("#locationGroupPanel");
+			var children = locationTree["children"];
 			var index = 0;
 			var indent = 0;
-			buildTree(territoryTree, $(nodeParent), index, indent);
-//			$(territoryTree.children).each(function() {
+			buildTree(locationTree, $(nodeParent), index, indent);
+//			$(locationTree.children).each(function() {
 //				index = buildTree(this, $(nodeParent), index, indent);
 //			});
 		});		
@@ -113,11 +113,11 @@
 			var id = $(target).attr('id');
 			if (id == "0") {
 				var form = $("#createTerritoryTypeForm");
-				var territoryId = $("#hiddenTerritoryId").val();
+				var locationId = $("#hiddenLocationId").val();
 				var action = form.attr("action");
-				action += "?forwardingUrl=/gamemaster/editTerritory";
-//				if (territoryId != "") {
-//					action += ".id=" + territoryId;
+				action += "?forwardingUrl=/gamemaster/editLocation";
+//				if (locationId != "") {
+//					action += ".id=" + locationId;
 //				}
 				window.location.href = action;
 			} else {
@@ -137,45 +137,45 @@
 			}
 		});
 		
-		$(".selectTerritory").click(function(event) {
+		$(".selectLocation").click(function(event) {
 			event.preventDefault();
 			var target = $(event.target);
 			var id = $(target).attr('id');
 			var name = $(target).text();
-			var territoryStatus = $("#territoryStatus");
+			var locationStatus = $("#locationStatus");
 			if (id == "0") { 
-				$("#territoryName").val(null);
-				$("#territoryId").val(null);
-				territoryStatus.text("You are creating a new territory");
+				$("#locationName").val(null);
+				$("#locationId").val(null);
+				locationStatus.text("You are creating a new location");
 			} else {
-				$("#territoryName").val(name);
-				$("#hiddenTerritoryId").val(id);
-				territoryStatus.text("You are editing " + name);
+				$("#locationName").val(name);
+				$("#hiddenLocationId").val(id);
+				locationStatus.text("You are editing " + name);
 			}
 			
-			$.get( "/gameserver/gamemaster/getTerritory?hiddenTerritoryId="+id, function( data ) {
+			$.get( "/gameserver/gamemaster/getLocation?hiddenLocationId="+id, function( data ) {
 //				  $( ".result" ).html( data );
 //				  alert(data);
 				  // Populate the form with the data returned from the back end
-				  var territoryJson = jQuery.parseJSON(data);
-				  var description = territoryJson["description"];
-				  var territoryDescription = $("#territoryDescription");
-				  territoryDescription.val(description);
-				  var typeId = territoryJson["gameDataTypeId"];
+				  var locationJson = jQuery.parseJSON(data);
+				  var description = locationJson["description"];
+				  var locationDescription = $("#locationDescription");
+				  locationDescription.val(description);
+				  var typeId = locationJson["gameDataTypeId"];
 				  var territoryTypeId = $("#territoryTypeId");
 				  territoryTypeId.val(typeId);
-				  var typeName = territoryJson["gameDataTypeName"];
+				  var typeName = locationJson["gameDataTypeName"];
 				  var territoryTypeName = $("#territoryTypeName");
 				  territoryTypeName.val(typeName);
-				  var parentId = territoryJson["parentId"];
-				  var territoryParentId = $("#hiddenParentId");
-				  territoryParentId.val(parentId);
-				  var parentName = territoryJson["parentName"];
+				  var parentId = locationJson["parentId"];
+				  var locationParentId = $("#hiddenParentId");
+				  locationParentId.val(parentId);
+				  var parentName = locationJson["parentName"];
 				  if (parentName == null) {
 					  parentName = "ROOT";
 				  }
-				  var territoryParentName = $("#territoryParentName");
-				  territoryParentName.val(parentName);
+				  var locationParentName = $("#locationParentName");
+				  locationParentName.val(parentName);
 			});
 		});
 	});		
@@ -183,14 +183,14 @@
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>
-	<div th:fragment="createTerritory">
+	<div th:fragment="createLocation">
 		<br></br>
 	
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-7">
 				<div>
-					<h1 th:text="#{createTerritory.title}">Create</h1>
+					<h1 th:text="#{createLocation.title}">Create</h1>
 				</div>
 			</div>
 			<div class="col-md-3">
@@ -214,17 +214,17 @@
 		</div>
 		<br></br>
 		<form id="createTerritoryTypeForm" action="#" th:action="@{/gamemaster/createTerritoryType}" method="get"></form>
-		<form id="editTerritoryForm" th:object="${territoryCreator}" action="#" th:action="@{/gamemaster/editTerritory}" method="post">
+		<form id="editLocationForm" th:object="${locationCreator}" action="#" th:action="@{/gamemaster/editLocation}" method="post">
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
-			<input id="campaignId" type="hidden" th:field="*{territory.campaignId}"></input>
-			<input id="territoryTypeId" type="hidden" th:field="*{territory.gameDataTypeId}"></input>
-			<input id="territoryTreeJson" type="hidden" th:field="*{territoryTreeJson}"></input>
-			<input id="hiddenParentId" type="hidden" th:field="*{territory.parentId}"></input>
-			<input id="hiddenTerritoryId" type="hidden" th:field="*{territory.id}"></input>
+			<input id="campaignId" type="hidden" th:field="*{location.campaignId}"></input>
+			<input id="territoryTypeId" type="hidden" th:field="*{location.gameDataTypeId}"></input>
+			<input id="locationTreeJson" type="hidden" th:field="*{locationTreeJson}"></input>
+			<input id="hiddenParentId" type="hidden" th:field="*{location.parentId}"></input>
+			<input id="hiddenLocationId" type="hidden" th:field="*{location.id}"></input>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-9">
-					<span th:text="#{createTerritory.description}">description</span>
+					<span th:text="#{createLocation.description}">description</span>
 				</div>
 			</div>
 			<div class="row">
@@ -238,23 +238,23 @@
 				<div class="row">
 					<div class="col-md-2"></div>
 					<div class="col-md-9">
-						<button id="territoryStatus" type="button" class="input-margin btn btn-info dropdown-toggle" aria-expanded="false" th:text="${feFeedback.info2}"></button>
+						<button id="locationStatus" type="button" class="input-margin btn btn-info dropdown-toggle" aria-expanded="false" th:text="${feFeedback.info2}"></button>
 					</div>
 				</div>
 			</div>
-
+			
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{editTerritory.selectTerritory}">Name</label>
+					<label class="input-margin" th:text="#{editLocation.selectLocation}">Name</label>
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
-	  					<button id="tBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editTerritory.selectTerritoryDown}">
-	    					Select Territory <span class="caret"></span>
+	  					<button id="tBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editLocation.selectLocationDown}">
+	    					Select Location <span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="territory : ${territoryCreator.territoriesInCampaign}"><a th:id="${territory.id}" class="selectTerritory" th:text="${territory.name}">Action</a></li>
+		    				<li th:each="location : ${locationCreator.locationsInCampaign}"><a th:id="${location.id}" class="selectLocation" th:text="${location.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>
@@ -263,25 +263,25 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createTerritory.territoryName}">Name</label>
+					<label class="input-margin" th:text="#{createLocation.locationName}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input id="territoryName" class="input-margin" th:field="*{territory.name}"></input>
+					<input id="locationName" class="input-margin" th:field="*{location.name}"></input>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createTerritory.parentTerritory}">Name</label>
+					<label class="input-margin" th:text="#{createLocation.parentLocation}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input id="territoryParentName" class="input-margin" th:field="*{territory.parentName}" disabled="disabled"></input>
+					<input id="locationParentName" class="input-margin" th:field="*{location.parentName}" disabled="disabled"></input>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createTerritory.territoryType}"></label>
+					<label class="input-margin" th:text="#{createLocation.territoryType}"></label>
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
@@ -289,7 +289,7 @@
 	    					Territory Type <span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="territoryType : ${territoryCreator.territoryTypesInCampaign}"><a th:id="${territoryType.id}" class="modifyTT" th:text="${territoryType.name}">Action</a></li>
+		    				<li th:each="territoryType : ${locationCreator.territoryTypesInCampaign}"><a th:id="${territoryType.id}" class="modifyTT" th:text="${territoryType.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>
@@ -297,32 +297,32 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createTerritory.territoryType}">Name</label>
+					<label class="input-margin" th:text="#{createLocation.territoryType}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input id="territoryTypeName" class="input-margin" disabled="disabled" th:field="*{territory.gameDataTypeName}"></input>
+					<input id="territoryTypeName" class="input-margin" disabled="disabled" th:field="*{location.gameDataTypeName}"></input>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createTerritory.territoryDescription}">Desc</label>
+					<label class="input-margin" th:text="#{createLocation.locationDescription}">Desc</label>
 				</div>
 				<div class="col-md-8">
-					<textarea id="territoryDescription" rows="8" cols="100" class="input-margin" th:field="*{territory.description}"></textarea>
+					<textarea id="locationDescription" rows="8" cols="100" class="input-margin" th:field="*{location.description}"></textarea>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-3">			
-					<h4>Select parent territory in campaign</h4>
+					<h4>Select parent location in campaign</h4>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-10">
 					<div id="territoryRoot">
-						<div id="territoryGroupPanel" class="list-group panel"></div>
+						<div id="locationGroupPanel" class="list-group panel"></div>
 					</div>
 				</div>
 			</div>

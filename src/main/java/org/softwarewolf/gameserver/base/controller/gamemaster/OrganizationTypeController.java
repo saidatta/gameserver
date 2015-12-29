@@ -16,7 +16,7 @@ import org.softwarewolf.gameserver.base.service.CampaignService;
 import org.softwarewolf.gameserver.base.service.OrganizationRankService;
 import org.softwarewolf.gameserver.base.service.OrganizationService;
 import org.softwarewolf.gameserver.base.service.OrganizationTypeService;
-import org.softwarewolf.gameserver.base.service.TerritoryService;
+import org.softwarewolf.gameserver.base.service.LocationService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -36,7 +36,7 @@ public class OrganizationTypeController {
 	protected CampaignService campaignService;
 	
 	@Autowired
-	protected TerritoryService territoryService;
+	protected LocationService locationService;
 	
 	@Autowired
 	protected OrganizationService organizationService;

@@ -144,6 +144,12 @@ hr {
 	padding-left: 10px;
 }
 
+#locationStatus {
+	margin-left: 10px;
+	margin-top: 5 px;
+	margin-bottom: 5px;	
+}
+
 .login-logout {
 	vertical-align: middle;
 	font-size: 16px;
@@ -209,12 +215,6 @@ hr {
 .starter-template {
   padding: 40px 15px;
   text-align: center;
-}
-
-#territoryStatus {
-	margin-left: 10px;
-	margin-top: 5 px;
-	margin-bottom: 5px;	
 }
 
 .tooltip{

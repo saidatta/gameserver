@@ -43,7 +43,7 @@ public class TerritoryTypeService {
 		if (territoryType.getId() == null) {
 			TerritoryType existingTerritoryType = territoryTypeRepository.findOneByName(territoryType.getName());
 			if (existingTerritoryType != null) {
-				throw new IllegalArgumentException("Territory type " + territoryType.getName() + " already exists");
+				throw new IllegalArgumentException("Location type " + territoryType.getName() + " already exists");
 			}
 		}
 		territoryTypeRepository.save(territoryType);
@@ -95,7 +95,7 @@ public class TerritoryTypeService {
 				territoryTypesInCampaign = territoryTypeRepository.findAllByKeyValue("campaignList", campaignId);
 				TerritoryType addNewTT = new TerritoryType();
 				addNewTT.setId("0");
-				addNewTT.setName("Add new territory type");
+				addNewTT.setName("Add new location type");
 				gameDataTypesInCampaign.add(addNewTT);
 				for (TerritoryType tt : territoryTypesInCampaign) {
 					gameDataTypesInCampaign.add(tt);

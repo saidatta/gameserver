@@ -3,18 +3,18 @@ package org.softwarewolf.gameserver.base.controller.gamemaster;
 import javax.servlet.http.HttpSession;
 
 import org.softwarewolf.gameserver.base.controller.helper.ControllerHelper;
-import org.softwarewolf.gameserver.base.domain.Territory;
+import org.softwarewolf.gameserver.base.domain.Location;
 import org.softwarewolf.gameserver.base.domain.TerritoryType;
 import org.softwarewolf.gameserver.base.domain.helper.FeFeedback;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationTypeCreator;
-import org.softwarewolf.gameserver.base.domain.helper.TerritoryCreator;
+import org.softwarewolf.gameserver.base.domain.helper.LocationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.TerritoryTypeCreator;
 import org.softwarewolf.gameserver.base.repository.UserRepository;
 import org.softwarewolf.gameserver.base.service.CampaignService;
 import org.softwarewolf.gameserver.base.service.OrganizationRankService;
 import org.softwarewolf.gameserver.base.service.OrganizationService;
-import org.softwarewolf.gameserver.base.service.TerritoryService;
+import org.softwarewolf.gameserver.base.service.LocationService;
 import org.softwarewolf.gameserver.base.service.TerritoryTypeService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class TerritoryTypeController {
 	protected CampaignService campaignService;
 	
 	@Autowired
-	protected TerritoryService territoryService;
+	protected LocationService locationService;
 	
 	@Autowired
 	protected TerritoryTypeService territoryTypeService;
@@ -54,7 +54,7 @@ public class TerritoryTypeController {
 	@RequestMapping(value = "/createTerritoryType", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	public String createTerritoryType(HttpSession session, final TerritoryTypeCreator territoryTypeCreator,
-			final TerritoryCreator territoryCreator, final OrganizationCreator organizationCreator, 
+			final LocationCreator locationCreator, final OrganizationCreator organizationCreator, 
 			final OrganizationTypeCreator organizationTypeCreator, FeFeedback feFeedback,
 			@RequestParam(value="forwardingUrl", required= false) String forwardingUrl) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
@@ -72,7 +72,7 @@ public class TerritoryTypeController {
 	@RequestMapping(value = "/createTerritoryType", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
 	public String postTerritoryType(HttpSession session, final TerritoryTypeCreator territoryTypeCreator,
-			final TerritoryCreator territoryCreator, final FeFeedback feFeedback) {
+			final LocationCreator locationCreator, final FeFeedback feFeedback) {
 		TerritoryType territoryType = territoryTypeCreator.getTerritoryType();
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		String forwardingUrl = territoryTypeCreator.getForwardingUrl();
@@ -82,10 +82,10 @@ public class TerritoryTypeController {
 		try {
 			territoryTypeService.saveTerritoryType(territoryType);
 			territoryTypeService.initTerritoryTypeCreator(territoryType.getId(), territoryTypeCreator, campaignId, forwardingUrl);
-			Territory territory = territoryCreator.getTerritory();
-			String territoryId = territory.getId();
-			territoryService.initTerritoryCreator(territoryId, territoryCreator, campaignId, territoryCreator.getForwardingUrl());
-			feFeedback.setInfo("Success, you have created a territory type");
+			Location location = locationCreator.getLocation();
+			String territoryId = location.getId();
+			locationService.initLocationCreator(territoryId, locationCreator, campaignId, locationCreator.getForwardingUrl());
+			feFeedback.setInfo("Success, you have created a location type");
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return forwardingUrl;
@@ -96,7 +96,7 @@ public class TerritoryTypeController {
 	@RequestMapping(value = "/addTerritoryTypeToCampaign", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
 	public String addTerritoryTypeToCampaign(HttpSession session, final TerritoryTypeCreator territoryTypeCreator,
-			final TerritoryCreator territoryCreator, final OrganizationCreator organizationCreator, 
+			final LocationCreator locationCreator, final OrganizationCreator organizationCreator, 
 			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		String addTerritoryTypeId = territoryTypeCreator.getAddGameDataTypeId();
@@ -118,7 +118,7 @@ public class TerritoryTypeController {
 	@RequestMapping(value = "/removeTerritoryTypeFromCampaign", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
 	public String removeTerritoryTypeFromCampaign(HttpSession session, final TerritoryTypeCreator territoryTypeCreator,
-			final TerritoryCreator territoryCreator, final OrganizationCreator organizationCreator,
+			final LocationCreator locationCreator, final OrganizationCreator organizationCreator,
 			final OrganizationTypeCreator organizationTypeCreator, FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		String removeTerritoryTypeId = territoryTypeCreator.getRemoveGameDataTypeId();
@@ -139,21 +139,21 @@ public class TerritoryTypeController {
 
 	@RequestMapping(value = "/addTerritoryTypeToTerritory", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
-	public String addTerritoryTypeToTerritory(HttpSession session, final TerritoryCreator territoryCreator, 
+	public String addTerritoryTypeToTerritory(HttpSession session, final LocationCreator locationCreator, 
 			final TerritoryTypeCreator territoryTypeCreator, final OrganizationCreator organizationCreator,
 			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String addTerritoryTypeId = territoryCreator.getAddGameDataTypeId();
-		String forwardingUrl = territoryCreator.getForwardingUrl();
+		String addLocationTypeId = locationCreator.getAddGameDataTypeId();
+		String forwardingUrl = locationCreator.getForwardingUrl();
 		try {
-			if (addTerritoryTypeId != null) {
-				TerritoryType territoryType = territoryTypeService.findOne(addTerritoryTypeId);
+			if (addLocationTypeId != null) {
+				TerritoryType territoryType = territoryTypeService.findOne(addLocationTypeId);
 				if (territoryType == null) {
-					feFeedback.setError("Invalid territory type.");
+					feFeedback.setError("Invalid location type.");
 					return forwardingUrl;
 				}
-				territoryCreator.getTerritory().setGameDataTypeId(addTerritoryTypeId);
-				territoryService.initTerritoryCreator(territoryCreator.getTerritory().getId(), territoryCreator, campaignId, forwardingUrl);
+				locationCreator.getLocation().setGameDataTypeId(addLocationTypeId);
+				locationService.initLocationCreator(locationCreator.getLocation().getId(), locationCreator, campaignId, forwardingUrl);
 			}
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());

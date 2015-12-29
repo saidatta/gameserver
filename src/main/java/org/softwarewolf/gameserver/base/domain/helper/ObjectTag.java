@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class ObjectTag implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	/** The name of the class, Organization, Territory, etc. */
+	/** The name of the class, Organization, Location, etc. */
 	private String className;
 	/** The id of the instance of the class */
 	private String objectId;

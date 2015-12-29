@@ -10,7 +10,7 @@ import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.Folio;
-import org.softwarewolf.gameserver.base.domain.Territory;
+import org.softwarewolf.gameserver.base.domain.Location;
 import org.softwarewolf.gameserver.base.domain.TerritoryType;
 import org.softwarewolf.gameserver.base.domain.User;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
@@ -19,7 +19,7 @@ import org.softwarewolf.gameserver.base.repository.OrganizationRankRepository;
 import org.softwarewolf.gameserver.base.repository.OrganizationRepository;
 import org.softwarewolf.gameserver.base.repository.OrganizationTypeRepository;
 import org.softwarewolf.gameserver.base.repository.SimpleGrantedAuthorityRepository;
-import org.softwarewolf.gameserver.base.repository.TerritoryRepository;
+import org.softwarewolf.gameserver.base.repository.LocationRepository;
 import org.softwarewolf.gameserver.base.repository.TerritoryTypeRepository;
 import org.softwarewolf.gameserver.base.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +71,10 @@ public class DataSeeder {
 	private TerritoryTypeRepository territoryTypeRepo;
 	
 	@Autowired 
-	private TerritoryRepository territoryRepo;
+	private LocationRepository territoryRepo;
 	
 	@Autowired
-	private TerritoryService territoryService;
+	private LocationService locationService;
 	
 	@Autowired 
 	private OrganizationTypeRepository organizationTypeRepo;
@@ -104,7 +104,7 @@ public class DataSeeder {
 		Map<String, User> userMap = seedUsers(roleMap);
 		Map<String, Campaign> campaignMap = seedCampaign(userMap);
 		Map<String, TerritoryType> territoryTypeMap = seedTerritoryType(campaignMap);
-		Map<String, Territory> territoryMap = seedTerritories(campaignMap, territoryTypeMap);
+		Map<String, Location> territoryMap = seedTerritories(campaignMap, territoryTypeMap);
 		Map<String, OrganizationType> organizationTypeMap = seedOrganizationType(campaignMap);
 		Map<String, Organization> organizationMap = seedOrganizations(campaignMap, organizationTypeMap);
 		seedOrganizationRanks(campaignMap, organizationMap);
@@ -232,36 +232,36 @@ public class DataSeeder {
 		}
 	}
 	
-	private Map<String, Territory> seedTerritories(Map<String, Campaign> campaignMap, Map<String, TerritoryType> territoryTypeMap) {
+	private Map<String, Location> seedTerritories(Map<String, Campaign> campaignMap, Map<String, TerritoryType> territoryTypeMap) {
 		territoryRepo.deleteAll();
-		Map<String, Territory> territoryMap = new HashMap<>();
+		Map<String, Location> territoryMap = new HashMap<>();
 		String sAndSCampaignId = campaignMap.get(SWORD_AND_SORCERY).getId();
-		Territory magicKingdom = findAndSave(MAGIC_KINGDOM, sAndSCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
+		Location magicKingdom = findAndSave(MAGIC_KINGDOM, sAndSCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
 				territoryTypeMap.get(KINGDOM).getName(), campaignMap, "A magic kingdom", null);
 		territoryMap.put(magicKingdom.getName(), magicKingdom);
 		
-		Territory magicCounty = findAndSave(MAGIC_COUNTY, sAndSCampaignId, territoryTypeMap.get(COUNTY).getId(),
+		Location magicCounty = findAndSave(MAGIC_COUNTY, sAndSCampaignId, territoryTypeMap.get(COUNTY).getId(),
 				territoryTypeMap.get(COUNTY).getName(), campaignMap, "A magic county", magicKingdom);
 		territoryMap.put(magicCounty.getName(), magicCounty);
 		
-		Territory magicCity = findAndSave(MAGIC_CITY, sAndSCampaignId, territoryTypeMap.get(CITY).getId(), 
+		Location magicCity = findAndSave(MAGIC_CITY, sAndSCampaignId, territoryTypeMap.get(CITY).getId(), 
 				territoryTypeMap.get(CITY).getName(), campaignMap, "A magic city", magicCounty);
 		territoryMap.put(magicCity.getName(), magicCity);
 		
-		Territory magicTown = findAndSave(MAGIC_TOWN, sAndSCampaignId, territoryTypeMap.get(TOWN).getId(), 
+		Location magicTown = findAndSave(MAGIC_TOWN, sAndSCampaignId, territoryTypeMap.get(TOWN).getId(), 
 				territoryTypeMap.get(TOWN).getName(), campaignMap, "A magic city", magicCounty);
 		territoryMap.put(magicTown.getName(), magicTown);
 		
-		Territory rivalKingdom = findAndSave(RIVAL_KINGDOM, sAndSCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
+		Location rivalKingdom = findAndSave(RIVAL_KINGDOM, sAndSCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
 				territoryTypeMap.get(KINGDOM).getName(), campaignMap, "A rival kingdom", null);
 		territoryMap.put(rivalKingdom.getName(), rivalKingdom);
 		
 		/* MODERN */
 		String modernCampaignId = campaignMap.get(MODERN).getId();
-		Territory modernKingdom = findAndSave(MODERN_KINGDOM, modernCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
+		Location modernKingdom = findAndSave(MODERN_KINGDOM, modernCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
 				territoryTypeMap.get(KINGDOM).getName(), campaignMap, "A modern kingdom", null);
 
-		Territory modernCounty = findAndSave(MODERN_COUNTY, modernCampaignId, territoryTypeMap.get(COUNTY).getId(), 
+		Location modernCounty = findAndSave(MODERN_COUNTY, modernCampaignId, territoryTypeMap.get(COUNTY).getId(), 
 				territoryTypeMap.get(COUNTY).getName(), campaignMap, "A modern county", modernKingdom);
 
 		findAndSave(MODERN_CITY, modernCampaignId, territoryTypeMap.get(CITY).getId(), 
@@ -278,27 +278,27 @@ public class DataSeeder {
 		return territoryMap;
 	}
 	
-	private Territory findAndSave(String name, String campaignId, String territoryTypeId, String territoryTypeName, 
-			Map<String, Campaign> campaignMap, String description, Territory parent) {
-		Territory territory = territoryRepo.findOneByNameAndCampaignId(name, campaignId);
-		if (territory == null) {
-			territory = new Territory(name, campaignId);
-			territory.setDescription(description);
-			territory.setGameDataTypeId(territoryTypeId);
-			territory.setGameDataTypeName(territoryTypeName);
-			// Need to get an id on territory so all the parent/child links can be set
+	private Location findAndSave(String name, String campaignId, String territoryTypeId, String territoryTypeName, 
+			Map<String, Campaign> campaignMap, String description, Location parent) {
+		Location location = territoryRepo.findOneByNameAndCampaignId(name, campaignId);
+		if (location == null) {
+			location = new Location(name, campaignId);
+			location.setDescription(description);
+			location.setGameDataTypeId(territoryTypeId);
+			location.setGameDataTypeName(territoryTypeName);
+			// Need to get an id on location so all the parent/child links can be set
 			String parentId = null;
 			if (parent != null) {
 				parentId = parent.getId();
 			}
-			territory.setParentId(parentId);
-			territory = territoryRepo.save(territory);
+			location.setParentId(parentId);
+			location = territoryRepo.save(location);
 			if (parent != null) {
-				parent.addChildId(territory.getId());
+				parent.addChildId(location.getId());
 				parent = territoryRepo.save(parent);
 			}
 		}
-		return territory;
+		return location;
 	}
 	
 	private Map<String, OrganizationType> seedOrganizationType(Map<String, Campaign> campaignMap) {
@@ -404,7 +404,7 @@ public class DataSeeder {
 			organization.setDescription(description);
 			organization.setGameDataTypeId(organizationTypeId);
 			organization.setGameDataTypeName(organizationTypeName);
-			// Need to get an id on territory so all the parent/child links can be set
+			// Need to get an id on location so all the parent/child links can be set
 			String parentId = null;
 			if (parent != null) {
 				parentId = parent.getId();
@@ -426,7 +426,7 @@ public class DataSeeder {
 		if (organizationRank == null) {
 			organizationRank = new OrganizationRank(name, campaignId, organizationId);
 			organizationRank.setDescription(description);
-			// Need to get an id on territory so all the parent/child links can be set
+			// Need to get an id on location so all the parent/child links can be set
 			String parentId = null;
 			if (parent != null) {
 				parentId = parent.getId();
@@ -441,7 +441,7 @@ public class DataSeeder {
 		return organizationRank;
 	}	
 
-	private void seedFolios(Map<String, Organization> organizationMap, Map<String, Territory> territoryMap) {
+	private void seedFolios(Map<String, Organization> organizationMap, Map<String, Location> territoryMap) {
 		Folio goldenRoadPage = new Folio();
 		Organization goldenRoad = organizationMap.get(GOLDEN_ROAD);		
 		goldenRoadPage.setCampaignId(goldenRoad.getCampaignId());
@@ -450,7 +450,7 @@ public class DataSeeder {
 		Organization kindomOfMidland = organizationMap.get(KINGDOM_OF_MIDLAND);
 		ObjectTag midlandTag = kindomOfMidland.createTag();
 		goldenRoadPage.addTag(midlandTag);
-		Territory midland = territoryMap.get(MAGIC_KINGDOM);
+		Location midland = territoryMap.get(MAGIC_KINGDOM);
 		ObjectTag kingdomTag = midland.createTag();
 		goldenRoadPage.addTag(kingdomTag);
 		goldenRoadPage.setTitle("Golden Road Trading League Intro");

@@ -2,36 +2,36 @@ package org.softwarewolf.gameserver.base.domain.helper;
 
 import java.util.List;
 
-import org.softwarewolf.gameserver.base.domain.Territory;
+import org.softwarewolf.gameserver.base.domain.Location;
 import org.softwarewolf.gameserver.base.domain.TerritoryType;
 
-public class TerritoryCreator {
-	public Territory territory;
-	public List<Territory> territoriesInCampaign;
+public class LocationCreator {
+	public Location location;
+	public List<Location> locationsInCampaign;
 	public List<TerritoryType> territoryTypesInCampaign;
-	public String territoryTreeJson;
+	public String locationTreeJson;
 	public String addGameDataTypeId;
 	public String removeGameDataTypeId;
 	public String forwardingUrl;
 	
-	public TerritoryCreator() {
-		territory = new Territory();
+	public LocationCreator() {
+		location = new Location();
 	}
 
-	public Territory getTerritory() {
-		return territory;
+	public Location getLocation() {
+		return location;
 	}
 	
-	public void setTerritory(Territory territory) {
-		this.territory = territory;
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
-	public List<Territory> getTerritoriesInCampaign() {
-		return territoriesInCampaign;
+	public List<Location> getLocationsInCampaign() {
+		return locationsInCampaign;
 	}
 	
-	public void setTerritoriesInCampaign(List<Territory> territoriesInCampaign) {
-		this.territoriesInCampaign = territoriesInCampaign;
+	public void setLocationsInCampaign(List<Location> locationsInCampaign) {
+		this.locationsInCampaign = locationsInCampaign;
 	}
 	
 	public List<TerritoryType> getTerritoryTypesInCampaign() {
@@ -42,12 +42,12 @@ public class TerritoryCreator {
 		this.territoryTypesInCampaign = territoryTypesInCampaign;
 	}
 	
-	public String getTerritoryTreeJson() {
-		return territoryTreeJson;
+	public String getLocationTreeJson() {
+		return locationTreeJson;
 	}
 	
-	public void setTerritoryTreeJson(String territoryTreeJson) {
-		this.territoryTreeJson = territoryTreeJson;
+	public void setLocationTreeJson(String locationTreeJson) {
+		this.locationTreeJson = locationTreeJson;
 	}
 	
 	public String getAddGameDataTypeId() {
