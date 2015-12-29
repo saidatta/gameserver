@@ -16,31 +16,31 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     
-    <title th:text="#{createTerritoryType.title}">Title</title>
+    <title th:text="#{createLocationType.title}">Title</title>
 
 	<script th:inline="javascript">
 	$(document).ready(function() {
 		$( window ).load(function() {
 			
-			$(".addTType").click(function(event) {
+			$(".addLType").click(function(event) {
 				var target = $(event.target);
 				var id = $(target).attr('id');
 				var name = $(target).attr('name');
 				var addTT = $("#addGameDataTypeId");
 				addTT.attr("value", id);		
-				var form = $("#createTerritoryTypeForm");
-				form.attr("action", "/gameserver/gamemaster/addTerritoryTypeToCampaign");
+				var form = $("#createLocationTypeForm");
+				form.attr("action", "/gameserver/gamemaster/addLocationTypeToCampaign");
 				form.submit();
 			});
 			
-			$(".removeTType").click(function(event) {
+			$(".removeLType").click(function(event) {
 				var target = $(event.target);
 				var id = $(target).attr('id');
 				var name = $(target).attr('name');
 				var removeTT = $("#removeGameDataTypeId");
-				var form = $("#createTerritoryTypeForm");
+				var form = $("#createLocationTypeForm");
 				removeTT.attr("value", id);		
-				form.attr("action", "/gameserver/gamemaster/removeTerritoryTypeFromCampaign");
+				form.attr("action", "/gameserver/gamemaster/removeLocationTypeFromCampaign");
 				form.submit();
 			});
 			
@@ -50,14 +50,14 @@
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>
-	<div th:fragment="createTerritoryType">
+	<div th:fragment="createLocationType">
 	<br></br>
 
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-7">
 			<div>
-				<h1 th:text="#{createTerritoryType.title}">Create</h1>
+				<h1 th:text="#{createLocationType.title}">Create</h1>
 			</div>
 		</div>
 		<div class="col-md-3">
@@ -80,14 +80,14 @@
 		</div>
 	</div>
 	<br></br>
-	<form id="createTerritoryTypeForm" th:object="${territoryTypeCreator}" action="#" th:action="@{/gamemaster/createTerritoryType}" method="post">
+	<form id="createLocationTypeForm" th:object="${locationTypeCreator}" action="#" th:action="@{/gamemaster/createLocationType}" method="post">
 		<input id="addGameDataTypeId" type="hidden" th:field="*{addGameDataTypeId}"></input>
 		<input id="removeGameDataTypeId" type="hidden" th:field="*{removeGameDataTypeId}"></input>
 		<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-9">
-				<span th:text="#{createTerritoryType.description}">description</span>
+				<span th:text="#{createLocationType.description}">description</span>
 			</div>
 		</div>
 		<div class="row">
@@ -99,19 +99,19 @@
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-1">
-				<label class="input-margin" th:text="#{createTerritoryType.territoryTypeName}">Name</label>
+				<label class="input-margin" th:text="#{createLocationType.locationTypeName}">Name</label>
 			</div>
 			<div class="col-md-8">
-				<input class="input-margin" th:field="*{territoryType.name}"></input>
+				<input class="input-margin" th:field="*{locationType.name}"></input>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-1">
-				<label class="input-margin" th:text="#{createTerritory.territoryDescription}">Desc</label>
+				<label class="input-margin" th:text="#{createLocation.locationDescription}">Desc</label>
 			</div>
 			<div class="col-md-8">
-				<textarea rows="8" cols="100" class="input-margin" th:field="*{territoryType.description}"></textarea>
+				<textarea rows="8" cols="100" class="input-margin" th:field="*{locationType.description}"></textarea>
 			</div>
 		</div>
 		<div class="row">
@@ -129,17 +129,17 @@
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-3">			
-				<h4>Territory Types in campaign</h4>
+				<h4>Location Types in campaign</h4>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-2">			
-				<ul id="territoryTypesInCampaign">
-					<li class="no-bullets" th:each="territoryType : *{gameDataTypesInCampaign}">
+				<ul id="locationTypesInCampaign">
+					<li class="no-bullets" th:each="locationType : *{gameDataTypesInCampaign}">
 					    <div class="on-same-line"> 
-							<button class="modifyTT removeTType fa fa-minus" th:id="${territoryType.id}" th:name="${territoryType.name}"></button>
-							<span th:text="${territoryType.name}"></span>
+							<button class="modifyTT removeLType fa fa-minus" th:id="${locationType.id}" th:name="${locationType.name}"></button>
+							<span th:text="${locationType.name}"></span>
 						</div> 
 					</li>				
 				</ul>	
@@ -148,17 +148,17 @@
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-3">			
-				<h4>Other Territory Types</h4>
+				<h4>Other Location Types</h4>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-2">			
-				<ul id="otherTerritoryTypes">
-					<li class="no-bullets" th:each="territoryType : *{otherGameDataTypes}">
+				<ul id="otherLocationTypes">
+					<li class="no-bullets" th:each="locationType : *{otherGameDataTypes}">
 					    <div class="on-same-line"> 
-							<button class="modifyTT addTType fa fa-plus" th:id="${territoryType.id}" th:name="${territoryType.name}"></button>
-							<span th:text="${territoryType.name}"></span>
+							<button class="modifyTT addLType fa fa-plus" th:id="${locationType.id}" th:name="${locationType.name}"></button>
+							<span th:text="${locationType.name}"></span>
 						</div> 
 					</li>				
 				</ul>	

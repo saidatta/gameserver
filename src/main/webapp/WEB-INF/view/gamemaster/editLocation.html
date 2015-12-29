@@ -83,13 +83,13 @@
 <script th:inline="javascript">
 	$(document).ready(function() {
 		$( window ).load(function() {
-			var territoryTypeId = $("#territoryTypeId");
-			if (territoryTypeId.val() != "") {
+			var locationTypeId = $("#locationTypeId");
+			if (locationTypeId.val() != "") {
 	            $('.modifyTT').each(function(data) {
     	        	var id = $(data).attr("id");
-			        if (id == territoryTypeId) {
+			        if (id == locationTypeId) {
 			        	var value = $(data).val();
-			        	var elem = $("#addTerritoryTypeId");
+			        	var elem = $("#addLocationTypeId");
 			        	$(elem).val(id);
 			        }
 		    	});
@@ -112,7 +112,7 @@
 			var target = $(event.target);
 			var id = $(target).attr('id');
 			if (id == "0") {
-				var form = $("#createTerritoryTypeForm");
+				var form = $("#createLocationTypeForm");
 				var locationId = $("#hiddenLocationId").val();
 				var action = form.attr("action");
 				action += "?forwardingUrl=/gamemaster/editLocation";
@@ -124,16 +124,16 @@
 				var name = $(target).text();
 	
 				// Set the hidden fields
-				var addTT = $("#territoryTypeId");
+				var addTT = $("#locationTypeId");
 				addTT.val(id);
-				var ttName = $("#territoryTypeName");
+				var ttName = $("#locationTypeName");
 				ttName.val(name);
 				// Set the button text
 	//			var ttBtn = $("#ttBtn");
 	//			var newIH = name + ' <span class="caret"></span>';
 	//			$(ttBtn).html(newIH);
-				var territoryTypeName = $("#territoryTypeName");
-				territoryTypeName.val(name);
+				var locationTypeName = $("#locationTypeName");
+				locationTypeName.val(name);
 			}
 		});
 		
@@ -162,11 +162,11 @@
 				  var locationDescription = $("#locationDescription");
 				  locationDescription.val(description);
 				  var typeId = locationJson["gameDataTypeId"];
-				  var territoryTypeId = $("#territoryTypeId");
-				  territoryTypeId.val(typeId);
+				  var locationTypeId = $("#locationTypeId");
+				  locationTypeId.val(typeId);
 				  var typeName = locationJson["gameDataTypeName"];
-				  var territoryTypeName = $("#territoryTypeName");
-				  territoryTypeName.val(typeName);
+				  var locationTypeName = $("#locationTypeName");
+				  locationTypeName.val(typeName);
 				  var parentId = locationJson["parentId"];
 				  var locationParentId = $("#hiddenParentId");
 				  locationParentId.val(parentId);
@@ -213,11 +213,11 @@
 			</div>
 		</div>
 		<br></br>
-		<form id="createTerritoryTypeForm" action="#" th:action="@{/gamemaster/createTerritoryType}" method="get"></form>
+		<form id="createLocationTypeForm" action="#" th:action="@{/gamemaster/createLocationType}" method="get"></form>
 		<form id="editLocationForm" th:object="${locationCreator}" action="#" th:action="@{/gamemaster/editLocation}" method="post">
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
 			<input id="campaignId" type="hidden" th:field="*{location.campaignId}"></input>
-			<input id="territoryTypeId" type="hidden" th:field="*{location.gameDataTypeId}"></input>
+			<input id="locationTypeId" type="hidden" th:field="*{location.gameDataTypeId}"></input>
 			<input id="locationTreeJson" type="hidden" th:field="*{locationTreeJson}"></input>
 			<input id="hiddenParentId" type="hidden" th:field="*{location.parentId}"></input>
 			<input id="hiddenLocationId" type="hidden" th:field="*{location.id}"></input>
@@ -281,15 +281,15 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createLocation.territoryType}"></label>
+					<label class="input-margin" th:text="#{createLocation.locationType}"></label>
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
-	  					<button id="ttBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{createTerritoryType.ttBtn}">
-	    					Territory Type <span class="caret"></span>
+	  					<button id="ttBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{createLocationType.ttBtn}">
+	    					Location Type <span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="territoryType : ${locationCreator.territoryTypesInCampaign}"><a th:id="${territoryType.id}" class="modifyTT" th:text="${territoryType.name}">Action</a></li>
+		    				<li th:each="locationType : ${locationCreator.locationTypesInCampaign}"><a th:id="${locationType.id}" class="modifyTT" th:text="${locationType.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>
@@ -297,10 +297,10 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createLocation.territoryType}">Name</label>
+					<label class="input-margin" th:text="#{createLocation.locationType}">Name</label>
 				</div>
 				<div class="col-md-8">
-					<input id="territoryTypeName" class="input-margin" disabled="disabled" th:field="*{location.gameDataTypeName}"></input>
+					<input id="locationTypeName" class="input-margin" disabled="disabled" th:field="*{location.gameDataTypeName}"></input>
 				</div>
 			</div>
 			<div class="row">
@@ -321,7 +321,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-10">
-					<div id="territoryRoot">
+					<div id="locationRoot">
 						<div id="locationGroupPanel" class="list-group panel"></div>
 					</div>
 				</div>

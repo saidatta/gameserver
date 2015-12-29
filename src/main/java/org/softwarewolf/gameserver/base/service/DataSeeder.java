@@ -11,7 +11,7 @@ import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.Folio;
 import org.softwarewolf.gameserver.base.domain.Location;
-import org.softwarewolf.gameserver.base.domain.TerritoryType;
+import org.softwarewolf.gameserver.base.domain.LocationType;
 import org.softwarewolf.gameserver.base.domain.User;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.softwarewolf.gameserver.base.repository.CampaignRepository;
@@ -20,7 +20,7 @@ import org.softwarewolf.gameserver.base.repository.OrganizationRepository;
 import org.softwarewolf.gameserver.base.repository.OrganizationTypeRepository;
 import org.softwarewolf.gameserver.base.repository.SimpleGrantedAuthorityRepository;
 import org.softwarewolf.gameserver.base.repository.LocationRepository;
-import org.softwarewolf.gameserver.base.repository.TerritoryTypeRepository;
+import org.softwarewolf.gameserver.base.repository.LocationTypeRepository;
 import org.softwarewolf.gameserver.base.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -68,10 +68,10 @@ public class DataSeeder {
 	private CampaignRepository campaignRepo;
 	
 	@Autowired 
-	private TerritoryTypeRepository territoryTypeRepo;
+	private LocationTypeRepository locationTypeRepo;
 	
 	@Autowired 
-	private LocationRepository territoryRepo;
+	private LocationRepository locationRepo;
 	
 	@Autowired
 	private LocationService locationService;
@@ -92,8 +92,8 @@ public class DataSeeder {
 		sgaRepo.deleteAll();
 		userRepo.deleteAll();
 		campaignRepo.deleteAll();
-		territoryRepo.deleteAll();
-		territoryTypeRepo.deleteAll();
+		locationRepo.deleteAll();
+		locationTypeRepo.deleteAll();
 		organizationRepo.deleteAll();
 		organizationTypeRepo.deleteAll();
 		organizationRankRepo.deleteAll();
@@ -103,7 +103,7 @@ public class DataSeeder {
 		Map<String, SimpleGrantedAuthority> roleMap = seedRoles();
 		Map<String, User> userMap = seedUsers(roleMap);
 		Map<String, Campaign> campaignMap = seedCampaign(userMap);
-		Map<String, TerritoryType> territoryTypeMap = seedTerritoryType(campaignMap);
+		Map<String, LocationType> territoryTypeMap = seedTerritoryType(campaignMap);
 		Map<String, Location> territoryMap = seedTerritories(campaignMap, territoryTypeMap);
 		Map<String, OrganizationType> organizationTypeMap = seedOrganizationType(campaignMap);
 		Map<String, Organization> organizationMap = seedOrganizations(campaignMap, organizationTypeMap);
@@ -200,8 +200,8 @@ public class DataSeeder {
 		}
 	}
 	
-	private Map<String, TerritoryType> seedTerritoryType(Map<String, Campaign> campaignMap) {
-		Map<String, TerritoryType> territoryTypeMap = new HashMap<>();
+	private Map<String, LocationType> seedTerritoryType(Map<String, Campaign> campaignMap) {
+		Map<String, LocationType> territoryTypeMap = new HashMap<>();
 		List<String> campaignIdList = new ArrayList<>();
 		campaignIdList.add(campaignMap.get(SWORD_AND_SORCERY).getId());
 		campaignIdList.add(campaignMap.get(SPACE_OPERA).getId());
@@ -220,20 +220,20 @@ public class DataSeeder {
 		return territoryTypeMap;
 	}
 	
-	private void saveTerritoryType(String name, String description, List<String> campaignIdList, Map<String, TerritoryType> territoryTypeMap) {
-		TerritoryType territoryType = territoryTypeRepo.findOneByName(name);
-		if (territoryType == null) {
-			territoryType = new TerritoryType();
-			territoryType.setName(name);
-			territoryType.setDescription(description);
-			territoryType.setCampaignList(campaignIdList);
-			territoryType = territoryTypeRepo.save(territoryType);
-			territoryTypeMap.put(name, territoryType);
+	private void saveTerritoryType(String name, String description, List<String> campaignIdList, Map<String, LocationType> territoryTypeMap) {
+		LocationType locationType = locationTypeRepo.findOneByName(name);
+		if (locationType == null) {
+			locationType = new LocationType();
+			locationType.setName(name);
+			locationType.setDescription(description);
+			locationType.setCampaignList(campaignIdList);
+			locationType = locationTypeRepo.save(locationType);
+			territoryTypeMap.put(name, locationType);
 		}
 	}
 	
-	private Map<String, Location> seedTerritories(Map<String, Campaign> campaignMap, Map<String, TerritoryType> territoryTypeMap) {
-		territoryRepo.deleteAll();
+	private Map<String, Location> seedTerritories(Map<String, Campaign> campaignMap, Map<String, LocationType> territoryTypeMap) {
+		locationRepo.deleteAll();
 		Map<String, Location> territoryMap = new HashMap<>();
 		String sAndSCampaignId = campaignMap.get(SWORD_AND_SORCERY).getId();
 		Location magicKingdom = findAndSave(MAGIC_KINGDOM, sAndSCampaignId, territoryTypeMap.get(KINGDOM).getId(), 
@@ -280,7 +280,7 @@ public class DataSeeder {
 	
 	private Location findAndSave(String name, String campaignId, String territoryTypeId, String territoryTypeName, 
 			Map<String, Campaign> campaignMap, String description, Location parent) {
-		Location location = territoryRepo.findOneByNameAndCampaignId(name, campaignId);
+		Location location = locationRepo.findOneByNameAndCampaignId(name, campaignId);
 		if (location == null) {
 			location = new Location(name, campaignId);
 			location.setDescription(description);
@@ -292,10 +292,10 @@ public class DataSeeder {
 				parentId = parent.getId();
 			}
 			location.setParentId(parentId);
-			location = territoryRepo.save(location);
+			location = locationRepo.save(location);
 			if (parent != null) {
 				parent.addChildId(location.getId());
-				parent = territoryRepo.save(parent);
+				parent = locationRepo.save(parent);
 			}
 		}
 		return location;

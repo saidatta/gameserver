@@ -8,11 +8,11 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.softwarewolf.gameserver.base.domain.Location;
-import org.softwarewolf.gameserver.base.domain.TerritoryType;
+import org.softwarewolf.gameserver.base.domain.LocationType;
 import org.softwarewolf.gameserver.base.domain.helper.HierarchyJsonBuilder;
 import org.softwarewolf.gameserver.base.domain.helper.LocationCreator;
 import org.softwarewolf.gameserver.base.repository.LocationRepository;
-import org.softwarewolf.gameserver.base.repository.TerritoryTypeRepository;
+import org.softwarewolf.gameserver.base.repository.LocationTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -27,10 +27,10 @@ public class LocationService {
 	protected LocationRepository locationRepository;
 	
 	@Autowired
-	protected TerritoryTypeRepository territoryTypeRepository;
+	protected LocationTypeRepository locationTypeRepository;
 	
 	@Autowired
-	protected TerritoryTypeService territoryTypeService;
+	protected LocationTypeService locationTypeService;
 	
 	public List<Location> getAllLocations() {
 		List<Location> locationList = locationRepository.findAll();
@@ -99,12 +99,12 @@ public class LocationService {
 		locations.add(0, addNewLocation);
 		locationCreator.setLocationsInCampaign(locations);
 		
-		List<TerritoryType> territoryTypesInCampaign = territoryTypeRepository.findAllByKeyValue("campaignList", campaignId);
-		TerritoryType addNew = new TerritoryType();
+		List<LocationType> locationTypesInCampaign = locationTypeRepository.findAllByKeyValue("campaignList", campaignId);
+		LocationType addNew = new LocationType();
 		addNew.setId("0");
 		addNew.setName("Add new location type");
-		territoryTypesInCampaign.add(0, addNew);
-		locationCreator.setTerritoryTypesInCampaign(territoryTypesInCampaign);
+		locationTypesInCampaign.add(0, addNew);
+		locationCreator.setLocationTypesInCampaign(locationTypesInCampaign);
 	}
 	
 	public void saveLocation(Location location) {
@@ -178,8 +178,8 @@ public class LocationService {
 		HierarchyJsonBuilder rootBuilder = new HierarchyJsonBuilder(root.getId(), root.getName(),
 				root.getGameDataTypeId(), root.getGameDataTypeName());
 
-		Map<String, String> territoryTypeNameMap = territoryTypeService.getTerritoryTypeNameMap();
-		rootBuilder = buildHierarchy(rootBuilder, locationMap, territoryTypeNameMap);
+		Map<String, String> locationTypeNameMap = locationTypeService.getLocationTypeNameMap();
+		rootBuilder = buildHierarchy(rootBuilder, locationMap, locationTypeNameMap);
 				
 		//ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		ObjectWriter ow = new ObjectMapper().writer();
@@ -193,16 +193,16 @@ public class LocationService {
 	}
 	
 	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, Location> locationMap, 
-			Map<String, String> territoryTypeNameMap) {
+			Map<String, String> locationTypeNameMap) {
 		Location location = locationMap.get(parent.getId());
 		if (location.hasChildren()) {
 			for (String childId : location.getChildrenIdList()) {
 				Location childLocation = locationMap.get(childId);
-				childLocation.setGameDataTypeName(territoryTypeNameMap.get(childLocation.getGameDataTypeId()));
+				childLocation.setGameDataTypeName(locationTypeNameMap.get(childLocation.getGameDataTypeId()));
 				HierarchyJsonBuilder child = new HierarchyJsonBuilder(childId, childLocation.getName(),
 						childLocation.getGameDataTypeId(), childLocation.getDisplayName());
 				if (childLocation.hasChildren()) {
-					child = buildHierarchy(child, locationMap, territoryTypeNameMap);
+					child = buildHierarchy(child, locationMap, locationTypeNameMap);
 				}
 				parent.addChild(child);
 			}
@@ -225,9 +225,9 @@ public class LocationService {
 			Location parent = locationRepository.findOne(parentId);
 		    location.setParentName(parent.getName());
 		}
-		String territoryTypeId = location.getGameDataTypeId();
-		if (territoryTypeId != null) {
-		    TerritoryType type = territoryTypeRepository.findOne(location.getGameDataTypeId());
+		String locationTypeId = location.getGameDataTypeId();
+		if (locationTypeId != null) {
+		    LocationType type = locationTypeRepository.findOne(location.getGameDataTypeId());
 		    location.setGameDataTypeName(type.getName());
 		}
 		return location;

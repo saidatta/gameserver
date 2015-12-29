@@ -13,7 +13,7 @@ import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.Location;
-import org.softwarewolf.gameserver.base.domain.TerritoryType;
+import org.softwarewolf.gameserver.base.domain.LocationType;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.softwarewolf.gameserver.base.repository.FolioRepository;
@@ -34,7 +34,7 @@ public class FolioService implements Serializable {
 	@Autowired
 	private LocationService locationService;
 	@Autowired
-	private TerritoryTypeService territoryTypeService;
+	private LocationTypeService locationTypeService;
 	@Autowired
 	private ObjectTagService objectTagService;
 	

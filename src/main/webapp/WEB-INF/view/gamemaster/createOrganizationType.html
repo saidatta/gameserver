@@ -130,7 +130,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-2">			
-					<ul id="territories">
+					<ul id="locations">
 						<li class="no-bullets" th:each="organizationType : *{gameDataTypesInCampaign}">
 						    <div class="on-same-line"> 
 								<button class="modifyTT removeOrgType fa fa-minus" th:id="${organizationType.id}" th:name="${organizationType.name}"></button>
@@ -149,7 +149,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-2">			
-					<ul id="territories">
+					<ul id="locations">
 						<li class="no-bullets" th:each="organizationType : *{otherGameDataTypes}">
 						    <div class="on-same-line"> 
 								<button class="modifyTT addOrgType fa fa-plus" th:id="${organizationType.id}" th:name="${organizationType.name}"></button>

@@ -4,7 +4,6 @@ import javax.servlet.http.HttpSession;
 
 import org.softwarewolf.gameserver.base.controller.helper.ControllerHelper;
 import org.softwarewolf.gameserver.base.domain.Organization;
-import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.helper.FeFeedback;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationRankCreator;
@@ -95,18 +94,14 @@ public class OrganizationController {
 		
 		return ControllerHelper.EDIT_ORGANIZATION;
 	}
-	
+
 	/**
 	 * Ajax call to get just the data on a organization when a user clicks on an organization
 	 * in the edit location drop-down
 	 * @param session
-	 * @param territoryCreator
-	 * @param territoryTypeCreator
 	 * @param organizationCreator
-	 * @param organizationTypeCreator
 	 * @param feFeedback
-	 * @param territoryId
-	 * @param location
+	 * @param organizationId
 	 * @return
 	 */
 	@RequestMapping(value = "/getOrganization", method = RequestMethod.GET)

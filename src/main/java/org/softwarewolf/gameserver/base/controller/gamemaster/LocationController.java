@@ -50,8 +50,8 @@ public class LocationController {
 
 	@RequestMapping(value = "/editLocation", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
-	public String editTerritory(HttpSession session, final LocationCreator locationCreator, 
-			final FeFeedback feFeedback, @RequestParam(value="id", required= false) String territoryId) {
+	public String editLocation(HttpSession session, final LocationCreator locationCreator, 
+			final FeFeedback feFeedback, @RequestParam(value="id", required= false) String locationId) {
 		// If we haven't selected a campaign, get to the menu!
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
@@ -60,9 +60,9 @@ public class LocationController {
 		
 		// In this case, the location object just has the id and name, we need everything here.
 		Location location = null;
-		if (territoryId != null && territoryId != "" && territoryId != "0") {
+		if (locationId != null && locationId != "" && locationId != "0") {
 			location = locationCreator.getLocation();
-			location.setId(territoryId);
+			location.setId(locationId);
 			location = locationService.findOne(location.getId());
 		} else {
 			location = new Location();
@@ -77,18 +77,15 @@ public class LocationController {
 	 * in the edit location drop-down
 	 * @param session
 	 * @param locationCreator
-	 * @param territoryTypeCreator
-	 * @param organizationCreator
-	 * @param organizationTypeCreator
 	 * @param feFeedback
-	 * @param territoryId
+	 * @param locationId
 	 * @param location
 	 * @return
 	 */
 	@RequestMapping(value = "/getLocation", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	@ResponseBody
-	public String editTerritoryId(HttpSession session, final LocationCreator locationCreator, 
+	public String editlocationId(HttpSession session, final LocationCreator locationCreator, 
 			final FeFeedback feFeedback, @RequestParam(value="hiddenLocationId", required= true) String locationId, 
 			@ModelAttribute("location") Location location) {
 		// If we haven't selected a campaign, get to the menu!
@@ -121,7 +118,7 @@ public class LocationController {
 	
 	@RequestMapping(value = "/editLocation", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
-	public String postEditTerritory(HttpSession session, final LocationCreator locationCreator, 
+	public String postEditLocation(HttpSession session, final LocationCreator locationCreator, 
 			final FeFeedback feFeedback) {
 		// If we haven't selected a campaign, get to the menu!
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);

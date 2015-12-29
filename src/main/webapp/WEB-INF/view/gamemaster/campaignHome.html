@@ -45,29 +45,29 @@
 </script>
 
 <script type="text/javascript">	
-	function buildTree(territoryNode, nodeParent, index, indent) {
+	function buildTree(locationNode, nodeParent, index, indent) {
 		var parentId = $(nodeParent).attr("id");
 		var indentClass = "indent" + indent;
 	    var subMenu = "subMenu" + index;
 	    index = index + 1;
 		var newList = document.createElement("ul");
 		var listItem = document.createElement("li");
-		var territoryId = territoryNode["id"];
-		var territoryName = territoryNode["name"];
-		var displayName = territoryNode["displayName"];
+		var locationId = locationNode["id"];
+		var locationName = locationNode["name"];
+		var displayName = locationNode["displayName"];
 		var itemHtml;
-		var children = territoryNode["children"];
+		var children = locationNode["children"];
 		if (children.length > 0) {
-			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+territoryId+'\',\''+territoryName+'\');"></button> <span id="'+territoryId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+territoryId+'\');">'+displayName+' <span class="caret"></span></span></div>';
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+locationId+'\',\''+locationName+'\');"></button> <span id="'+locationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+locationId+'\');">'+displayName+' <span class="caret"></span></span></div>';
 		} else {
-			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+territoryId+'\',\''+territoryName+'\');"></button> <span id="'+territoryId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+territoryId+'\');">'+displayName+'</span> </div>';
+			itemHtml = '<div class="on-same-line"><button type="button" class="addParent fa fa-plus" onclick="clickPlus(\''+locationId+'\',\''+locationName+'\');"></button> <span id="'+locationId+'Txt" class="outline pointer-cursor basic-padding" onclick="clickText(\''+locationId+'\');">'+displayName+'</span> </div>';
 		}
 		$(listItem).html(itemHtml);
-		$(listItem).attr("id", territoryId);
+		$(listItem).attr("id", locationId);
 		$(listItem).addClass(parentId);
 		$(newList).append(listItem);
 		$(nodeParent).append(newList);
-		if ($(territoryNode).attr("id") != "ROOT") {
+		if ($(locationNode).attr("id") != "ROOT") {
 			$(listItem).attr("hidden", "hidden");
 		}
 		
@@ -117,9 +117,9 @@
 		return index;
 	}
 	
-	function clickPlus(parentTerritoryId, parentTerritoryName) {
-		$("#hiddenParentId").val(parentTerritoryId);
-		$("#territoryParentName").val(parentTerritoryName);
+	function clickPlus(parentLocationId, parentLocationName) {
+		$("#hiddenParentId").val(parentLocationId);
+		$("#locationParentName").val(parentLocationName);
 		event.preventDefault();
 	}
 	
@@ -130,9 +130,9 @@
 		event.preventDefault();
 	}
 	
-	function clickText(territoryId) {
-		var territory = $("#"+territoryId);
-        var search = "."+territoryId;
+	function clickText(locationId) {
+//		var territory = $("#"+locationId);
+        var search = "."+locationId;
 		var children = $(search);
 		$.each(children, function() {
 			var hidden = $(this).attr("hidden");
@@ -147,25 +147,25 @@
 <script th:inline="javascript">
 	$(document).ready(function() {
 		$( window ).load(function() {
-			var territoryTypeId = $("#territoryTypeId");
-			if (territoryTypeId.val() != "") {
+			var locationTypeId = $("#locationTypeId");
+			if (locationTypeId.val() != "") {
 	            $('.modifyTT').each(function(data) {
     	        	var id = $(data).attr("id");
-			        if (id == territoryTypeId) {
+			        if (id == locationTypeId) {
 			        	var value = $(data).val();
-			        	var elem = $("#addTerritoryTypeId");
+			        	var elem = $("#allLocationTypeId");
 			        	$(elem).val(id);
 			        }
 		    	});
 			}
 			
-			var territoryTreeJson = $("#territoryTreeJson").val();
-			var territoryTree = jQuery.parseJSON( territoryTreeJson );
-			var nodeParent = $("#territoryGroupPanel");
-			var children = territoryTree["children"];
+			var locationTreeJson = $("#locationTreeJson").val();
+			var locationTree = jQuery.parseJSON( locationTreeJson );
+			var nodeParent = $("#locationGroupPanel");
+			var children = locationTree["children"];
 			var index = 0;
 			var indent = 0;
-			buildTree(territoryTree, $(nodeParent), index, indent);
+			buildTree(locationTree, $(nodeParent), index, indent);
 
 			var organizationTypeId = $("#organizationTypeId");
 			if (organizationTypeId.val() != "") {
@@ -194,8 +194,8 @@
 			var name = $(target).attr('name');
 			var addTT = $("#addGameDataTypeId");
 			addTT.attr("value", id);		
-			var form = $("#createTerritoryTypeForm");
-			form.attr("action", "/gameserver/gamemaster/addTerritoryTypeToCampaign");
+			var form = $("#createLocationTypeForm");
+			form.attr("action", "/gameserver/gamemaster/addLocationTypeToCampaign");
 			form.submit();
 		});
 		
@@ -204,9 +204,9 @@
 			var id = $(target).attr('id');
 			var name = $(target).attr('name');
 			var removeTT = $("#removeGameDataTypeId");
-			var form = $("#createTerritoryTypeForm");
+			var form = $("#createLocationTypeForm");
 			removeTT.attr("value", id);		
-			form.attr("action", "/gameserver/gamemaster/removeTerritoryTypeFromCampaign");
+			form.attr("action", "/gameserver/gamemaster/removeLocationTypeFromCampaign");
 			form.submit();
 		});
 
@@ -262,12 +262,12 @@
 			  <div class="accordion-group">
 			    <div class="accordion-heading panel panel-default">
 					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionidone" href="index.html#one">
-					   	<h4 class="left-padding-10">Create/Edit Territory Type</h4>
+					   	<h4 class="left-padding-10">Create/Edit Location Type</h4>
 					</a>
 			    </div>
 			    <div id="one" class="collapse">
 			      <div class="accordion-inner outline">
-			        <div th:include="/gamemaster/createTerritoryType :: createTerritoryType"></div>	
+			        <div th:include="/gamemaster/createLocationType :: createLocationType"></div>	
 			      </div>
 			    </div>
 			  </div>
@@ -281,12 +281,12 @@
 			  <div class="accordion-group">
 			    <div class="accordion-heading panel panel-default">
 						<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionidtwo" href="index.html#two">
-					    	<h4 class="left-padding-10">Create/Edit Territory</h4>
+					    	<h4 class="left-padding-10">Create/Edit Location</h4>
 					    </a>
 			    </div>
 			    <div id="two" class="collapse">
 			      <div class="accordion-inner outline">
-			        <div th:include="/gamemaster/createTerritory :: createTerritory"></div>	
+			        <div th:include="/gamemaster/createLocation :: createLocation"></div>	
 			      </div>
 			    </div>
 			  </div>

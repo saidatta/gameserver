@@ -23,14 +23,14 @@ public class UserController {
 	
 	@RequestMapping(value = "/selectCampaign", method = RequestMethod.GET)
 	@Secured({"USER"})
-	public String createTerritoryType(SelectCampaignHelper selectCampaignHelper) {
+	public String getCampaign(SelectCampaignHelper selectCampaignHelper) {
 		campaignService.initSelectCampaignHelper(selectCampaignHelper);
 		return "/user/selectCampaign";
 	}
 	
 	@RequestMapping(value = "/selectCampaign", method = RequestMethod.POST)
 	@Secured({"USER"})
-	public String postTerritoryType(HttpSession session, final SelectCampaignHelper selectCampaignHelper) {
+	public String postCampaign(HttpSession session, final SelectCampaignHelper selectCampaignHelper) {
 		selectCampaignHelper.setAllCampaigns(campaignService.getAllCampaigns());
 		String campaignId = selectCampaignHelper.getSelectedCampaignId(); 
 		String campaignName = selectCampaignHelper.getSelectedCampaignName();

@@ -161,7 +161,7 @@ public class OrganizationService {
 	}
 
 	public String createOrganizationTree(String campaignId) throws Exception {
-		// Create a hash map of all Territories for fast retrieval
+		// Create a hash map of all Locations for fast retrieval
 		List<Organization> organizationList = organizationRepository.findByCampaignId(campaignId);
 		Map<String, Organization> organizationMap = new HashMap<>();
 		Organization root = new Organization(ROOT, campaignId);

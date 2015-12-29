@@ -4,10 +4,10 @@ import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class TerritoryType extends GameDataTypeImpl {
+public class LocationType extends GameDataTypeImpl {
 	private static final long serialVersionUID = 1L;
 
-	public TerritoryType() {
+	public LocationType() {
 		super();
 	}
 

@@ -3,12 +3,12 @@ package org.softwarewolf.gameserver.base.domain.helper;
 import java.util.List;
 
 import org.softwarewolf.gameserver.base.domain.Location;
-import org.softwarewolf.gameserver.base.domain.TerritoryType;
+import org.softwarewolf.gameserver.base.domain.LocationType;
 
 public class LocationCreator {
 	public Location location;
 	public List<Location> locationsInCampaign;
-	public List<TerritoryType> territoryTypesInCampaign;
+	public List<LocationType> locationTypesInCampaign;
 	public String locationTreeJson;
 	public String addGameDataTypeId;
 	public String removeGameDataTypeId;
@@ -34,12 +34,12 @@ public class LocationCreator {
 		this.locationsInCampaign = locationsInCampaign;
 	}
 	
-	public List<TerritoryType> getTerritoryTypesInCampaign() {
-		return territoryTypesInCampaign;
+	public List<LocationType> getLocationTypesInCampaign() {
+		return locationTypesInCampaign;
 	}
 	
-	public void setTerritoryTypesInCampaign(List<TerritoryType> territoryTypesInCampaign) {
-		this.territoryTypesInCampaign = territoryTypesInCampaign;
+	public void setLocationTypesInCampaign(List<LocationType> locationTypesInCampaign) {
+		this.locationTypesInCampaign = locationTypesInCampaign;
 	}
 	
 	public String getLocationTreeJson() {

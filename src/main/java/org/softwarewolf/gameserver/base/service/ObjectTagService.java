@@ -10,7 +10,7 @@ import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.Location;
-import org.softwarewolf.gameserver.base.domain.TerritoryType;
+import org.softwarewolf.gameserver.base.domain.LocationType;
 import org.softwarewolf.gameserver.base.domain.helper.HierarchyJsonBuilder;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ObjectTagService {
 	@Autowired
 	private LocationService locationService;
 	@Autowired
-	private TerritoryTypeService territoryTypeService;
+	private LocationTypeService locationTypeService;
 	
 	/**
 	 * This is not scalable. I need a better way to do this.
@@ -44,7 +44,7 @@ public class ObjectTagService {
 		List<OrganizationRank> orgRankList = organizationRankService.findAllByCampaignId(campaignId);
 		List<OrganizationType> orgTypeList = organizationTypeService.getOrganizationTypesInCampaign(campaignId);
 		List<Location> territoryList = locationService.getLocationsInCampaign(campaignId);
-		List<TerritoryType> territoryTypeList = territoryTypeService.getTerritoryTypesInCampaign(campaignId);
+		List<LocationType> territoryTypeList = locationTypeService.getLocationTypesInCampaign(campaignId);
 		
 		List<ObjectTag> tagList = new ArrayList<>();
 		for (Organization org : orgList) {
@@ -71,10 +71,10 @@ public class ObjectTagService {
 				tagList.add(location.createTag());
 			}
 		}
-		for (TerritoryType territoryType : territoryTypeList) {
-			ObjectTag tag = territoryType.createTag(campaignId);
+		for (LocationType locationType : territoryTypeList) {
+			ObjectTag tag = locationType.createTag(campaignId);
 			if (!excludeTags.contains(tag)) {
-				tagList.add(territoryType.createTag(campaignId));
+				tagList.add(locationType.createTag(campaignId));
 			}
 		}
 		return tagList;
@@ -121,7 +121,6 @@ public class ObjectTagService {
 	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, ObjectTag> objectTagMap) {
 		ObjectTag objectTag = objectTagMap.get(parent.getId());
 		if (objectTag.getHasChildren()) {
-			List<String> childIdList = getChildrenIdList(objectTag, objectTagMap);
 			for (String childId : getChildrenIdList(objectTag, objectTagMap)) {
 				ObjectTag childObjectTag = objectTagMap.get(childId);
 //				childOrganizationRank.setGameDataTypeName(organizationTypeNameMap.get(childOrganizationRank.getGameDataTypeId()));

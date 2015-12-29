@@ -9,8 +9,11 @@
 	<configs>
 		<config>java:org.softwarewolf.gameserver.base.config.SecurityConfig</config>
 		<config>java:org.softwarewolf.gameserver.base.config.DatasourceConfig</config>
+		<config>java:org.softwarewolf.gameserver.base.service.LocationTypeService</config>
 	</configs>
 	<autoconfigs>
+		<config>java:org.softwarewolf.gameserver.base.config.ThymeleafConfig</config>
+		<config>java:org.softwarewolf.gameserver.base.config.ClientWebConfig</config>
 	</autoconfigs>
 	<configSets>
 	</configSets>

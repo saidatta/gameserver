@@ -85,7 +85,7 @@
     	        	var id = $(data).attr("id");
 			        if (id == locationTypeId) {
 			        	var value = $(data).val();
-			        	var elem = $("#addTerritoryTypeId");
+			        	var elem = $("#addLocationTypeId");
 			        	$(elem).val(id);
 			        }
 		    	});
@@ -189,15 +189,15 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createLocation.territoryType}"></label>
+					<label class="input-margin" th:text="#{createLocation.locationType}"></label>
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
 	  					<button id="ttBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{createLocationType.ttBtn}">
-	    					Territory Type <span class="caret"></span>
+	    					Location Type <span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="territoryType : ${territoryTypeCreator.gameDataTypesInCampaign}"><a th:id="${territoryType.id}" class="modifyTT" th:text="${territoryType.name}">Action</a></li>
+		    				<li th:each="locationType : ${locationTypeCreator.gameDataTypesInCampaign}"><a th:id="${locationType.id}" class="modifyTT" th:text="${locationType.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>

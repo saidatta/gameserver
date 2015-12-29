@@ -3,10 +3,10 @@ package org.softwarewolf.gameserver.base.domain.helper;
 import java.util.List;
 
 import org.softwarewolf.gameserver.base.domain.GameDataType;
-import org.softwarewolf.gameserver.base.domain.TerritoryType;
+import org.softwarewolf.gameserver.base.domain.LocationType;
 
-public class TerritoryTypeCreator {
-	public TerritoryType territoryType;
+public class LocationTypeCreator {
+	public LocationType locationType;
 	public String campaignId;
 	String addGameDataTypeId;
 	String removeGameDataTypeId;
@@ -14,8 +14,8 @@ public class TerritoryTypeCreator {
 	public List<GameDataType> otherGameDataTypes;
 	public String forwardingUrl;
 	
-	public TerritoryTypeCreator() {
-		territoryType = new TerritoryType();
+	public LocationTypeCreator() {
+		locationType = new LocationType();
 	}
 	
 	public String getCampaignId() {
@@ -26,12 +26,12 @@ public class TerritoryTypeCreator {
 		this.campaignId = campaignId;
 	}
 	
-	public TerritoryType getTerritoryType() {
-		return territoryType;
+	public LocationType getLocationType() {
+		return locationType;
 	}
 	
-	public void setTerritoryType(TerritoryType territoryType) {
-		this.territoryType = territoryType;
+	public void setLocationType(LocationType locationType) {
+		this.locationType = locationType;
 	}
 	
 	public String getAddGameDataTypeId() {
