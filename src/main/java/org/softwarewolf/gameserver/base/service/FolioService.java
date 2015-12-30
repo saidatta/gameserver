@@ -84,4 +84,8 @@ public class FolioService implements Serializable {
 			folioCreator.setUnassignedTags("{}");
 		}
 	}
+	
+	public void deleteAll() {
+		folioRepository.deleteAll();
+	}
 }

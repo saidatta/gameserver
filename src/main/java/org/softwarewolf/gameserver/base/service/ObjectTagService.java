@@ -43,8 +43,8 @@ public class ObjectTagService {
 		List<Organization> orgList = organizationService.findAllByCampaignId(campaignId);
 		List<OrganizationRank> orgRankList = organizationRankService.findAllByCampaignId(campaignId);
 		List<OrganizationType> orgTypeList = organizationTypeService.getOrganizationTypesInCampaign(campaignId);
-		List<Location> territoryList = locationService.getLocationsInCampaign(campaignId);
-		List<LocationType> territoryTypeList = locationTypeService.getLocationTypesInCampaign(campaignId);
+		List<Location> locationList = locationService.getLocationsInCampaign(campaignId);
+		List<LocationType> locationTypeList = locationTypeService.getLocationTypesInCampaign(campaignId);
 		
 		List<ObjectTag> tagList = new ArrayList<>();
 		for (Organization org : orgList) {
@@ -65,13 +65,13 @@ public class ObjectTagService {
 				tagList.add(orgType.createTag(campaignId));
 			}
 		}
-		for (Location location : territoryList) {
+		for (Location location : locationList) {
 			ObjectTag tag = location.createTag();
 			if (!excludeTags.contains(tag)) {
 				tagList.add(location.createTag());
 			}
 		}
-		for (LocationType locationType : territoryTypeList) {
+		for (LocationType locationType : locationTypeList) {
 			ObjectTag tag = locationType.createTag(campaignId);
 			if (!excludeTags.contains(tag)) {
 				tagList.add(locationType.createTag(campaignId));

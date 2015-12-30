@@ -8,7 +8,6 @@ import org.softwarewolf.gameserver.base.domain.helper.FeFeedback;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationTypeCreator;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
-import org.softwarewolf.gameserver.base.domain.helper.SelectCampaignHelper;
 import org.softwarewolf.gameserver.base.domain.helper.LocationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.LocationTypeCreator;
 import org.softwarewolf.gameserver.base.repository.UserRepository;
@@ -22,8 +21,6 @@ import org.softwarewolf.gameserver.base.service.LocationTypeService;
 import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -99,29 +96,6 @@ public class GamemasterController {
 	public String postEditPage(HttpSession session, Folio page) {
 
 		return ControllerHelper.EDIT_FOLIO;
-	}
-
-	@RequestMapping(value = "/selectCampaign", method = RequestMethod.GET)
-	@Secured({"USER"})
-	public String selectCampaign(final SelectCampaignHelper selectCampaignHelper) {
-		UserDetails userDetails =
-				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String username = userDetails.getUsername();
-		String userId = userService.getUserIdFromUsername(username);
-		campaignService.initSelectCampaignHelperByGM(selectCampaignHelper, userId);
-
-		return "/user/selectCampaign";
-	}
-	
-	@RequestMapping(value = "/selectCampaign", method = RequestMethod.POST)
-	@Secured({"USER"})
-	public String selectCampaign(HttpSession session, final SelectCampaignHelper selectCampaignHelper) {
-		String campaignId = selectCampaignHelper.getSelectedCampaignId(); 
-		String campaignName = selectCampaignHelper.getSelectedCampaignName();
-		session.setAttribute(CAMPAIGN_ID, campaignId);
-		session.setAttribute("campaignName", campaignName);
-		
-		return ControllerHelper.USER_MENU;
 	}
 
 	@RequestMapping(value = "/campaignHome", method = RequestMethod.GET)

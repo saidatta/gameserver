@@ -86,7 +86,7 @@ public class DataSeeder {
 	private OrganizationRankRepository organizationRankRepo;
 	
 	@Autowired
-	private FolioService pageService;
+	private FolioService folioService;
 	
 	public void cleanRepos() {
 		sgaRepo.deleteAll();
@@ -97,18 +97,19 @@ public class DataSeeder {
 		organizationRepo.deleteAll();
 		organizationTypeRepo.deleteAll();
 		organizationRankRepo.deleteAll();
+		folioService.deleteAll();
 	}
 	
 	public void seedData() {
 		Map<String, SimpleGrantedAuthority> roleMap = seedRoles();
 		Map<String, User> userMap = seedUsers(roleMap);
 		Map<String, Campaign> campaignMap = seedCampaign(userMap);
-		Map<String, LocationType> territoryTypeMap = seedTerritoryType(campaignMap);
-		Map<String, Location> territoryMap = seedTerritories(campaignMap, territoryTypeMap);
+		Map<String, LocationType> locationTypeMap = seedTerritoryType(campaignMap);
+		Map<String, Location> locationMap = seedTerritories(campaignMap, locationTypeMap);
 		Map<String, OrganizationType> organizationTypeMap = seedOrganizationType(campaignMap);
 		Map<String, Organization> organizationMap = seedOrganizations(campaignMap, organizationTypeMap);
 		seedOrganizationRanks(campaignMap, organizationMap);
-		seedFolios(organizationMap, territoryMap);
+		seedFolios(organizationMap, locationMap);
 	}
 	
 	private Map<String, SimpleGrantedAuthority> seedRoles() {
@@ -441,7 +442,7 @@ public class DataSeeder {
 		return organizationRank;
 	}	
 
-	private void seedFolios(Map<String, Organization> organizationMap, Map<String, Location> territoryMap) {
+	private void seedFolios(Map<String, Organization> organizationMap, Map<String, Location> locationMap) {
 		Folio goldenRoadPage = new Folio();
 		Organization goldenRoad = organizationMap.get(GOLDEN_ROAD);		
 		goldenRoadPage.setCampaignId(goldenRoad.getCampaignId());
@@ -450,11 +451,11 @@ public class DataSeeder {
 		Organization kindomOfMidland = organizationMap.get(KINGDOM_OF_MIDLAND);
 		ObjectTag midlandTag = kindomOfMidland.createTag();
 		goldenRoadPage.addTag(midlandTag);
-		Location midland = territoryMap.get(MAGIC_KINGDOM);
+		Location midland = locationMap.get(MAGIC_KINGDOM);
 		ObjectTag kingdomTag = midland.createTag();
 		goldenRoadPage.addTag(kingdomTag);
 		goldenRoadPage.setTitle("Golden Road Trading League Intro");
 		goldenRoadPage.setContent("<H1>The Golden Road Trading League</H1><p>This is a big merchant guild</p>");
-		pageService.save(goldenRoadPage);
+		folioService.save(goldenRoadPage);
 	}
 }
