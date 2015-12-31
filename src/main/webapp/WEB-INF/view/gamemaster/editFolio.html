@@ -40,10 +40,15 @@
 			var string1 = '<li class="divider"></li>';
 			$(".dropdown-menu").append(string1);
 				
+			var folioId = $("#folioId").val();
+			if (data.length == 0) {
+				alert("0");
+			}
 			$.each(data, function(index, currentTag) {
-				var objectId = currentTag['objectId'];
+				var tagId = currentTag['objectId'];
 				var tagName = currentTag['tagName'];
-				var current = '<li id="'+objectId+'" class="selectTag"><a href="#" onclick="selectTag(\''+objectId+'\');">'+tagName+'</a></li>'; 
+				var paramString = "\'"+folioId+"\', \'"+tagId+"\', \'"+tagName+"\'";
+				var current = '<li id="'+tagId+'" class="selectTag"><a href="#" onclick="removeTag('+paramString+');">'+tagName+'</a></li>'; 
 				$(".dropdown-menu").append(current);
 			});
 
@@ -54,14 +59,13 @@
 	  	    modal: true,
 	  	  	position: { my: "left top", at: "right top", of: "#tagsBtn", collision: "flip flip" }
   		});
+
 		$("#addDialog").dialog({
   	    	autoOpen: false,
 	  	    modal: true,
 	  	  	position: { my: "left top", at: "right top", of: "#tagsBtn", collision: "flip flip" },
 			"width": 460
   		});
-		
-
 		
 		$(function() {
 			$( "#selectable" ).selectable();
@@ -72,22 +76,22 @@
 	</script>   
 
 	<script>
-		$(function() {
-		    $( "#datepicker" ).datepicker();
-		});
-		  
-		function selectTag(id) {
-			var selectedTag = $("#"+id);
-			var name = selectedTag.text();
-			$("#removeDialog").text("Remove the tag " + name + "?");
+		function removeTag(folioId, tagId, tagName) {
+//			var selectedTag = $("#"+tagId);
+//			var name = selectedTag.text();
+			$("#removeDialog").text("Remove the tag " + tagName + "?");
 //			alert("Selected: " + name);
 //			e.preventDefault();
-			var targetUrl = $(this).attr("href");
+//			var targetUrl = $(this).attr("href");
 	
 			$("#removeDialog").dialog({
 				buttons : {
 			    	"Confirm" : function() {
-			        	window.location.href = targetUrl;
+			    		var action = "/gameserver/gamemaster/removeTagFromFolio/" + folioId + "/" + tagId;
+			    		window.location.href = action;
+			    		$("#removeTagForm").attr("action", action);
+			    		$("#removeTagForm").submit();
+//			        	window.location.href = targetUrl;
 			        },
 			        "Cancel" : function() {
 			        	$(this).dialog("close");
@@ -107,12 +111,15 @@
 			var unassignedTags = jQuery.parseJSON(unassignedTagsText);
 			var newText = '<ol id="selectable">';
 			$.each(unassignedTags.children, function(index, currentTag) {
-				newText += '<li class="ui-widget-content">'+currentTag['displayName']+'</li>';
+				newText += '<li class="ui-widget-content" class-name="'+currentTag['className']+'" tag-id="'+currentTag['tagId']+'">'+currentTag['displayName']+'</li>';
 			});
 			newText += '</ol>';
 			$("#addDialog").append(newText);
 			$("#addDialog").dialog("open").find('ol').selectable({selected: function(event,ui) {
                   alert('here');
+                  var className = $(ui).getAttribute("class-name");
+                  var tagId = ui.getAttribute("tag-id");
+                  var action = "/gameserver/gamemaster/addTagToFolio/" + folioId + "/" + tagId;
             }});;	
 		}
 	</script>
@@ -130,13 +137,28 @@
 		</div>
 	</div>
 
-	
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<span class="error-message" th:if="${feFeedback.error}" th:text="${feFeedback.error}">Error.</span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<span class="info-message" th:if="${feFeedback.info}" th:text="${feFeedback.info}">Info.</span>
+		</div>
+	</div>
+
+	<form id="addTagForm" action="/gamemaster/removeTagFromFolio" method="get"></form>
+	<form id="removeTagForm" action="/gamemaster/removeTagFromFolio" method="get"></form>
 	<form id="createFolioForm" th:object="${folioCreator}" action="#" th:action="@{/gamemaster/editFolio}" method="post">
 		<input id="campaignId" type="hidden" th:field="*{folio.campaignId}"></input>
 		<input id="unassignedTags" type="hidden" th:field="*{unassignedTags}"></input>
 		<input id="selectedTags" type="hidden" th:field="*{selectedTags}"></input>
 		<input id="removeTag" type="hidden" th:field="*{removeTag}"></input>
 		<input id="addTag" type="hidden" th:field="*{addTag}"></input>
+		<input id="folioId" type="hidden" th:field="*{folio.id}"></input>
 
 		<div class="row">
 			<div class="col-md-10">
@@ -177,16 +199,6 @@
 				</div>			 
 			</div>
 		</div>		 
-
-		<div class="row">
-			<div class="col-md-1"></div>
-			<div class="col-md-1">
-				<label>Datepicker test</label>
-			</div>
-			<div class="col-md-10">
-				<p>Date: <input type="text" id="datepicker"></input></p>
-			</div>
-		</div>		 
  
 		<div class="input-margin">
 			<div class="grid-container">
@@ -205,6 +217,7 @@
 
 	</form>
 <script>
+<!-- ckeditor js code -->
 	initSample();
 </script>
 

@@ -72,6 +72,10 @@ public class Folio implements Serializable {
 		this.tags = tags;
 	}
 	
+	public void addTag(String className, String tagId) {
+		
+	}
+	
 	public void addTag(ObjectTag tag) {
 		if (tags == null) {
 			tags = new ArrayList<>();

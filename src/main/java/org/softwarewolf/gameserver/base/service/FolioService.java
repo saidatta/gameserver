@@ -64,6 +64,8 @@ public class FolioService implements Serializable {
 				e.printStackTrace();
 				folioCreator.setSelectedTags("{}");
 			}
+		} else {
+			folioCreator.setSelectedTags("{}");
 		}
 
 		List<ObjectTag> tagList = objectTagService.createTagList(campaignId, selectedTags);
@@ -88,4 +90,21 @@ public class FolioService implements Serializable {
 	public void deleteAll() {
 		folioRepository.deleteAll();
 	}
+	
+	public Folio removeTagFromFolio(String folioId, String tagId) {
+		Folio folio = folioRepository.findOne(folioId);
+		if (folio != null) {
+			folio.removeTag(tagId);
+		}
+		return folioRepository.save(folio);
+	}
+
+	public Folio addTagToFolio(String folioId, String tagId) {
+		Folio folio = folioRepository.findOne(folioId);
+		if (folio != null) {
+//			folio.addTag(tagId);
+		}
+		return folioRepository.save(folio);
+	}
+
 }

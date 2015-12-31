@@ -22,6 +22,7 @@ import org.softwarewolf.gameserver.base.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -67,7 +68,7 @@ public class GamemasterController {
 
 	@RequestMapping(value = "/editFolio", method = RequestMethod.GET)
 	@Secured({"USER"})
-	public String editFolio(HttpSession session, FolioCreator folioCreator) {
+	public String editFolio(HttpSession session, FolioCreator folioCreator, final FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
@@ -78,16 +79,33 @@ public class GamemasterController {
 		return ControllerHelper.EDIT_FOLIO;
 	}
 	
-	@RequestMapping(value = "/removeTagFromFolio", method = RequestMethod.POST)
+	@RequestMapping(value = "/removeTagFromFolio/{folioId}/{tagId}", method = RequestMethod.GET)
 	@Secured({"USER"})
-	public String removeTagFromFolio(HttpSession session, FolioCreator folioCreator) {
+	public String removeTagFromFolio(HttpSession session, FolioCreator folioCreator, 
+			@PathVariable String folioId, @PathVariable String tagId, final FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
 
-		Folio folio = folioService.findAll().get(0);
+		Folio folio = folioService.removeTagFromFolio(folioId, tagId);
 		folioService.initFolioCreator(folioCreator, folio);
+		feFeedback.setInfo("You have modified folio " + folio.getTitle());
+		return ControllerHelper.EDIT_FOLIO;
+	}
+
+	@RequestMapping(value = "/addTagToFolio/{folioId}/{tagId}", method = RequestMethod.GET)
+	@Secured({"USER"})
+	public String addTagFromFolio(HttpSession session, FolioCreator folioCreator, 
+			@PathVariable String folioId, @PathVariable String tagId, final FeFeedback feFeedback) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}		
+
+		Folio folio = folioService.addTagToFolio(folioId, tagId);
+		folioService.initFolioCreator(folioCreator, folio);
+		feFeedback.setInfo("You have modified folio " + folio.getTitle());
 		return ControllerHelper.EDIT_FOLIO;
 	}
 
