@@ -81,16 +81,13 @@ public class OrganizationTypeController {
 		}
 		
 		OrganizationType organizationType = organizationTypeCreator.getOrganizationType();
-		OrganizationType oldType = organizationTypeService.findOneByName(organizationType.getName());
-		List<String> campaignList = new ArrayList<>();
+		OrganizationType oldType = organizationTypeService.findOneByNameAndCampaignId(organizationType.getName(),
+				organizationType.getCampaignId());
 		if (oldType != null) {
 			organizationType.setId(oldType.getId());
-			campaignList = organizationType.getCampaignList();
 		}
-		if (!campaignList.contains(campaignId)) {
-			campaignList.add(campaignId);
-		}
-		organizationType.setCampaignList(campaignList);
+
+		organizationType.setCampaignId(campaignId);
 		organizationTypeService.saveOrganizationType(organizationType);
 		organizationTypeService.initOrganizationTypeCreator(organizationType.getId(), organizationTypeCreator, campaignId, ControllerHelper.EDIT_ORGANIZATION);
 		organizationService.initOrganizationCreator(organizationCreator.getOrganization(), organizationCreator, campaignId, 
@@ -99,53 +96,63 @@ public class OrganizationTypeController {
 		return organizationCreator.getForwardingUrl();
 	}
 
-	@RequestMapping(value = "/addOrganizationTypeToCampaign", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String addOrganizationTypeToCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
-			final OrganizationCreator organizationCreator, final OrganizationRankCreator organizationRankCreator, 
-			final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String addOrganizationTypeId = organizationTypeCreator.getAddGameDataTypeId();
-		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
-		try {
-			if (addOrganizationTypeId != null) {
-				OrganizationType organizationType = organizationTypeService.getOrganizationTypeById(addOrganizationTypeId);
-				organizationType.addCampaign(campaignId);
-				organizationTypeService.saveOrganizationType(organizationType);
-				organizationTypeService.initOrganizationTypeCreator(addOrganizationTypeId, organizationTypeCreator, 
-						campaignId, organizationTypeCreator.getForwardingUrl());
-				organizationRankService.initOrganizationRankCreator(null, null, organizationRankCreator, campaignId, 
-						organizationRankCreator.getForwardingUrl());
-			}
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return forwardingUrl;
-		}
-		return ControllerHelper.CREATE_ORGANIZATION_TYPE;
-	}
-
-	@RequestMapping(value = "/removeOrganizationTypeFromCampaign", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String removeOrganizationTypeFromCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
-			final OrganizationCreator organizationCreator, final OrganizationRankCreator organizationRankCreator, 
-			final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String removeOrganizationTypeId = organizationTypeCreator.getRemoveGameDataTypeId();
-		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
-		try {
-			if (removeOrganizationTypeId != null) {
-				OrganizationType organizationType = organizationTypeService.getOrganizationTypeById(removeOrganizationTypeId);
-				organizationType.removeCampaign(campaignId);
-				organizationTypeService.saveOrganizationType(organizationType);
-				organizationTypeService.initOrganizationTypeCreator(removeOrganizationTypeId, organizationTypeCreator, 
-						campaignId, organizationTypeCreator.getForwardingUrl());
-				organizationRankService.initOrganizationRankCreator(null, null, organizationRankCreator, campaignId,
-						organizationRankCreator.getForwardingUrl());
-			}
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return forwardingUrl;
-		}
-		return ControllerHelper.CREATE_ORGANIZATION_TYPE;
-	}
+	/**
+	 * Need to figure out how to handle this now that org types are one to one, type to campaign
+	 * @param session
+	 * @param organizationTypeCreator
+	 * @param organizationCreator
+	 * @param organizationRankCreator
+	 * @param feFeedback
+	 * @return
+	 */
+//	@RequestMapping(value = "/addOrganizationTypeToCampaign", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String addOrganizationTypeToCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final OrganizationRankCreator organizationRankCreator, 
+//			final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String addOrganizationTypeId = organizationTypeCreator.getAddGameDataTypeId();
+//		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+//		try {
+//			if (addOrganizationTypeId != null) {
+//				OrganizationType organizationType = organizationTypeService.getOrganizationTypeById(addOrganizationTypeId);
+//				
+//				organizationType.setCampaignId(campaignId);
+//				organizationTypeService.saveOrganizationType(organizationType);
+//				organizationTypeService.initOrganizationTypeCreator(addOrganizationTypeId, organizationTypeCreator, 
+//						campaignId, organizationTypeCreator.getForwardingUrl());
+//				organizationRankService.initOrganizationRankCreator(null, null, organizationRankCreator, campaignId, 
+//						organizationRankCreator.getForwardingUrl());
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return ControllerHelper.CREATE_ORGANIZATION_TYPE;
+//	}
+//
+//	@RequestMapping(value = "/removeOrganizationTypeFromCampaign", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String removeOrganizationTypeFromCampaign(HttpSession session, final OrganizationTypeCreator organizationTypeCreator,
+//			final OrganizationCreator organizationCreator, final OrganizationRankCreator organizationRankCreator, 
+//			final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String removeOrganizationTypeId = organizationTypeCreator.getRemoveGameDataTypeId();
+//		String forwardingUrl = organizationTypeCreator.getForwardingUrl();
+//		try {
+//			if (removeOrganizationTypeId != null) {
+//				OrganizationType organizationType = organizationTypeService.getOrganizationTypeById(removeOrganizationTypeId);
+//				organizationType.removeCampaign(campaignId);
+//				organizationTypeService.saveOrganizationType(organizationType);
+//				organizationTypeService.initOrganizationTypeCreator(removeOrganizationTypeId, organizationTypeCreator, 
+//						campaignId, organizationTypeCreator.getForwardingUrl());
+//				organizationRankService.initOrganizationRankCreator(null, null, organizationRankCreator, campaignId,
+//						organizationRankCreator.getForwardingUrl());
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return ControllerHelper.CREATE_ORGANIZATION_TYPE;
+//	}
 }

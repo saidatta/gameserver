@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface OrganizationTypeRepository extends MongoRepository<OrganizationType, String> {
 
-	public OrganizationType findOneByName(String arg0);
+	public OrganizationType findOneByNameAndCampaignId(String arg0, String arg1);
 	
     /// Find by key value pair
     @Query("{?0 : ?1}")

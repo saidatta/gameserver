@@ -99,7 +99,7 @@ public class LocationService {
 		locations.add(0, addNewLocation);
 		locationCreator.setLocationsInCampaign(locations);
 		
-		List<LocationType> locationTypesInCampaign = locationTypeRepository.findAllByKeyValue("campaignList", campaignId);
+		List<LocationType> locationTypesInCampaign = locationTypeRepository.findAllByKeyValue("campaignId", campaignId);
 		LocationType addNew = new LocationType();
 		addNew.setId("0");
 		addNew.setName("Add new location type");

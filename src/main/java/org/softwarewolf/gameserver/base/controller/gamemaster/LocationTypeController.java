@@ -73,11 +73,14 @@ public class LocationTypeController {
 	@Secured({"GAMEMASTER"})
 	public String postLocationType(HttpSession session, final LocationTypeCreator locationTypeCreator,
 			final LocationCreator locationCreator, final FeFeedback feFeedback) {
-		LocationType locationType = locationTypeCreator.getLocationType();
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}		
+		LocationType locationType = locationTypeCreator.getLocationType();
 		String forwardingUrl = locationTypeCreator.getForwardingUrl();
 		if (campaignId != null) {
-			locationType.addCampaign(campaignId);
+			locationType.setCampaignId(campaignId);
 		}
 		try {
 			locationTypeService.saveLocationType(locationType);
@@ -93,49 +96,59 @@ public class LocationTypeController {
 		return forwardingUrl;
 	}
 
-	@RequestMapping(value = "/addLocationTypeToCampaign", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String addLocationTypeToCampaign(HttpSession session, final LocationTypeCreator locationTypeCreator,
-			final LocationCreator locationCreator, final OrganizationCreator organizationCreator, 
-			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String addLocationTypeId = locationTypeCreator.getAddGameDataTypeId();
-		String forwardingUrl = locationTypeCreator.getForwardingUrl();
-		try {
-			if (addLocationTypeId != null) {
-				LocationType locationType = locationTypeService.findOne(addLocationTypeId);
-				locationType.addCampaign(campaignId);
-				locationTypeService.saveLocationType(locationType);
-				locationTypeService.initLocationTypeCreator(locationType.getId(), locationTypeCreator, campaignId, forwardingUrl);
-			}
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return forwardingUrl;
-		}
-		return forwardingUrl;
-	}
-
-	@RequestMapping(value = "/removeLocationTypeFromCampaign", method = RequestMethod.POST)
-	@Secured({"GAMEMASTER"})
-	public String removeLocationTypeFromCampaign(HttpSession session, final LocationTypeCreator locationTypeCreator,
-			final LocationCreator locationCreator, final OrganizationCreator organizationCreator,
-			final OrganizationTypeCreator organizationTypeCreator, FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
-		String removeLocationTypeId = locationTypeCreator.getRemoveGameDataTypeId();
-		String forwardingUrl = locationTypeCreator.getForwardingUrl();
-		try {
-			if (removeLocationTypeId != null) {
-				LocationType locationType = locationTypeService.findOne(removeLocationTypeId);
-				locationType.removeCampaign(campaignId);
-				locationTypeService.saveLocationType(locationType);
-				locationTypeService.initLocationTypeCreator(null, locationTypeCreator, campaignId, forwardingUrl);
-			}
-		} catch (IllegalArgumentException e) {
-			feFeedback.setError(e.getMessage());
-			return forwardingUrl;
-		}
-		return forwardingUrl;
-	}
+	/**
+	 * Need to figure out how to deal with these since type to campaign is now one to one
+	 * @param session
+	 * @param locationCreator
+	 * @param locationTypeCreator
+	 * @param organizationCreator
+	 * @param organizationTypeCreator
+	 * @param feFeedback
+	 * @return
+	 */
+//	@RequestMapping(value = "/addLocationTypeToCampaign", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String addLocationTypeToCampaign(HttpSession session, final LocationTypeCreator locationTypeCreator,
+//			final LocationCreator locationCreator, final OrganizationCreator organizationCreator, 
+//			final OrganizationTypeCreator organizationTypeCreator, final FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String addLocationTypeId = locationTypeCreator.getAddGameDataTypeId();
+//		String forwardingUrl = locationTypeCreator.getForwardingUrl();
+//		try {
+//			if (addLocationTypeId != null) {
+//				LocationType locationType = locationTypeService.findOne(addLocationTypeId);
+//				locationType.addCampaign(campaignId);
+//				locationTypeService.saveLocationType(locationType);
+//				locationTypeService.initLocationTypeCreator(locationType.getId(), locationTypeCreator, campaignId, forwardingUrl);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
+//
+//	@RequestMapping(value = "/removeLocationTypeFromCampaign", method = RequestMethod.POST)
+//	@Secured({"GAMEMASTER"})
+//	public String removeLocationTypeFromCampaign(HttpSession session, final LocationTypeCreator locationTypeCreator,
+//			final LocationCreator locationCreator, final OrganizationCreator organizationCreator,
+//			final OrganizationTypeCreator organizationTypeCreator, FeFeedback feFeedback) {
+//		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+//		String removeLocationTypeId = locationTypeCreator.getRemoveGameDataTypeId();
+//		String forwardingUrl = locationTypeCreator.getForwardingUrl();
+//		try {
+//			if (removeLocationTypeId != null) {
+//				LocationType locationType = locationTypeService.findOne(removeLocationTypeId);
+//				locationType.removeCampaign(campaignId);
+//				locationTypeService.saveLocationType(locationType);
+//				locationTypeService.initLocationTypeCreator(null, locationTypeCreator, campaignId, forwardingUrl);
+//			}
+//		} catch (IllegalArgumentException e) {
+//			feFeedback.setError(e.getMessage());
+//			return forwardingUrl;
+//		}
+//		return forwardingUrl;
+//	}
 
 	@RequestMapping(value = "/addLocationTypeToLocation", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})

@@ -26,10 +26,7 @@ public class LocationTypeService {
 	}
 	
 	public List<LocationType> getLocationTypesInCampaign(String campaignId) {
-		List<String> campaignIds = new ArrayList<>();
-		campaignIds.add(campaignId);
-		List<LocationType> locationTypesInCampaign = null;
-		locationTypesInCampaign = locationTypeRepository.findAllByKeyValues("campaignList", campaignIds.toArray());
+		List<LocationType> locationTypesInCampaign = locationTypeRepository.findAllByKeyValue("campaignId", campaignId);
 		return locationTypesInCampaign;
 	}
 
@@ -41,7 +38,8 @@ public class LocationTypeService {
 	
 	public void saveLocationType(LocationType locationType) {
 		if (locationType.getId() == null) {
-			LocationType existingLocationType = locationTypeRepository.findOneByName(locationType.getName());
+			LocationType existingLocationType = locationTypeRepository.findOneByNameAndCampaignId(locationType.getName(), 
+					locationType.getCampaignId());
 			if (existingLocationType != null) {
 				throw new IllegalArgumentException("Location type " + locationType.getName() + " already exists");
 			}
@@ -92,7 +90,7 @@ public class LocationTypeService {
 			if (campaignId != null) {
 				List<String> campaignIds = new ArrayList<>();
 				campaignIds.add(campaignId);
-				locationTypesInCampaign = locationTypeRepository.findAllByKeyValue("campaignList", campaignId);
+				locationTypesInCampaign = locationTypeRepository.findAllByKeyValue("campaignId", campaignId);
 				LocationType addNewLT = new LocationType();
 				addNewLT.setId("0");
 				addNewLT.setName("Add new location type");

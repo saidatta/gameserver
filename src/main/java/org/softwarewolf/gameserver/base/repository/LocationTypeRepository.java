@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface LocationTypeRepository extends MongoRepository<LocationType, String> {
 
-	public LocationType findOneByName(String arg0);
+	public LocationType findOneByNameAndCampaignId(String arg0, String arg1);
 	
     /// Find by key value pair
     @Query("{?0 : ?1}")

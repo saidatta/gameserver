@@ -37,7 +37,7 @@ public class OrganizationTypeService {
 		List<String> campaignIds = new ArrayList<>();
 		campaignIds.add(campaignId);
 		List<OrganizationType> organizationTypesInCampaign = null;
-		organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValues("campaignList", campaignIds.toArray());
+		organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValues("campaignId", campaignIds.toArray());
 		return organizationTypesInCampaign;
 	}
 
@@ -48,7 +48,8 @@ public class OrganizationTypeService {
 	
 	public void saveOrganizationType(OrganizationType organizationType) {
 		if (organizationType.getId() == null) {
-			OrganizationType existingOrganizationType = organizationTypeRepository.findOneByName(organizationType.getName());
+			OrganizationType existingOrganizationType = organizationTypeRepository.findOneByNameAndCampaignId(organizationType.getName(), 
+					organizationType.getCampaignId());
 			if (existingOrganizationType != null) {
 				throw new IllegalArgumentException("Organization type " + organizationType.getName() + " already exists");
 			}
@@ -78,7 +79,7 @@ public class OrganizationTypeService {
 		} else {
 			organizationType = new OrganizationType();
 		}
-		organizationType.addCampaign(campaignId);
+		organizationType.setCampaignId(campaignId);
 		organizationTypeCreator.setOrganizationType(organizationType);
 		List<OrganizationType> organizationTypesInCampaign = null;
 		List<GameDataType> gameDataTypesInCampaign = new ArrayList<>();
@@ -88,7 +89,7 @@ public class OrganizationTypeService {
 			if (campaignId != null) {
 				List<String> campaignIds = new ArrayList<>();
 				campaignIds.add(campaignId);
-				organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValue("campaignList", campaignId);
+				organizationTypesInCampaign = organizationTypeRepository.findAllByKeyValue("campaignId", campaignId);
 				OrganizationType addNewTT = new OrganizationType();
 				addNewTT.setId("0");
 				addNewTT.setName("Add new organization type");
@@ -120,8 +121,8 @@ public class OrganizationTypeService {
 		organizationTypeCreator.setOtherGameDataTypes(otherGameDataTypes);
 	}
 	
-	public OrganizationType findOneByName(String name) {
-		return organizationTypeRepository.findOneByName(name);
+	public OrganizationType findOneByNameAndCampaignId(String name, String campaignId) {
+		return organizationTypeRepository.findOneByNameAndCampaignId(name, campaignId);
 	}
 
 }

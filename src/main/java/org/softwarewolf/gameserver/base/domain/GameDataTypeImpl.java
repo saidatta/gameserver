@@ -16,10 +16,9 @@ public class GameDataTypeImpl implements GameDataType, Serializable {
 	private String id;
 	private String name;
 	private String description;
-	private List<String> campaignList;
+	private String campaignId;
 	
 	public GameDataTypeImpl() {
-		campaignList = new ArrayList<>();
 	}
 	
 	public String getId() {
@@ -46,40 +45,24 @@ public class GameDataTypeImpl implements GameDataType, Serializable {
 		this.description = description;
 	}
 		
-	public List<String> getCampaignList() {
-		return campaignList;
+	public String getCampaignId() {
+		return campaignId;
 	}
 	
-	public void setCampaignList(List<String> campaignList) {
-		if (campaignList == null) {
-			this.campaignList = new ArrayList<>();
-		} else { 
-			this.campaignList = campaignList;
-		}
-	}
-	
-	public void addCampaign(String campaignId) {
-		if (!campaignList.contains(campaignId)) {
-			campaignList.add(campaignId);
-		}
-	}
-	
-	public void removeCampaign(String campaignId) {
-		if (campaignId != null) {
-			campaignList.remove(campaignId);
-		}
+	public void setCampaignId(String campaignId) {
+		this.campaignId = campaignId;
 	}
 	
 	public ObjectTag createTag(String campaignId) {
 		throw new NotImplementedException();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((campaignList == null) ? 0 : campaignList.hashCode());
+				+ ((campaignId == null) ? 0 : campaignId.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -96,10 +79,10 @@ public class GameDataTypeImpl implements GameDataType, Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		GameDataTypeImpl other = (GameDataTypeImpl) obj;
-		if (campaignList == null) {
-			if (other.campaignList != null)
+		if (campaignId == null) {
+			if (other.campaignId != null)
 				return false;
-		} else if (!campaignList.equals(other.campaignList))
+		} else if (!campaignId.equals(other.campaignId))
 			return false;
 		if (description == null) {
 			if (other.description != null)
@@ -119,4 +102,5 @@ public class GameDataTypeImpl implements GameDataType, Serializable {
 		return true;
 	}
 	
+
 }
