@@ -11,7 +11,7 @@ public class OrganizationTypeCreator {
 	String addGameDataTypeId;
 	String removeGameDataTypeId;
 	public List<GameDataType> gameDataTypesInCampaign;
-	public List<GameDataType> otherGameDataTypes;
+//	public List<GameDataType> otherGameDataTypes;
 	public String forwardingUrl;
 	
 	public OrganizationTypeCreator() {
@@ -58,13 +58,13 @@ public class OrganizationTypeCreator {
 		this.gameDataTypesInCampaign = gameDataTypesInCampaign;
 	}
 
-	public List<GameDataType> getOtherGameDataTypes() {
-		return otherGameDataTypes;
-	}
-	
-	public void setOtherGameDataTypes(List<GameDataType> otherGameDataTypes) {
-		this.otherGameDataTypes = otherGameDataTypes;
-	}
+//	public List<GameDataType> getOtherGameDataTypes() {
+//		return otherGameDataTypes;
+//	}
+//	
+//	public void setOtherGameDataTypes(List<GameDataType> otherGameDataTypes) {
+//		this.otherGameDataTypes = otherGameDataTypes;
+//	}
 	
 	public String getForwardingUrl() {
 		return forwardingUrl;

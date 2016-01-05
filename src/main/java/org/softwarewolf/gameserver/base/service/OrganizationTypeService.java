@@ -106,19 +106,19 @@ public class OrganizationTypeService {
 			for (OrganizationType tt : allOrganizationTypes) {
 				allGameDataTypes.add(tt);
 			}
-			if (organizationTypeCreator.getGameDataTypesInCampaign().isEmpty()) {
-				organizationTypeCreator.setOtherGameDataTypes(allGameDataTypes);
-			} else {
+			if (!organizationTypeCreator.getGameDataTypesInCampaign().isEmpty()) {
 				for (OrganizationType tType : allOrganizationTypes) {
 					if (!organizationTypesInCampaign.contains(tType)) {
 						otherGameDataTypes.add(tType);
 					}
 				}
+//			} else {
+//				organizationTypeCreator.setOtherGameDataTypes(allGameDataTypes);
 			}
 		}
 		organizationTypeCreator.setCampaignId(campaignId);
 		organizationTypeCreator.setGameDataTypesInCampaign(gameDataTypesInCampaign);
-		organizationTypeCreator.setOtherGameDataTypes(otherGameDataTypes);
+//		organizationTypeCreator.setOtherGameDataTypes(otherGameDataTypes);
 	}
 	
 	public OrganizationType findOneByNameAndCampaignId(String name, String campaignId) {

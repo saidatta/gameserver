@@ -107,19 +107,19 @@ public class LocationTypeService {
 			for (LocationType tt : allLocationTypes) {
 				allGameDataTypes.add(tt);
 			}
-			if (locationTypeCreator.getGameDataTypesInCampaign().isEmpty()) {
-				locationTypeCreator.setOtherGameDataTypes(allGameDataTypes);
-			} else {
+			if (!locationTypeCreator.getGameDataTypesInCampaign().isEmpty()) {
 				for (LocationType tType : allLocationTypes) {
 					if (!locationTypesInCampaign.contains(tType)) {
 						otherGameDataTypes.add(tType);
 					}
 				}
+//			} else {
+//				locationTypeCreator.setOtherGameDataTypes(allGameDataTypes);
 			}
 		}
 		locationTypeCreator.setCampaignId(campaignId);
 		locationTypeCreator.setGameDataTypesInCampaign(gameDataTypesInCampaign);
-		locationTypeCreator.setOtherGameDataTypes(otherGameDataTypes);
+//		locationTypeCreator.setOtherGameDataTypes(otherGameDataTypes);
 	}
 
 	

@@ -22,16 +22,16 @@
 	$(document).ready(function() {
 		$( window ).load(function() {
 			
-			$(".addOrgType").click(function(event) {
-				var target = $(event.target);
-				var id = $(target).attr('id');
-				var name = $(target).attr('name');
-				var addTT = $("#addGameDataTypeId");
-				addTT.attr("value", id);		
-				var form = $("#createOrganizationForm");
-				form.attr("action", "/gameserver/gamemaster/addOrganizationTypeToCampaign");
-				form.submit();
-			});
+//			$(".addOrgType").click(function(event) {
+//				var target = $(event.target);
+//				var id = $(target).attr('id');
+//				var name = $(target).attr('name');
+//				var addTT = $("#addGameDataTypeId");
+//				addTT.attr("value", id);		
+//				var form = $("#createOrganizationForm");
+//				form.attr("action", "/gameserver/gamemaster/addOrganizationTypeToCampaign");
+//				form.submit();
+//			});
 			
 			$(".removeOrgType").click(function(event) {
 				var target = $(event.target);
@@ -140,6 +140,7 @@
 					</ul>	
 				</div>
 			</div>
+<!-- 			
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-3">			
@@ -159,6 +160,7 @@
 					</ul>	
 				</div>
 			</div>
+ -->			
 		</form>
 	</div>
 </body>
