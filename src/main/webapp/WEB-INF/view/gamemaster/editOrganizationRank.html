@@ -105,7 +105,6 @@
 		
 
 		$(".selectOrgRank").click(function(event) {
-			alert("hi");
 			event.preventDefault();
 			var target = $(event.target);
 			var id = $(target).attr('id');
@@ -191,7 +190,6 @@
 	});
 	  
 	function selectOrgRank(id, name) {
-		alert("id: " + id + "\nname: " + name);
 		var organizationRankStatus = $("#organizationStatus");
 		if (id == "0" || id == null) { 
 			$("#organizationRankName").val(null);
