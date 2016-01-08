@@ -155,7 +155,7 @@ public class OrganizationRankService {
 		return json;
 	}
 	
-	public void saveOrganizationRank(OrganizationRank organizationRank) {
+	public OrganizationRank saveOrganizationRank(OrganizationRank organizationRank) {
 		String campaignId = organizationRank.getCampaignId();
 		if (organizationRank.getId() == null) {
 			OrganizationRank existingOrganizationRank = organizationRankRepository.findOneByNameAndOrganizationId(organizationRank.getName(), campaignId);
@@ -179,6 +179,7 @@ public class OrganizationRankService {
 			parentOrganizationRank.addChildId(organizationRank.getId());
 			organizationRankRepository.save(parentOrganizationRank);
 		}
+		return organizationRank;
 	}
 	
 	public boolean canSetOrganizationRankParent(String organizationId, String parentId) {

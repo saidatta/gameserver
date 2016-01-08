@@ -60,17 +60,17 @@
 		return index;
 	}
 	
-	// This is for selecting a parent organization
-	function clickPlus(type, parentOrganizationId, parentOrganizationName) {
-		if (type == "organization") {
-			$("#hiddenParentId").val(parentOrganizationId);
-			$("#organizationParentName").val(parentOrganizationName);
-		} else {
-			$("#hiddenOrgRankParentId").val(parentOrganizationId);
-			$("#organizationRankParentName").val(parentOrganizationName);
-		}
-		event.preventDefault();
-	}
+//	// This is for selecting a parent organization
+//	function clickPlus(type, parentOrganizationId, parentOrganizationName) {
+//		if (type == "organization") {
+//			$("#hiddenParentId").val(parentOrganizationId);
+//			$("#organizationParentName").val(parentOrganizationName);
+//		} else {
+//			$("#hiddenOrgRankParentId").val(parentOrganizationId);
+//			$("#organizationRankParentName").val(parentOrganizationName);
+//		}
+//		event.preventDefault();
+//	}
 	
 	// This is for collapsing the parent organization hierarchy
 	function clickText(organizationId) {
@@ -181,14 +181,6 @@
 	});		
 </script>
 <script>
-	$(function() {
-  		$( "#dialog" ).dialog();
-	});
-
-	$(function() {
-		$( "#datepicker" ).datepicker();
-	});
-	  
 	function selectOrgRank(id, name) {
 		var organizationRankStatus = $("#organizationStatus");
 		if (id == "0" || id == null) { 
@@ -213,6 +205,14 @@
 		var orgRankOrgId = $("#editOrganizationRankForm input[id=organizationId]");
 		orgRankOrgId.val(id);
 	}
+	
+	
+	function clickPlus(parentLocationId, parentLocationName) {
+		$("#hiddenOrgRankParentId").val(parentLocationId);
+		$("#organizationRankParentName").val(parentLocationName);
+		event.preventDefault();
+	}
+	
 </script>
 </head>
 <body>

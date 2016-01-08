@@ -150,7 +150,7 @@ public class OrganizationRankController {
 	@RequestMapping(value = "/editOrganizationRank", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
 	public String editOrganizationRank(HttpSession session, final OrganizationRankCreator organizationRankCreator, 
-			final FeFeedback feFeedback, final OrganizationCreator organizationCreator) {
+			final FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
@@ -181,16 +181,14 @@ public class OrganizationRankController {
 
 		organizationRank.setCampaignId(campaignId);
 		try {
-			Organization organization = organizationCreator.getOrganization();
 			if ("".equals(organizationRank.getId())) {
 				organizationRank.setId(null);
-			}
-			organizationRank.setOrganizationId(organization.getId());
-			organizationRankService.saveOrganizationRank(organizationRank);
-			organizationRankService.initOrganizationRankCreator(organizationRank.getOrganizationId(), organizationRank.getName(), 
+			} 
+			organizationRank = organizationRankService.saveOrganizationRank(organizationRank);
+			organizationRankService.initOrganizationRankCreator(null, null, 
 					organizationRankCreator, campaignId, organizationRankCreator.getForwardingUrl());
-			organizationService.initOrganizationCreator(organization, organizationCreator, campaignId, organizationCreator.getForwardingUrl());
 			feFeedback.setInfo("Success, you have added organization rank " + organizationRank.getName());
+			feFeedback.setInfo2("You are creating a new organization rank");
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return ControllerHelper.EDIT_ORGANIZATION_RANK;
