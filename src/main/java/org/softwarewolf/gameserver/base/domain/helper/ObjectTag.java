@@ -1,6 +1,8 @@
 package org.softwarewolf.gameserver.base.domain.helper;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ObjectTag implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -14,8 +16,8 @@ public class ObjectTag implements Serializable {
 	private String campaignId;
 	private String gameDataTypeId;
 	private String gameDataTypeName;
-	private boolean hasChildren = false;
 	private String parentId = null;
+	private List<String> children;
 	
 	public ObjectTag() { 
 	}
@@ -29,6 +31,7 @@ public class ObjectTag implements Serializable {
 		this.gameDataTypeId = gameDataTypeId;
 		this.gameDataTypeName = gameDataTypeName;
 		this.parentId = parentId;
+		children = new ArrayList<>();
 	}
 	
 	public String getClassName() {
@@ -73,11 +76,16 @@ public class ObjectTag implements Serializable {
 		this.gameDataTypeName = gameDataTypeName;
 	}
 
-	public boolean getHasChildren() {
-		return hasChildren;
+	public boolean hasChildren() {
+		return (children != null && children.size() > 0);
 	}
-	public void setHasChildren(boolean hasChildren) {
-		this.hasChildren = hasChildren;
+	public void addChildTag(String childTagId) {
+		if (!children.contains(childTagId)) {
+			children.add(childTagId);
+		}
+	}
+	public void removeChildTag(String childTagId) {
+		children.remove(childTagId);
 	}
 	
 	public String getParentId() {

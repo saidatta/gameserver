@@ -68,10 +68,10 @@ public class FolioService implements Serializable {
 			folioCreator.setSelectedTags("{}");
 		}
 
-		List<ObjectTag> tagList = objectTagService.createTagList(campaignId, selectedTags);
+		Map<String, ObjectTag> unselectedTagMap = objectTagService.createTagList(campaignId, selectedTags);
 		Map<String, Object> unassignedTags = new HashMap<>();
 		try {
-			unassignedTags = objectTagService.createObjectTagTree(tagList);
+			unassignedTags = objectTagService.createObjectTagTree(unselectedTagMap, campaignId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
