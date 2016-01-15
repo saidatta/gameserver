@@ -48,9 +48,11 @@ public class DataSeeder {
 	private static final String MODERN_COUNTY = "Modern County";
 	private static final String MODERN_CITY = "Modern City";
 	private static final String MODERN_SPACE_STATION = "Modern Space Station";
+	private static final String STATE = "State";
 	private static final String COUNTY = "County";
 	private static final String CITY = "City";
 	private static final String TOWN = "Town";
+	private static final String VILLAGE = "Village";
 	private static final String MERCHANTS_GUILD = "Merchants Guild";
 	private static final String COVEN = "A witches coven";
 	private static final String BLOOD_MOON = "The Blood Moon Coven";
@@ -205,27 +207,29 @@ public class DataSeeder {
 		Map<String, LocationType> locationTypeMap = new HashMap<>();
 
 		
-		saveLocationType(KINGDOM, "A typical kingdom.", campaignMap.get(SWORD_AND_SORCERY).getId(), 
+		saveLocationType(KINGDOM, "The lands belonging to a kingdom.", campaignMap.get(SWORD_AND_SORCERY).getId(), 
 				campaignMap.get(SWORD_AND_SORCERY).getName(), locationTypeMap);
 		saveLocationType(COUNTY, "A subdivision of a kingdom.", campaignMap.get(SWORD_AND_SORCERY).getId(), 
 				campaignMap.get(SWORD_AND_SORCERY).getName(), locationTypeMap);
-		saveLocationType(CITY, "A collection of people and dwellings.", campaignMap.get(SWORD_AND_SORCERY).getId(), 
+		saveLocationType(CITY, "A fairly densely populated area.", campaignMap.get(SWORD_AND_SORCERY).getId(), 
 				campaignMap.get(SWORD_AND_SORCERY).getName(), locationTypeMap);
-		saveLocationType(TOWN, "Like a city but smaller.", campaignMap.get(SWORD_AND_SORCERY).getId(), 
+		saveLocationType(TOWN, "Similar to a city. A somewhat populated area.", campaignMap.get(SWORD_AND_SORCERY).getId(), 
+				campaignMap.get(SWORD_AND_SORCERY).getName(), locationTypeMap);
+		saveLocationType(VILLAGE, "Similar to a town. A lightly populated area.", campaignMap.get(SWORD_AND_SORCERY).getId(), 
 				campaignMap.get(SWORD_AND_SORCERY).getName(), locationTypeMap);
 
-		saveLocationType(KINGDOM, "A typical kingdom.", campaignMap.get(MODERN).getId(), 
+		saveLocationType(KINGDOM, "The lands beloning to a kingdom.", campaignMap.get(MODERN).getId(), 
 				campaignMap.get(MODERN).getName(), locationTypeMap);
 		saveLocationType(COUNTY, "A subdivision of a kingdom.", campaignMap.get(MODERN).getId(), 
 				campaignMap.get(MODERN).getName(), locationTypeMap);
-		saveLocationType(CITY, "A collection of people and dwellings.", campaignMap.get(MODERN).getId(), 
+		saveLocationType(CITY, "A fairly densely populated area.", campaignMap.get(MODERN).getId(), 
 				campaignMap.get(MODERN).getName(), locationTypeMap);
-		saveLocationType(TOWN, "Like a city but smaller.", campaignMap.get(MODERN).getId(), 
+		saveLocationType(TOWN, "Similar to a city. A somewhat populated area.", campaignMap.get(MODERN).getId(), 
 				campaignMap.get(MODERN).getName(), locationTypeMap);
-		saveLocationType(MODERN_SPACE_STATION, "A typical space station.", campaignMap.get(MODERN).getId(), 
+		saveLocationType(MODERN_SPACE_STATION, "A life sustaining habitat in space.", campaignMap.get(MODERN).getId(), 
 				campaignMap.get(MODERN).getName(), locationTypeMap);
 
-		saveLocationType(SPACE_STATION, "A typical space station.", campaignMap.get(SPACE_OPERA).getId(), 
+		saveLocationType(SPACE_STATION, "A life sustaining habitat in space.", campaignMap.get(SPACE_OPERA).getId(), 
 				campaignMap.get(SPACE_OPERA).getName(), locationTypeMap);
 		
 		return locationTypeMap;
