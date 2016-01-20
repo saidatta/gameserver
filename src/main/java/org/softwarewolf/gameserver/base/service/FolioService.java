@@ -2,18 +2,12 @@ package org.softwarewolf.gameserver.base.service;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.domain.Folio;
-import org.softwarewolf.gameserver.base.domain.Organization;
-import org.softwarewolf.gameserver.base.domain.OrganizationRank;
-import org.softwarewolf.gameserver.base.domain.OrganizationType;
-import org.softwarewolf.gameserver.base.domain.Location;
-import org.softwarewolf.gameserver.base.domain.LocationType;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.softwarewolf.gameserver.base.repository.FolioRepository;
@@ -102,6 +96,7 @@ public class FolioService implements Serializable {
 	public Folio addTagToFolio(String folioId, String tagId) {
 		Folio folio = folioRepository.findOne(folioId);
 		if (folio != null) {
+			// TODO: figure out best way to create tag (with/without classname)
 //			folio.addTag(tagId);
 		}
 		return folioRepository.save(folio);

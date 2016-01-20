@@ -2,6 +2,7 @@ package org.softwarewolf.gameserver.base.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,7 +46,7 @@ public class ObjectTagService {
 		List<OrganizationType> orgTypeList = organizationTypeService.getOrganizationTypesInCampaign(campaignId);
 		List<Location> locationList = locationService.getLocationsInCampaign(campaignId);
 		List<LocationType> locationTypeList = locationTypeService.getLocationTypesInCampaign(campaignId);
-		
+/*		
 		HashMap<String, ObjectTag> unselectedTagMap = new HashMap<>();
 		HashMap<String, ObjectTag> allTags = new HashMap<>();
 		for (Organization org : orgList) {
@@ -63,7 +64,7 @@ public class ObjectTagService {
 			allTags.put(tag.getClassName(), tag);
 		}
 		for (OrganizationType orgType : orgTypeList) {
-			ObjectTag tag = orgType.createTag(campaignId);
+			ObjectTag tag = orgType.createTag();
 			if (!excludeTags.contains(tag)) {
 				unselectedTagMap.put(tag.getObjectId(), tag);
 			}
@@ -77,26 +78,107 @@ public class ObjectTagService {
 			allTags.put(tag.getClassName(), tag);
 		}
 		for (LocationType locationType : locationTypeList) {
-			ObjectTag tag = locationType.createTag(campaignId);
+			ObjectTag tag = locationType.createTag();
 			if (!excludeTags.contains(tag)) {
 				unselectedTagMap.put(tag.getObjectId(), tag);
 			}
 			allTags.put(tag.getClassName(), tag);
 		}
+*/		
+		List<ObjectTag> locationTags = createLocationTags(locationTypeList, locationList);
+		List<ObjectTag> organizationTags = createOrganizationTags(orgTypeList, orgList, orgRankList);
+		locationTags.addAll(organizationTags);
+		Map<String, ObjectTag> newMap = new HashMap<>();
+		for (ObjectTag tag : locationTags) {
+			newMap.put(tag.getObjectId(), tag);
+		}
+		return newMap;
+//		return unselectedTagMap;
+	}
+	
+	public List<ObjectTag> createLocationTags(List<LocationType> locationTypeList, List<Location> locationList) {
+		List<ObjectTag> locationTagList = new ArrayList<>();
 		
-		for (ObjectTag currentTag : unselectedTagMap.values()) {
-			String parentName = null;			
-			if (!currentTag.getClassName().endsWith("Type")) {
-				parentName = currentTag.getClassName() + "Type";
-				ObjectTag parent = allTags.get(parentName);
-				if (parent != null) {
-					parent.addChildTag(currentTag.getObjectId());
-					currentTag.setParentId(parent.getObjectId());
-				}
-			}
+		// The parent map is of type objectId/objectTag
+		Map<String, ObjectTag> locationParentMap = new HashMap<>();
+		Iterator<LocationType> ltIter = locationTypeList.iterator();
+		while (ltIter.hasNext()) {
+			LocationType locationType = ltIter.next();
+			String displayName = locationType.getName() + "(Location Type)";
+			String className = locationType.getClass().getSimpleName();
+			ObjectTag locationTypeTag = new ObjectTag(className, locationType.getId(), displayName, 
+					locationType.getCampaignId(), locationType.getId(), className, "Root");
+			locationTagList.add(locationTypeTag);
+			locationParentMap.put(locationTypeTag.getObjectId(), locationTypeTag);
 		}
 		
-		return unselectedTagMap;
+		Iterator<Location> locIter = locationList.iterator();
+		while (locIter.hasNext()) {
+			Location location = locIter.next();
+			ObjectTag parentTag = locationParentMap.get(location.getGameDataTypeId());
+			parentTag.addChildTag(location.getId());
+			String parentName = parentTag.getTagName();
+			parentName = parentName.substring(0, parentName.lastIndexOf("("));
+			String displayName = location.getName() + "(" + parentName + ")";
+			String className = location.getClass().getSimpleName();
+			ObjectTag locationTag = new ObjectTag(className, location.getId(), displayName,
+					location.getCampaignId(), parentTag.getObjectId(), parentTag.getClassName(), parentTag.getObjectId());
+			locationTagList.add(locationTag);
+		}
+		
+		return locationTagList;
+	}
+	
+	public List<ObjectTag> createOrganizationTags(List<OrganizationType> organizationTypeList, 
+			List<Organization> organizationList, List<OrganizationRank> organizationRankList) {
+		List<ObjectTag> organizationTagList = new ArrayList<>();
+		
+		// The parent map is of type objectId/objectTag
+		Map<String, ObjectTag> orgTypeParentMap = new HashMap<>();
+		Iterator<OrganizationType> otIter = organizationTypeList.iterator();
+		while (otIter.hasNext()) {
+			OrganizationType organizationType = otIter.next();
+			String displayName = organizationType.getName() + "(Organization Type)";
+			String className = organizationType.getClass().getSimpleName();
+			ObjectTag organizationTypeTag = new ObjectTag(className, organizationType.getId(), displayName, 
+					organizationType.getCampaignId(), organizationType.getId(), className, "Root");
+			organizationTagList.add(organizationTypeTag);
+			orgTypeParentMap.put(organizationTypeTag.getObjectId(), organizationTypeTag);
+		}
+		
+		Map<String, ObjectTag> orgParentMap = new HashMap<>();
+		Iterator<Organization> orgIter = organizationList.iterator();
+		while (orgIter.hasNext()) {
+			Organization organization = orgIter.next();
+			ObjectTag parentTag = orgTypeParentMap.get(organization.getGameDataTypeId());
+			parentTag.addChildTag(organization.getId());
+			String parentName = parentTag.getTagName();
+			parentName = parentName.substring(0, parentName.lastIndexOf("("));
+			String displayName = organization.getName() + "(" + parentName + ")";
+			String className = organization.getClass().getSimpleName();
+			ObjectTag organizationTag = new ObjectTag(className, organization.getId(), displayName,
+					organization.getCampaignId(), parentTag.getObjectId(), parentTag.getClassName(), parentTag.getObjectId());
+			organizationTagList.add(organizationTag);
+			System.out.println(parentTag.toString());
+			System.out.println(organizationTag.toString());
+			orgParentMap.put(organizationTag.getObjectId(), organizationTag);
+		}
+		
+		Iterator<OrganizationRank> orgRankIter = organizationRankList.iterator();
+		while (orgRankIter.hasNext()) {
+			OrganizationRank organizationRank = orgRankIter.next();
+			ObjectTag parentTag = orgParentMap.get(organizationRank.getOrganizationId());
+			parentTag.addChildTag(organizationRank.getId());
+			String parentName = parentTag.getTagName();
+			parentName = parentName.substring(0, parentName.lastIndexOf("("));
+			String displayName = organizationRank.getName() + "(" + parentName + ")";
+			String className = organizationRank.getClass().getSimpleName();
+			ObjectTag organizationRankTag = new ObjectTag(className, organizationRank.getId(), displayName,
+					organizationRank.getCampaignId(), parentTag.getObjectId(), parentTag.getClassName(), parentTag.getObjectId());
+			organizationTagList.add(organizationRankTag);
+		}
+
+		return organizationTagList;
 	}
 	
 	public Map<String, Object> createObjectTagTree(Map<String, ObjectTag> objectTagMap, String campaignId) throws Exception {
@@ -108,10 +190,9 @@ public class ObjectTagService {
 				root.getGameDataTypeId(), root.getTagName());
 
 		for (ObjectTag tag : objectTagMap.values()) {
-			String parentId = tag.getGameDataTypeId();
-			if (parentId == null && !ROOT.equals(tag.getObjectId())) {
+			String parentId = tag.getParentId();
+			if (parentId == ROOT) {
 				root.addChildTag(tag.getObjectId());
-				tag.setParentId(ROOT);
 			}
 		}
 
@@ -121,21 +202,15 @@ public class ObjectTagService {
 		return out;
 	}	
 
+	// Here the objectTagMap is a map of the objectId/ObjectTag
 	private HierarchyJsonBuilder buildHierarchy(HierarchyJsonBuilder parent, Map<String, ObjectTag> objectTagMap) {
 		ObjectTag objectTag = objectTagMap.get(parent.getId());
 		if (objectTag.hasChildren()) {
-			for (String childId : getChildrenIdList(objectTag, objectTagMap)) {
+			List<String> childrenList = getChildrenIdList(objectTag, objectTagMap);
+			for (String childId : childrenList) {
 				ObjectTag childObjectTag = objectTagMap.get(childId);
-//				childOrganizationRank.setGameDataTypeName(organizationTypeNameMap.get(childOrganizationRank.getGameDataTypeId()));
-				String displayName = childObjectTag.getTagName();
-				if (childObjectTag.getParentId() != null && !childObjectTag.getParentId().equals("Root")) {
-					ObjectTag parentTag = objectTagMap.get(childObjectTag.getParentId());
-					displayName += "(" + parentTag.getTagName() + ")";
-				} else {
-					displayName += "(" + splitCamelCase(childObjectTag.getClassName()) + ")"; 
-				}
 				HierarchyJsonBuilder child = new HierarchyJsonBuilder(childId, childObjectTag.getClassName(),
-						childObjectTag.getGameDataTypeId(), displayName);
+						childObjectTag.getGameDataTypeId(), childObjectTag.getTagName());
 				if (childObjectTag.hasChildren()) {
 					child = buildHierarchy(child, objectTagMap);
 				}

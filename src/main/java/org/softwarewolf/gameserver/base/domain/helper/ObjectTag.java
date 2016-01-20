@@ -2,6 +2,7 @@ package org.softwarewolf.gameserver.base.domain.helper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ObjectTag implements Serializable {
@@ -157,6 +158,24 @@ public class ObjectTag implements Serializable {
 		} else if (!parentId.equals(other.parentId))
 			return false;
 		return true;
+	}
+	
+	public String toString() {
+		StringBuilder string = new StringBuilder("{\n  \"className\":\"").append(className).append("\",\n  \"objectId\": \"")
+				.append(objectId).append("\",\n  \"tagName\": \"").append(tagName).append("\",\n  \"campaignId\": \"")
+				.append(campaignId).append("\",\n  \"gameDataTypeId\": \"").append(gameDataTypeId)
+				.append("\",\n  \"gameDataTypeName\": \"").append(gameDataTypeName).append("\",\n  \"parentId\": \"")
+				.append(parentId).append("\",\n  \"children\": [");
+		Iterator<String> iter = children.iterator();
+		while (iter.hasNext()) {
+			String child = iter.next();
+			string.append("\n    \"").append(child).append("\"");
+			if (iter.hasNext()) {
+				string.append(",");
+			}
+		}
+		string.append("\n  ]").append("\n}");
+		return string.toString();
 	}
 	
 }

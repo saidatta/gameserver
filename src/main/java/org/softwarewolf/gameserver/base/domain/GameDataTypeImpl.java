@@ -1,8 +1,6 @@
 package org.softwarewolf.gameserver.base.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
@@ -53,7 +51,7 @@ public class GameDataTypeImpl implements GameDataType, Serializable {
 		this.campaignId = campaignId;
 	}
 	
-	public ObjectTag createTag(String campaignId) {
+	public ObjectTag createTag() {
 		throw new NotImplementedException();
 	}
 

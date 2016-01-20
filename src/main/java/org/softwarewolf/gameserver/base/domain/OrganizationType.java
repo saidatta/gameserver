@@ -12,8 +12,8 @@ public class OrganizationType extends GameDataTypeImpl {
 	}
 	
 	@Override
-	public ObjectTag createTag(String campaignId) {
-		return new ObjectTag(this.getClass().getSimpleName(), this.getId(), this.getName(), campaignId,
+	public ObjectTag createTag() {
+		return new ObjectTag(this.getClass().getSimpleName(), this.getId(), this.getName(), this.getCampaignId(),
 				null, null, null);
 	}
 }

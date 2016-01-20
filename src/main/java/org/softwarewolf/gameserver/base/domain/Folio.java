@@ -71,11 +71,12 @@ public class Folio implements Serializable {
 	public void setTags(List<ObjectTag> tags) {
 		this.tags = tags;
 	}
-	
-	public void addTag(String className, String tagId) {
+
+	// TODO: Figure out best way to create tag with/without classname
+	public void addTag(String tagId) {
 		
 	}
-	
+
 	public void addTag(ObjectTag tag) {
 		if (tags == null) {
 			tags = new ArrayList<>();
