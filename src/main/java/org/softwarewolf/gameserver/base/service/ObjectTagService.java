@@ -106,6 +106,7 @@ public class ObjectTagService {
 			LocationType locationType = ltIter.next();
 			String displayName = locationType.getName() + "(Location Type)";
 			String className = locationType.getClass().getSimpleName();
+			// Root type
 			ObjectTag locationTypeTag = new ObjectTag(className, locationType.getId(), displayName, 
 					locationType.getCampaignId(), locationType.getId(), className, "Root");
 			locationTagList.add(locationTypeTag);
@@ -121,8 +122,10 @@ public class ObjectTagService {
 			parentName = parentName.substring(0, parentName.lastIndexOf("("));
 			String displayName = location.getName() + "(" + parentName + ")";
 			String className = location.getClass().getSimpleName();
+			// In this case, the GameDataType of a Location IS it's parent
 			ObjectTag locationTag = new ObjectTag(className, location.getId(), displayName,
 					location.getCampaignId(), parentTag.getObjectId(), parentTag.getClassName(), parentTag.getObjectId());
+			parentTag.addChildTag(locationTag.getObjectId());
 			locationTagList.add(locationTag);
 		}
 		
@@ -140,6 +143,7 @@ public class ObjectTagService {
 			OrganizationType organizationType = otIter.next();
 			String displayName = organizationType.getName() + "(Organization Type)";
 			String className = organizationType.getClass().getSimpleName();
+			// Root type
 			ObjectTag organizationTypeTag = new ObjectTag(className, organizationType.getId(), displayName, 
 					organizationType.getCampaignId(), organizationType.getId(), className, "Root");
 			organizationTagList.add(organizationTypeTag);
@@ -156,11 +160,11 @@ public class ObjectTagService {
 			parentName = parentName.substring(0, parentName.lastIndexOf("("));
 			String displayName = organization.getName() + "(" + parentName + ")";
 			String className = organization.getClass().getSimpleName();
+			// In this case the GameDataType of an Organization IS it's parent
 			ObjectTag organizationTag = new ObjectTag(className, organization.getId(), displayName,
 					organization.getCampaignId(), parentTag.getObjectId(), parentTag.getClassName(), parentTag.getObjectId());
+			parentTag.addChildTag(organizationTag.getObjectId());
 			organizationTagList.add(organizationTag);
-			System.out.println(parentTag.toString());
-			System.out.println(organizationTag.toString());
 			orgParentMap.put(organizationTag.getObjectId(), organizationTag);
 		}
 		
@@ -173,8 +177,10 @@ public class ObjectTagService {
 			parentName = parentName.substring(0, parentName.lastIndexOf("("));
 			String displayName = organizationRank.getName() + "(" + parentName + ")";
 			String className = organizationRank.getClass().getSimpleName();
+			// In this case the parent Organization of an OrganizationRank IS it's parent 
 			ObjectTag organizationRankTag = new ObjectTag(className, organizationRank.getId(), displayName,
 					organizationRank.getCampaignId(), parentTag.getObjectId(), parentTag.getClassName(), parentTag.getObjectId());
+			parentTag.addChildTag(organizationRankTag.getObjectId());
 			organizationTagList.add(organizationRankTag);
 		}
 
@@ -191,9 +197,16 @@ public class ObjectTagService {
 
 		for (ObjectTag tag : objectTagMap.values()) {
 			String parentId = tag.getParentId();
-			if (parentId == ROOT) {
-				root.addChildTag(tag.getObjectId());
+			if (tag.getParentId() != null) {
+				ObjectTag parentTag = objectTagMap.get(tag.getParentId());
+				parentTag.addChildTag(tag.getObjectId());
 			}
+//			if (parentId == ROOT) {
+//				root.addChildTag(tag.getObjectId());
+//			} else if (tag.getObjectId() != "Root") {
+//				ObjectTag parentTag = objectTagMap.get(tag.getParentId());
+//				parentTag.addChildTag(tag.getObjectId());
+//			}
 		}
 
 		rootBuilder = buildHierarchy(rootBuilder, objectTagMap);
