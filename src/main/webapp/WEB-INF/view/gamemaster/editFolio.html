@@ -102,18 +102,42 @@
 			$("#removeDialog").dialog("open");			
 		}
 		
+		// unselectedTags is an object with nested objects in a parent->children relationship
+		// with the top element being Root (a fake element) and there being only two levels
+		// beneath them
+		function getTags(tags) {
+			var firstTierChildren = tags.children;
+			
+			var liList = ' ';
+			$.each(firstTierChildren, function(index, firstTierTag) {
+				liList = getSecondTierTags(firstTierTag, liList);
+			});
+			
+			return liList;
+		}
+		
+		function getSecondTierTags(firstTierTag, liList) {
+			var secondTierChildren = firstTierTag.children;
+			$.each(unassignedTags.children, function(index, secondTierTag) {
+				var newBit = '<li class="ui-widget-content" class-name="'+secondTierTag['name']+'" tag-id="'+secondTierTag['id']+'">'+secondTierTag['displayName']+'</li>'; 
+				liList += getSecondTierTag;
+			});
+			var firstTierList = '<li class="ui-widget-content" class-name="'+firstTierTag['name']+'" tag-id="'+firstTierTag['id']+'">'+firstTierTag['displayName']+'</li>';
+			liList = firstTierList + liList;
+			return liList;
+		}
+		
 		function addTag() {
 			$("#addDialog").empty();
 //			$("#addDialog").text("Add the tag " + name + "?");
 
 			var unassignedTagsField = $("#unassignedTags");
 			var unassignedTagsText = unassignedTagsField.val();
-			var unassignedTags = jQuery.parseJSON(unassignedTagsText);
-			var newText = '<ol id="selectable">';
-			$.each(unassignedTags.children, function(index, currentTag) {
-				newText += '<li class="ui-widget-content" class-name="'+currentTag['className']+'" tag-id="'+currentTag['tagId']+'">'+currentTag['displayName']+'</li>';
-			});
-			newText += '</ol>';
+			var tags = jQuery.parseJSON(unassignedTagsText);
+//			var newText = '<ol id="selectable">';
+//			var midText = createAddTagElement(unassignedTags, unassignedTags, "");
+//			newText += midText + '</ol>';
+			var newText = '<ol id="selectable">' + getTags(tags) + '</ol>';
 			$("#addDialog").append(newText);
 			$("#addDialog").dialog("open").find('ol').selectable({selected: function(event,ui) {
                   alert('here');
@@ -122,6 +146,20 @@
                   var action = "/gameserver/gamemaster/addTagToFolio/" + folioId + "/" + tagId;
             }});;	
 		}
+		
+		function createAddTagElement(currentTag, unassignedtags, listString) {
+			if (currentTag.children.length > 0) {				
+				$.each(currentTag.children, function(index, childTag) {
+					listString += createAddTagElement(childTag, unassignedtags, listString);
+				});
+			}
+			if (currentTag.id != "Root") {
+				var newBit = '<li class="ui-widget-content" class-name="'+currentTag['name']+'" tag-id="'+currentTag['id']+'">'+currentTag['displayName']+'</li>';
+				listString += newBit;
+			}
+			return listString;
+		}
+		
 	</script>
 </head>
 <body id="main">
