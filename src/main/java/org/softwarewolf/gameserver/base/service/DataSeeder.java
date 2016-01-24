@@ -393,7 +393,7 @@ public class DataSeeder {
 				organizationTypeMap.get(sAndSCampaignName+TOWN).getName(), campaignMap, "A city", county, orgMap);
 
 		findAndSaveOrganization(GOLDEN_ROAD, sAndSCampaignId, sAndSCampaignName,
-				organizationTypeMap.get(sAndSCampaignName+KINGDOM).getId(), 
+				organizationTypeMap.get(sAndSCampaignName+MERCHANTS_GUILD).getId(), 
 				organizationTypeMap.get(sAndSCampaignName+MERCHANTS_GUILD).getName(), campaignMap, "A merchants guild", null, orgMap);
 
 		findAndSaveOrganization(BLOOD_MOON, sAndSCampaignId, sAndSCampaignName,

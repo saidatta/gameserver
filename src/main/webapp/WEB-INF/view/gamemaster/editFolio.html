@@ -110,20 +110,20 @@
 			
 			var liList = ' ';
 			$.each(firstTierChildren, function(index, firstTierTag) {
-				liList = getSecondTierTags(firstTierTag, liList);
+				liList += getSecondTierTags(firstTierTag);
 			});
 			
 			return liList;
 		}
 		
-		function getSecondTierTags(firstTierTag, liList) {
-			var secondTierChildren = firstTierTag.children;
-			$.each(unassignedTags.children, function(index, secondTierTag) {
-				var newBit = '<li class="ui-widget-content" class-name="'+secondTierTag['name']+'" tag-id="'+secondTierTag['id']+'">'+secondTierTag['displayName']+'</li>'; 
-				liList += getSecondTierTag;
+		function getSecondTierTags(firstTierTag) {
+			var liList = ' ';
+			$.each(firstTierTag.children, function(index, secondTierTag) {
+				var secondTierLi = '<li class="ui-widget-content" class-name="'+secondTierTag['name']+'" tag-id="'+secondTierTag['id']+'">'+secondTierTag['displayName']+'</li>'; 
+				liList += secondTierLi;
 			});
-			var firstTierList = '<li class="ui-widget-content" class-name="'+firstTierTag['name']+'" tag-id="'+firstTierTag['id']+'">'+firstTierTag['displayName']+'</li>';
-			liList = firstTierList + liList;
+			var firstTierLi = '<li class="ui-widget-content" class-name="'+firstTierTag['name']+'" tag-id="'+firstTierTag['id']+'">'+firstTierTag['displayName']+'</li>';
+			liList = firstTierLi + liList;
 			return liList;
 		}
 		
