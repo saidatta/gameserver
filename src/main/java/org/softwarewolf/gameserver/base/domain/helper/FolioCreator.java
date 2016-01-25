@@ -7,7 +7,6 @@ public class FolioCreator {
 	private String unassignedTags;
 	private String selectedTags;
 	private String removeTag;
-	private String addTag;
 	
 	public FolioCreator() {
 		folio = new Folio();
@@ -39,12 +38,5 @@ public class FolioCreator {
 	}
 	public void setRemoveTag(String removeTag) {
 		this.removeTag = removeTag;
-	}
-
-	public String getAddTag() {
-		return addTag;
-	}
-	public void setAddTag(String addTag) {
-		this.addTag = addTag;
 	}
 }

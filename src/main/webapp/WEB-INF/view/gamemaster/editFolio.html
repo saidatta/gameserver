@@ -138,9 +138,9 @@
 			$("#addDialog").dialog("open").find('ol').selectable({selected: function(event,ui) {
                   var className = ui.selected.getAttribute("class-name");
                   var tagId = ui.selected.getAttribute("tag-id");
-                  alert("folioId: " + folioId.value + "\ntagId: " + tagId);
-                  var addTagForm = $("#addTagForm");
-                  var action = addTagForm[0].getAttribute("action") + folioId.value + "/" + className + "/" + tagId;
+//                  alert("folioId: " + folioId.value + "\ntagId: " + tagId);
+                  var addTagForm = $("#createFolioForm");
+                  var action = "/gameserver/gamemaster/addTagToFolio/" + className + "/" + tagId;
 				  addTagForm[0].setAttribute("action", action);
 				  addTagForm.submit();
             }});;	
@@ -187,14 +187,12 @@
 		</div>
 	</div>
 
-	<form id="addTagForm" action="/gameserver/gamemaster/addTagToFolio/" method="get"></form>
 	<form id="removeTagForm" action="/gamemaster/removeTagFromFolio" method="get"></form>
 	<form id="createFolioForm" th:object="${folioCreator}" action="#" th:action="@{/gamemaster/editFolio}" method="post">
 		<input id="campaignId" type="hidden" th:field="*{folio.campaignId}"></input>
 		<input id="unassignedTags" type="hidden" th:field="*{unassignedTags}"></input>
 		<input id="selectedTags" type="hidden" th:field="*{selectedTags}"></input>
 		<input id="removeTag" type="hidden" th:field="*{removeTag}"></input>
-		<input id="addTag" type="hidden" th:field="*{addTag}"></input>
 		<input id="folioId" type="hidden" th:field="*{folio.id}"></input>
 
 		<div class="row">

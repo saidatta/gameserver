@@ -511,6 +511,10 @@ public class DataSeeder {
 		goldenRoadPage.addTag(kingdomTag);
 		goldenRoadPage.setTitle("Golden Road Trading League Intro");
 		goldenRoadPage.setContent("<H1>The Golden Road Trading League</H1><p>This is a big merchant guild</p>");
-		folioService.save(goldenRoadPage);
+		try {
+			folioService.save(goldenRoadPage);
+		} catch (Exception e) {
+			// ignore;
+		}
 	}
 }

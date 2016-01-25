@@ -13,8 +13,8 @@ public class OrganizationType extends GameDataTypeImpl {
 	
 	@Override
 	// Any class whose name ends in Type doesn't have a parentType
-	public ObjectTag createTag(String parentId) {
+	public ObjectTag createTag() {
 		return new ObjectTag(this.getClass().getSimpleName(), this.getId(), this.getName(), this.getCampaignId(),
-				this.getId(), this.getName(), parentId);
+				this.getId(), this.getName(), null);
 	}
 }

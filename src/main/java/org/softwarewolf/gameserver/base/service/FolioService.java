@@ -2,6 +2,7 @@ package org.softwarewolf.gameserver.base.service;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.domain.Folio;
 import org.softwarewolf.gameserver.base.domain.Location;
 import org.softwarewolf.gameserver.base.domain.LocationType;
+import org.softwarewolf.gameserver.base.domain.Organization;
+import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
@@ -23,7 +26,7 @@ public class FolioService implements Serializable {
 	private FolioRepository folioRepository;
 
 	@Autowired
-	private OrganizationService orgainzationService;
+	private OrganizationService organizationService;
 	@Autowired
 	private OrganizationRankService organizationRankService;
 	@Autowired
@@ -37,8 +40,30 @@ public class FolioService implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
-	public Folio save(Folio folio) {
+	public Folio save(Folio folio) throws Exception {
+		String errorList = validateFolio(folio);
+		if (errorList.length() > 0) {
+			throw new Exception(errorList);
+		}
 		return folioRepository.save(folio);
+	}
+	
+	public String validateFolio(Folio folio) {
+		String errorList = "";
+		if (folio == null) {
+			errorList = "Null folio.";
+			return errorList;
+		}
+		if (folio.getTitle() == null || folio.getTitle().isEmpty()) {
+			errorList = "Title may not be empty.";
+		}
+		if (folio.getContent() == null || folio.getContent().isEmpty()) {
+			if (errorList.length() > 0) {
+				errorList += "\n";
+			}
+			errorList += "Content may not be empty.";
+		}
+		return errorList;
 	}
 	
 	public List<Folio> findAll() {
@@ -102,19 +127,21 @@ public class FolioService implements Serializable {
 			ObjectTag tag = null;
 			if ("LocationType".equals(className)) {
 				LocationType locationType = locationTypeService.findOne(tagId);
-				tag = locationType.createTag(null);
+				tag = locationType.createTag();
 			} else if ("Location".equals(className)) {
 				Location location = locationService.findOne(tagId);
 				tag = location.createTag(location.getParentId());
 			} else if ("OrganizationType".equals(className)) {
 				OrganizationType organizationType = organizationTypeService.findOne(tagId);
-				tag = organizationType.createTag(null);
+				tag = organizationType.createTag();
 			} else if ("Organization".equals(className)) {
-			
+				Organization organization = organizationService.findOne(tagId);
+				tag = organization.createTag(organization.getParentId());
 			} else if ("OrganizationRank".equals(className)) {
-				
+				OrganizationRank organizationRank = organizationRankService.findOne(tagId);
+				tag = organizationRank.createTag(organizationRank.getParentId());
 			}
-//			folio.addTag(tagId);
+			folio.addTag(tag);
 		}
 		return folioRepository.save(folio);
 	}

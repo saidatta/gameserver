@@ -86,7 +86,7 @@ public class OrganizationRankService {
 
 		OrganizationRank organizationRank = null;
 		if (organizationRankId != null && !organizationRankId.isEmpty()) {
-			organizationRank = read(organizationRankId);
+			organizationRank = findOne(organizationRankId);
 			if (organizationRank == null) {
 				throw new RuntimeException("Can not find a organization rank for organization rank id " + organizationRankId);
 			}
@@ -265,7 +265,7 @@ public class OrganizationRankService {
 		return organizationRank;
 	}
 	
-	public OrganizationRank read(String id) {
+	public OrganizationRank findOne(String id) {
 		return organizationRankRepository.findOne(id);
 	}
 

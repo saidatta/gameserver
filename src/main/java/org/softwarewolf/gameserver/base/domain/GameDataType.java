@@ -15,7 +15,7 @@ public interface GameDataType {
 	public String getCampaignId();	
 	public void setCampaignId(String campaignId);
 	
-	public ObjectTag createTag(String parentId);
+	public ObjectTag createTag();
 	
 	@Override
 	public int hashCode();

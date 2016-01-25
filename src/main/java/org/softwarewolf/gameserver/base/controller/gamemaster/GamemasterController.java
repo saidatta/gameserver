@@ -1,10 +1,15 @@
 package org.softwarewolf.gameserver.base.controller.gamemaster;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.controller.helper.ControllerHelper;
 import org.softwarewolf.gameserver.base.domain.Folio;
 import org.softwarewolf.gameserver.base.domain.helper.FeFeedback;
+import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationCreator;
 import org.softwarewolf.gameserver.base.domain.helper.OrganizationTypeCreator;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
@@ -94,26 +99,75 @@ public class GamemasterController {
 		return ControllerHelper.EDIT_FOLIO;
 	}
 
-	@RequestMapping(value = "/addTagToFolio/{folioId}/{className}/{tagId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/addTagToFolio/{className}/{tagId}", method = RequestMethod.POST)
 	@Secured({"USER"})
 	public String addTagFromFolio(HttpSession session, FolioCreator folioCreator, 
-			@PathVariable String folioId, @PathVariable String className, @PathVariable String tagId, 
+			@PathVariable String className, @PathVariable String tagId, 
 			final FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
 
-		Folio folio = folioService.addTagToFolio(folioId, className, tagId);
+		Folio folio = folioCreator.getFolio();
+		if (folio == null) {
+			folio = new Folio();
+			folio.setCampaignId(campaignId);
+			folio.setTitle("Placeholder title");
+		} 
+		if (folio.getId() == null) {
+			try {
+				folio = folioService.save(folio);
+			} catch (Exception e) {
+				String errorMessage = e.getMessage();
+				feFeedback.setError(errorMessage);
+				folioService.initFolioCreator(folioCreator, folio);
+				return ControllerHelper.EDIT_FOLIO;
+			}
+		}
+		folio = folioService.addTagToFolio(folio.getId(), className, tagId);
 		folioService.initFolioCreator(folioCreator, folio);
 		feFeedback.setInfo("You have modified folio " + folio.getTitle());
+
 		return ControllerHelper.EDIT_FOLIO;
 	}
 
 	@RequestMapping(value = "/editFolio", method = RequestMethod.POST)
 	@Secured({"USER"})
-	public String postEditPage(HttpSession session, Folio page) {
+	public String postEditPage(HttpSession session, FolioCreator folioCreator, 
+			final FeFeedback feFeedback) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}		
 
+		Folio folio = folioCreator.getFolio();
+		try {
+			String selectedTags = folioCreator.getSelectedTags();
+			if (selectedTags != null && !selectedTags.isEmpty()) {
+				selectedTags = selectedTags.replaceAll("[", "");
+				selectedTags = selectedTags.replaceAll("{", "");
+				selectedTags = selectedTags.replaceAll("}", "");
+				selectedTags = selectedTags.replaceAll("]", "");
+				String[] splitStringArray = selectedTags.split(",");				
+				List<ObjectTag> objectTagList = new ArrayList<>();
+				for (String string : splitStringArray) {
+					ObjectMapper mapper = new ObjectMapper();
+					ObjectTag tag = mapper.convertValue(string, ObjectTag.class);
+					objectTagList.add(tag);
+				}
+				folio.setTags(objectTagList);
+			}
+			folio = folioService.save(folio);
+			folioService.initFolioCreator(folioCreator, folio);
+		} catch (Exception e) {
+			String errorMessage = e.getMessage();
+			feFeedback.setError(errorMessage);
+			folioService.initFolioCreator(folioCreator, folio);
+			return ControllerHelper.EDIT_FOLIO;
+		}
+		
+		feFeedback.setInfo("You have modified folio " + folio.getTitle());
 		return ControllerHelper.EDIT_FOLIO;
 	}
 
