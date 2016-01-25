@@ -51,7 +51,7 @@ public class GameDataTypeImpl implements GameDataType, Serializable {
 		this.campaignId = campaignId;
 	}
 	
-	public ObjectTag createTag() {
+	public ObjectTag createTag(String parentId) {
 		throw new NotImplementedException();
 	}
 

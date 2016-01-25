@@ -12,8 +12,8 @@ public class LocationType extends GameDataTypeImpl {
 	}
 
 	@Override
-	public ObjectTag createTag() {
+	public ObjectTag createTag(String parentId) {
 		return new ObjectTag(this.getClass().getSimpleName(), this.getId(), this.getName(), this.getCampaignId(),
-				null, null, null);
+				this.getId(), this.getName(), parentId);
 	}	
 }

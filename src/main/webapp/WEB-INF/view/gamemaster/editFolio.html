@@ -129,21 +129,20 @@
 		
 		function addTag() {
 			$("#addDialog").empty();
-//			$("#addDialog").text("Add the tag " + name + "?");
 
 			var unassignedTagsField = $("#unassignedTags");
 			var unassignedTagsText = unassignedTagsField.val();
 			var tags = jQuery.parseJSON(unassignedTagsText);
-//			var newText = '<ol id="selectable">';
-//			var midText = createAddTagElement(unassignedTags, unassignedTags, "");
-//			newText += midText + '</ol>';
 			var newText = '<ol id="selectable">' + getTags(tags) + '</ol>';
 			$("#addDialog").append(newText);
 			$("#addDialog").dialog("open").find('ol').selectable({selected: function(event,ui) {
-                  alert('here');
-                  var className = $(ui).getAttribute("class-name");
-                  var tagId = ui.getAttribute("tag-id");
-                  var action = "/gameserver/gamemaster/addTagToFolio/" + folioId + "/" + tagId;
+                  var className = ui.selected.getAttribute("class-name");
+                  var tagId = ui.selected.getAttribute("tag-id");
+                  alert("folioId: " + folioId.value + "\ntagId: " + tagId);
+                  var addTagForm = $("#addTagForm");
+                  var action = addTagForm[0].getAttribute("action") + folioId.value + "/" + className + "/" + tagId;
+				  addTagForm[0].setAttribute("action", action);
+				  addTagForm.submit();
             }});;	
 		}
 		
@@ -188,7 +187,7 @@
 		</div>
 	</div>
 
-	<form id="addTagForm" action="/gamemaster/removeTagFromFolio" method="get"></form>
+	<form id="addTagForm" action="/gameserver/gamemaster/addTagToFolio/" method="get"></form>
 	<form id="removeTagForm" action="/gamemaster/removeTagFromFolio" method="get"></form>
 	<form id="createFolioForm" th:object="${folioCreator}" action="#" th:action="@{/gamemaster/editFolio}" method="post">
 		<input id="campaignId" type="hidden" th:field="*{folio.campaignId}"></input>

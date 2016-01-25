@@ -501,13 +501,13 @@ public class DataSeeder {
 		Folio goldenRoadPage = new Folio();
 		Organization goldenRoad = organizationMap.get(sAndSCampaignName+GOLDEN_ROAD);		
 		goldenRoadPage.setCampaignId(goldenRoad.getCampaignId());
-		ObjectTag goldenRoadTag = goldenRoad.createTag();
+		ObjectTag goldenRoadTag = goldenRoad.createTag(goldenRoad.getParentId());
 		goldenRoadPage.addTag(goldenRoadTag);
 		Organization kindomOfMidland = organizationMap.get(sAndSCampaignName+KINGDOM_OF_MIDLAND);
-		ObjectTag midlandTag = kindomOfMidland.createTag();
+		ObjectTag midlandTag = kindomOfMidland.createTag(kindomOfMidland.getParentId());
 		goldenRoadPage.addTag(midlandTag);
 		Location midland = locationMap.get(sAndSCampaignName+MAGIC_KINGDOM);
-		ObjectTag kingdomTag = midland.createTag();
+		ObjectTag kingdomTag = midland.createTag(midland.getParentId());
 		goldenRoadPage.addTag(kingdomTag);
 		goldenRoadPage.setTitle("Golden Road Trading League Intro");
 		goldenRoadPage.setContent("<H1>The Golden Road Trading League</H1><p>This is a big merchant guild</p>");

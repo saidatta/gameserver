@@ -125,4 +125,7 @@ public class OrganizationTypeService {
 		return organizationTypeRepository.findOneByNameAndCampaignId(name, campaignId);
 	}
 
+	public OrganizationType findOne(String id) {
+		return organizationTypeRepository.findOne(id);
+	}
 }

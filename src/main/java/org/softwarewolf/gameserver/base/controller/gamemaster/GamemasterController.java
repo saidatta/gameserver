@@ -94,16 +94,17 @@ public class GamemasterController {
 		return ControllerHelper.EDIT_FOLIO;
 	}
 
-	@RequestMapping(value = "/addTagToFolio/{folioId}/{tagId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/addTagToFolio/{folioId}/{className}/{tagId}", method = RequestMethod.GET)
 	@Secured({"USER"})
 	public String addTagFromFolio(HttpSession session, FolioCreator folioCreator, 
-			@PathVariable String folioId, @PathVariable String tagId, final FeFeedback feFeedback) {
+			@PathVariable String folioId, @PathVariable String className, @PathVariable String tagId, 
+			final FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
 
-		Folio folio = folioService.addTagToFolio(folioId, tagId);
+		Folio folio = folioService.addTagToFolio(folioId, className, tagId);
 		folioService.initFolioCreator(folioCreator, folio);
 		feFeedback.setInfo("You have modified folio " + folio.getTitle());
 		return ControllerHelper.EDIT_FOLIO;

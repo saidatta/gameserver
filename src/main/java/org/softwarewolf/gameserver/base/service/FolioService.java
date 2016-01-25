@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.softwarewolf.gameserver.base.domain.Folio;
+import org.softwarewolf.gameserver.base.domain.Location;
+import org.softwarewolf.gameserver.base.domain.LocationType;
+import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.softwarewolf.gameserver.base.repository.FolioRepository;
@@ -93,10 +96,24 @@ public class FolioService implements Serializable {
 		return folioRepository.save(folio);
 	}
 
-	public Folio addTagToFolio(String folioId, String tagId) {
+	public Folio addTagToFolio(String folioId, String className, String tagId) {
 		Folio folio = folioRepository.findOne(folioId);
-		if (folio != null) {
-			// TODO: figure out best way to create tag (with/without classname)
+		if (folio != null && className != null && tagId != null) {
+			ObjectTag tag = null;
+			if ("LocationType".equals(className)) {
+				LocationType locationType = locationTypeService.findOne(tagId);
+				tag = locationType.createTag(null);
+			} else if ("Location".equals(className)) {
+				Location location = locationService.findOne(tagId);
+				tag = location.createTag(location.getParentId());
+			} else if ("OrganizationType".equals(className)) {
+				OrganizationType organizationType = organizationTypeService.findOne(tagId);
+				tag = organizationType.createTag(null);
+			} else if ("Organization".equals(className)) {
+			
+			} else if ("OrganizationRank".equals(className)) {
+				
+			}
 //			folio.addTag(tagId);
 		}
 		return folioRepository.save(folio);
