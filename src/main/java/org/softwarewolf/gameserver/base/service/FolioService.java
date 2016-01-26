@@ -15,6 +15,7 @@ import org.softwarewolf.gameserver.base.domain.Organization;
 import org.softwarewolf.gameserver.base.domain.OrganizationRank;
 import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
+import org.softwarewolf.gameserver.base.domain.helper.FolioDescriptor;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.softwarewolf.gameserver.base.repository.FolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +108,8 @@ public class FolioService implements Serializable {
 			e.printStackTrace();
 			folioCreator.setUnassignedTags("{}");
 		}
+		
+		folioCreator.setFolioDescriptorList(getFolioDescriptorList(null));
 	}
 	
 	public void deleteAll() {
@@ -146,4 +149,19 @@ public class FolioService implements Serializable {
 		return folioRepository.save(folio);
 	}
 
+	public List<FolioDescriptor> getFolioDescriptorList(List<String> excludeIds) {
+		List<FolioDescriptor> folioDescriptorList = new ArrayList<>();
+		if (excludeIds == null) {
+			excludeIds = new ArrayList<>();
+		}
+		List<Folio> folioList = folioRepository.findAll();
+		if (folioList != null && folioList.size() > 0) {
+			for (Folio folio: folioList) {
+				if (!excludeIds.contains(folio.getId())) {
+					folioDescriptorList.add(folio.createDescriptor());
+				}
+			}
+		}
+		return folioDescriptorList;
+	}
 }

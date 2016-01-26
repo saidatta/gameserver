@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.softwarewolf.gameserver.base.domain.helper.FolioDescriptor;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -104,6 +105,10 @@ public class Folio implements Serializable {
 				}
 			}
 		}
+	}
+	
+	public FolioDescriptor createDescriptor() {
+		return new FolioDescriptor(title, id, tags);
 	}
 
 }

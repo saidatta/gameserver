@@ -54,7 +54,7 @@ public class GameDataTypeImpl implements GameDataType, Serializable {
 	public ObjectTag createTag() {
 		throw new NotImplementedException();
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

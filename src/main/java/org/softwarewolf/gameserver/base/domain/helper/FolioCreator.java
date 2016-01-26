@@ -1,5 +1,7 @@
 package org.softwarewolf.gameserver.base.domain.helper;
 
+import java.util.List;
+
 import org.softwarewolf.gameserver.base.domain.Folio;
 
 public class FolioCreator {
@@ -7,6 +9,7 @@ public class FolioCreator {
 	private String unassignedTags;
 	private String selectedTags;
 	private String removeTag;
+	List<FolioDescriptor> folioDescriptorList;
 	
 	public FolioCreator() {
 		folio = new Folio();
@@ -38,5 +41,12 @@ public class FolioCreator {
 	}
 	public void setRemoveTag(String removeTag) {
 		this.removeTag = removeTag;
+	}
+	
+	public List<FolioDescriptor> getFolioDescriptorList() {
+		return folioDescriptorList;
+	}
+	public void setFolioDescriptorList(List<FolioDescriptor> folioDescriptorList) {
+		this.folioDescriptorList = folioDescriptorList;
 	}
 }
