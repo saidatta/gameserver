@@ -84,6 +84,21 @@ public class GamemasterController {
 		return ControllerHelper.EDIT_FOLIO;
 	}
 	
+	@RequestMapping(value = "/getFolio/{folioId}", method = RequestMethod.GET)
+	@Secured({"USER"})
+	public String getFolio(HttpSession session, @PathVariable String folioId, 
+			FolioCreator folioCreator, final FeFeedback feFeedback) {
+		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}		
+
+		Folio folio = folioService.findOne(folioId);
+		folioService.initFolioCreator(folioCreator, folio);
+		feFeedback.setInfo2("You are editing '" + folio.getTitle() + "'");
+		return ControllerHelper.EDIT_FOLIO;
+	}
+		
 	@RequestMapping(value = "/removeTagFromFolio/{folioId}/{tagId}", method = RequestMethod.GET)
 	@Secured({"USER"})
 	public String removeTagFromFolio(HttpSession session, FolioCreator folioCreator, 

@@ -164,4 +164,8 @@ public class FolioService implements Serializable {
 		}
 		return folioDescriptorList;
 	}
+	
+	public Folio findOne(String id) {
+		return folioRepository.findOne(id);
+	}
 }
