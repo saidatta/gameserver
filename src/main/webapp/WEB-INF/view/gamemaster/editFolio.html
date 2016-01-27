@@ -132,8 +132,9 @@
 			$("#addDialog").dialog("open").find('ol').selectable({selected: function(event,ui) {
                   var className = ui.selected.getAttribute("class-name");
                   var tagId = ui.selected.getAttribute("tag-id");
-                  var addTagForm = $("#createFolioForm");
-                  var action = "/gameserver/gamemaster/addTagToFolio/" + className + "/" + tagId;
+                  var addTagForm = $("#addTagToFolioForm");
+                  var folioId = $("#folioId").val();
+                  var action = $("#addTagToFolioForm").attr("action") + folioId + "/" + className + "/" + tagId;
 				  addTagForm[0].setAttribute("action", action);
 				  addTagForm.submit();
             }});;	
@@ -186,6 +187,7 @@
 		</div>
 	</div>
 
+	<form id="addTagToFolioForm" action="/gameserver/gamemaster/addTagToFolio/" method="get"></form>
 	<form id="getFolioForm" action="/gameserver/gamemaster/getFolio/" method="get"></form>
 	<form id="removeTagForm" action="/gamemaster/removeTagFromFolio" method="get"></form>
 	<form id="createFolioForm" th:object="${folioCreator}" action="#" th:action="@{/gamemaster/editFolio}" method="post">
