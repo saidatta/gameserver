@@ -7,8 +7,7 @@ public class ControllerHelper {
 	public static final String CAMPAIGN_HOME = "/gamemaster/campaignHome";
 	public static final String CREATE_ORGANIZATION_TYPE = "/gamemaster/createOrganizationType";
 	public static final String EDIT_LOCATION = "/gamemaster/editLocation";
-	public static final String CREATE_LOCATION = "/gamemaster/createLocation";
-	public static final String CREATE_LOCATION_TYPE = "/gamemaster/createLocationType";
+	public static final String EDIT_LOCATION_TYPE = "/gamemaster/editLocationType";
 	public static final String EDIT_FOLIO = "/gamemaster/editFolio";
 
 }

@@ -63,10 +63,10 @@ public class LocationTypeController {
 		}
 		
 		if (forwardingUrl == null || forwardingUrl.isEmpty()) {
-			forwardingUrl = ControllerHelper.CREATE_LOCATION_TYPE;
+			forwardingUrl = ControllerHelper.EDIT_LOCATION_TYPE;
 		}
 		locationTypeService.initLocationTypeCreator(null, locationTypeCreator, campaignId, forwardingUrl);
-		return ControllerHelper.CREATE_LOCATION_TYPE;
+		return ControllerHelper.EDIT_LOCATION_TYPE;
 	}
 	
 	@RequestMapping(value = "/createLocationType", method = RequestMethod.POST)
@@ -89,6 +89,7 @@ public class LocationTypeController {
 			String locationId = location.getId();
 			locationService.initLocationCreator(locationId, locationCreator, campaignId, locationCreator.getForwardingUrl());
 			feFeedback.setInfo("Success, you have created a location type");
+			feFeedback.setInfo2("You are editing a new location");
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return forwardingUrl;
