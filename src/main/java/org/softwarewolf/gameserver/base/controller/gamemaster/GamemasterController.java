@@ -61,8 +61,6 @@ public class GamemasterController {
 	
 	@Autowired
 	protected FolioService folioService;
-
-	private static final String CAMPAIGN_ID = "campaignId";
 	
 	@RequestMapping(value = "/ckeditor", method = RequestMethod.GET)
 	@Secured({"USER"})
@@ -74,7 +72,7 @@ public class GamemasterController {
 	@RequestMapping(value = "/editFolio", method = RequestMethod.GET)
 	@Secured({"USER"})
 	public String editFolio(HttpSession session, FolioCreator folioCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		String campaignId = (String)session.getAttribute(ControllerHelper.CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
@@ -89,7 +87,7 @@ public class GamemasterController {
 	@Secured({"USER"})
 	public String getFolio(HttpSession session, @PathVariable String folioId, 
 			FolioCreator folioCreator, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		String campaignId = (String)session.getAttribute(ControllerHelper.CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
@@ -104,7 +102,7 @@ public class GamemasterController {
 	@Secured({"USER"})
 	public String removeTagFromFolio(HttpSession session, FolioCreator folioCreator, 
 			@PathVariable String folioId, @PathVariable String tagId, final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		String campaignId = (String)session.getAttribute(ControllerHelper.CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
@@ -120,7 +118,7 @@ public class GamemasterController {
 	public String addTagToFolio(HttpSession session, FolioCreator folioCreator, 
 			@PathVariable String folioId, @PathVariable String className, @PathVariable String tagId, 
 			final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		String campaignId = (String)session.getAttribute(ControllerHelper.CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
@@ -155,7 +153,7 @@ public class GamemasterController {
 	@Secured({"USER"})
 	public String postEditPage(HttpSession session, FolioCreator folioCreator, 
 			final FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		String campaignId = (String)session.getAttribute(ControllerHelper.CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}		
@@ -195,7 +193,7 @@ public class GamemasterController {
 	public String campaignHome(HttpSession session, LocationCreator locationCreator, 
 			LocationTypeCreator locationTypeCreator, final OrganizationCreator organizationCreator,
 			final OrganizationTypeCreator organizationTypeCreator, FeFeedback feFeedback) {
-		String campaignId = (String)session.getAttribute(CAMPAIGN_ID);
+		String campaignId = (String)session.getAttribute(ControllerHelper.CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;
 		}

@@ -17,6 +17,7 @@ import org.softwarewolf.gameserver.base.domain.OrganizationType;
 import org.softwarewolf.gameserver.base.domain.helper.FolioCreator;
 import org.softwarewolf.gameserver.base.domain.helper.FolioDescriptor;
 import org.softwarewolf.gameserver.base.domain.helper.ObjectTag;
+import org.softwarewolf.gameserver.base.domain.helper.SelectFolioCreator;
 import org.softwarewolf.gameserver.base.repository.FolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -167,5 +168,15 @@ public class FolioService implements Serializable {
 	
 	public Folio findOne(String id) {
 		return folioRepository.findOne(id);
+	}
+	
+	public void initSelectFolioCreator(String campaignId, SelectFolioCreator selectFolioCreator) {
+		List<ObjectTag> excludeTags = new ArrayList<>();
+		Map<String, ObjectTag> allTags = objectTagService.createTagList(campaignId, excludeTags);
+		List<ObjectTag> unselectedTags = new ArrayList<>();
+		for(ObjectTag tag: allTags.values()) {
+			unselectedTags.add(tag);
+		}
+		selectFolioCreator.setUnselectedTagList(unselectedTags);
 	}
 }

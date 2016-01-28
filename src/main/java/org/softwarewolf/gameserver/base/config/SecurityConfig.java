@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/gamemaster/**").hasRole("GAMEMASTER")
 				.antMatchers("/user/**").authenticated()
+				.antMatchers("/shared/**").authenticated()
 				.anyRequest().authenticated().and()
 			.formLogin()
 				.defaultSuccessUrl("/user/menu")

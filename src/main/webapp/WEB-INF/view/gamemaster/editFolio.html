@@ -159,6 +159,14 @@
 			document.getElementById("getFolioForm").setAttribute("action", action);
 			document.getElementById("getFolioForm").submit();
 		}
+		
+		function selectFolio() {
+			var action = $("#getFolioForm").attr("action");
+			action = "/gameserver/shared/selectFolio";
+			document.getElementById("getFolioForm").setAttribute("action", action);
+			document.getElementById("getFolioForm").submit();
+		}
+		
 	</script>
 </head>
 <body id="main">
@@ -214,6 +222,17 @@
 			</div>
 		</div>
 			
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin" th:text="#{editFolio.selectFolio}">Select</label>
+			</div>
+			<div class="col-md-8">
+				<div class="btn-group">
+  					<button type="button" class="btn btn-default" th:utext="#{editFolio.selectFolio}" th:onclick="'selectFolio();'">Select Folio</button>
+				</div>				
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-1">

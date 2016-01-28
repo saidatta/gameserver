@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+	<title th:text="#{selectFolio.title}">Title</title>
+	
+	<script th:inline="javascript">
+	function addTag(className, objectId) {
+		alert("className: " + className + "\nobjectId: " + objectId);
+	}
+	</script>
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+
+	<br></br>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<h1 th:text="#{selectFolio.title}">Select</h1>
+		</div>
+	</div>
+
+	<form id="selectFolioForm" th:object="${selectFolioCreator}" action="#" th:action="@{/shared/selectFolio}" method="post">
+		
+	<div class="row">
+		<div class="col-md-1"></div>		        	
+		<div id="availableTags" class="row col-md-10">
+			<span th:each="tag : ${selectFolioCreator.unselectedTagList}"><button class="btn btn-default" type="button" th:id="${tag.objectId}" data-th-attr="className=${tag.className}" th:text="${tag.tagName}" th:onclick="'addTag(\'' + ${tag.className} + '\', \'' + ${tag.objectId} + '\');'">tagName</button></span>
+		</div>	
+	</div>	        	
+
+	<div class="row">
+		<div class="col-md-1"></div>		        	
+		<div class="col-md-10">		        	
+			<div id="selectedTags" class="btn-toolbar">
+			    <button class="btn btn-default" type="button">Left 1</button>
+			    <button class="btn btn-default" type="button">Left 2</button>
+			    <button class="btn btn-default" type="button">Left 3</button>
+			</div>
+		</div>
+	</div>
+				
+	</form>
+</body>
+</html>
