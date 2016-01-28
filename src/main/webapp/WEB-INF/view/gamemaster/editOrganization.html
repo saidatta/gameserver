@@ -112,13 +112,14 @@
 			buildTree('organization', organizationTree, $(nodeParent), index, indent);
 
 			var organizationRankTreeJson = $("#organizationRankTreeJson").val();
-			var organizationRankTree = jQuery.parseJSON(organizationRankTreeJson);
-			var nodeRankParent = $("#organizationRankGroupPanel");
-			nodeRankParent.empty();
-			var children = organizationRankTree["children"];
-			var index = 0;
-			var indent = 0;
-			buildTree('organizationRank', organizationRankTree, $(nodeRankParent), index, indent);
+			if (!(typeof organizationRankTreeJson === 'undefined')) {
+				var organizationRankTree = jQuery.parseJSON(organizationRankTreeJson);
+				var nodeRankParent = $("#organizationRankGroupPanel");
+				nodeRankParent.empty();
+				var index = 0;
+				var indent = 0;
+				buildTree('organizationRank', organizationRankTree, $(nodeRankParent), index, indent);
+			}
 		});		
 
 		$(".modifyOT").click(function(event) {
@@ -172,7 +173,7 @@
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>
-	<div th:fragment="createOrganization">
+	<div th:fragment="editOrganization">
 		<br></br>
 	
 		<div class="row">
@@ -215,7 +216,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-9">
-					<span th:text="#{createOrganization.description}">description</span>
+					<span th:text="#{editOrganization.description}">description</span>
 				</div>
 			</div>
 			<div class="row">

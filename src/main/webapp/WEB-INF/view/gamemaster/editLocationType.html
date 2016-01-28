@@ -16,7 +16,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     
-    <title th:text="#{createLocationType.title}">Title</title>
+    <title th:text="#{editLocationType.title}">Title</title>
 
 	<script th:inline="javascript">
 	$(document).ready(function() {
@@ -28,7 +28,7 @@
 //				var name = $(target).attr('name');
 //				var addTT = $("#addGameDataTypeId");
 //				addTT.attr("value", id);		
-//				var form = $("#createLocationTypeForm");
+//				var form = $("#editLocationTypeForm");
 //				form.attr("action", "/gameserver/gamemaster/addLocationTypeToCampaign");
 //				form.submit();
 //			});
@@ -38,7 +38,7 @@
 				var id = $(target).attr('id');
 				var name = $(target).attr('name');
 				var removeTT = $("#removeGameDataTypeId");
-				var form = $("#createLocationTypeForm");
+				var form = $("#editLocationTypeForm");
 				removeTT.attr("value", id);		
 				form.attr("action", "/gameserver/gamemaster/removeLocationTypeFromCampaign");
 				form.submit();
@@ -50,14 +50,14 @@
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>
-	<div th:fragment="createLocationType">
+	<div th:fragment="editLocationType">
 	<br></br>
 
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-7">
 			<div>
-				<h1 th:text="#{createLocationType.title}">Create</h1>
+				<h1 th:text="#{editLocationType.title}">Create</h1>
 			</div>
 		</div>
 		<div class="col-md-3">
@@ -80,14 +80,14 @@
 		</div>
 	</div>
 	<br></br>
-	<form id="createLocationTypeForm" th:object="${locationTypeCreator}" action="#" th:action="@{/gamemaster/createLocationType}" method="post">
+	<form id="editLocationTypeForm" th:object="${locationTypeCreator}" action="#" th:action="@{/gamemaster/editLocationType}" method="post">
 		<input id="addGameDataTypeId" type="hidden" th:field="*{addGameDataTypeId}"></input>
 		<input id="removeGameDataTypeId" type="hidden" th:field="*{removeGameDataTypeId}"></input>
 		<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-9">
-				<span th:text="#{createLocationType.description}">description</span>
+				<span th:text="#{editLocationType.description}">description</span>
 			</div>
 		</div>
 		<div class="row">
@@ -99,7 +99,7 @@
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-1">
-				<label class="input-margin" th:text="#{createLocationType.locationTypeName}">Name</label>
+				<label class="input-margin" th:text="#{editLocationType.locationTypeName}">Name</label>
 			</div>
 			<div class="col-md-8">
 				<input class="input-margin" th:field="*{locationType.name}"></input>
@@ -108,7 +108,7 @@
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-1">
-				<label class="input-margin" th:text="#{createLocation.locationDescription}">Desc</label>
+				<label class="input-margin" th:text="#{editLocationType.locationTypeDescription}">Desc</label>
 			</div>
 			<div class="col-md-8">
 				<textarea rows="8" cols="100" class="input-margin" th:field="*{locationType.description}"></textarea>

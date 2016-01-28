@@ -16,7 +16,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     
-    <title th:text="#{createLocation.title}">Title</title>
+    <title th:text="#{editLocation.title}">Title</title>
     
 <script type="text/javascript">	
 	function buildTree(locationNode, nodeParent, index, indent) {
@@ -85,7 +85,7 @@
 		$( window ).load(function() {
 			var locationTypeId = $("#locationTypeId");
 			if (locationTypeId.val() != "") {
-	            $('.modifyTT').each(function(data) {
+	            $('.modifyLocationType').each(function(data) {
     	        	var id = $(data).attr("id");
 			        if (id == locationTypeId) {
 			        	var value = $(data).val();
@@ -107,32 +107,26 @@
 //			});
 		});		
 
-		$(".modifyTT").click(function(event) {
+		$(".modifyLocationType").click(function(event) {
 			// Get the data out of the event
 			var target = $(event.target);
 			var id = $(target).attr('id');
 			if (id == "0") {
-				var form = $("#createLocationTypeForm");
+				var form = $("#editLocationTypeForm");
 				var locationId = $("#hiddenLocationId").val();
 				var action = form.attr("action");
 				action += "?forwardingUrl=/gamemaster/editLocation";
-//				if (locationId != "") {
-//					action += ".id=" + locationId;
-//				}
+
 				window.location.href = action;
 			} else {
 				var name = $(target).text();
 	
 				// Set the hidden fields
-				var addTT = $("#locationTypeId");
-				addTT.val(id);
-				var ttName = $("#locationTypeName");
-				ttName.val(name);
-				// Set the button text
-	//			var ttBtn = $("#ttBtn");
-	//			var newIH = name + ' <span class="caret"></span>';
-	//			$(ttBtn).html(newIH);
+				var addLocationType = $("#locationTypeId");
+				addLocationType.val(id);
 				var locationTypeName = $("#locationTypeName");
+				locationTypeName.val(name);
+				// Set the button text
 				locationTypeName.val(name);
 			}
 		});
@@ -183,14 +177,14 @@
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>
-	<div th:fragment="createLocation">
+	<div th:fragment="editLocation">
 		<br></br>
 	
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-7">
 				<div>
-					<h1 th:text="#{createLocation.title}">Create</h1>
+					<h1 th:text="#{editLocation.title}">Create</h1>
 				</div>
 			</div>
 			<div class="col-md-3">
@@ -213,7 +207,7 @@
 			</div>
 		</div>
 		<br></br>
-		<form id="createLocationTypeForm" action="#" th:action="@{/gamemaster/createLocationType}" method="get"></form>
+		<form id="editLocationTypeForm" action="#" th:action="@{/gamemaster/editLocationType}" method="get"></form>
 		<form id="editLocationForm" th:object="${locationCreator}" action="#" th:action="@{/gamemaster/editLocation}" method="post">
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
 			<input id="campaignId" type="hidden" th:field="*{location.campaignId}"></input>
@@ -224,7 +218,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-9">
-					<span th:text="#{createLocation.description}">description</span>
+					<span th:text="#{editLocation.description}">description</span>
 				</div>
 			</div>
 			<div class="row">
@@ -263,7 +257,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createLocation.locationName}">Name</label>
+					<label class="input-margin" th:text="#{editLocation.locationName}">Name</label>
 				</div>
 				<div class="col-md-8">
 					<input id="locationName" class="input-margin" th:field="*{location.name}"></input>
@@ -272,7 +266,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createLocation.parentLocation}">Name</label>
+					<label class="input-margin" th:text="#{editLocation.parentLocation}">Name</label>
 				</div>
 				<div class="col-md-8">
 					<input id="locationParentName" class="input-margin" th:field="*{location.parentName}" disabled="disabled"></input>
@@ -281,15 +275,15 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createLocation.locationType}"></label>
+					<label class="input-margin" th:text="#{editLocation.locationType}"></label>
 				</div>
 				<div class="col-md-8">
 					<div class="btn-group">
-	  					<button id="ttBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{createLocationType.ttBtn}">
+	  					<button id="ltBtn" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:utext="#{editLocationType.ltBtn}">
 	    					Location Type <span class="caret"></span>
 	  					</button>
 		  				<ul class="dropdown-menu" role="menu">
-		    				<li th:each="locationType : ${locationCreator.locationTypesInCampaign}"><a th:id="${locationType.id}" class="modifyTT" th:text="${locationType.name}">Action</a></li>
+		    				<li th:each="locationType : ${locationCreator.locationTypesInCampaign}"><a th:id="${locationType.id}" class="modifyLocationType" th:text="${locationType.name}">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>
@@ -297,7 +291,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createLocation.locationType}">Name</label>
+					<label class="input-margin" th:text="#{editLocation.locationType}">Name</label>
 				</div>
 				<div class="col-md-8">
 					<input id="locationTypeName" class="input-margin" disabled="disabled" th:field="*{location.gameDataTypeName}"></input>
@@ -306,7 +300,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createLocation.locationDescription}">Desc</label>
+					<label class="input-margin" th:text="#{editLocation.locationDescription}">Desc</label>
 				</div>
 				<div class="col-md-8">
 					<textarea id="locationDescription" rows="8" cols="100" class="input-margin" th:field="*{location.description}"></textarea>

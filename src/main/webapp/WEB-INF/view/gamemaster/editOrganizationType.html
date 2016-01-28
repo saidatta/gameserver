@@ -16,29 +16,18 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     
-    <title th:text="#{createOrganizationType.title}">Title</title>
+    <title th:text="#{editOrganizationType.title}">Title</title>
     
 	<script th:inline="javascript">
 	$(document).ready(function() {
 		$( window ).load(function() {
-			
-//			$(".addOrgType").click(function(event) {
-//				var target = $(event.target);
-//				var id = $(target).attr('id');
-//				var name = $(target).attr('name');
-//				var addTT = $("#addGameDataTypeId");
-//				addTT.attr("value", id);		
-//				var form = $("#createOrganizationForm");
-//				form.attr("action", "/gameserver/gamemaster/addOrganizationTypeToCampaign");
-//				form.submit();
-//			});
 			
 			$(".removeOrgType").click(function(event) {
 				var target = $(event.target);
 				var id = $(target).attr('id');
 				var name = $(target).attr('name');
 				var removeTT = $("#removeGameDataTypeId");
-				var form = $("#createOrganizationForm");
+				var form = $("#editOrganizationForm");
 				removeTT.attr("value", id);		
 				form.attr("action", "/gameserver/gamemaster/removeOrganizationTypeFromCampaign");
 				form.submit();
@@ -50,14 +39,14 @@
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>
-	<div th:fragment="createOrganizationType">
+	<div th:fragment="editOrganizationType">
 		<br></br>
 	
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-7">
 				<div>
-					<h1 th:text="#{createOrganizationType.title}">Create</h1>
+					<h1 th:text="#{editOrganizationType.title}">Create</h1>
 				</div>
 			</div>
 			<div class="col-md-3">
@@ -74,14 +63,14 @@
 			</div>
 		</div>
 		<br></br>
-		<form id="createOrganizationForm" th:object="${organizationTypeCreator}" action="#" th:action="@{/gamemaster/editOrganizationType}" method="post">
+		<form id="editOrganizationForm" th:object="${organizationTypeCreator}" action="#" th:action="@{/gamemaster/editOrganizationType}" method="post">
 			<input id="addGameDataTypeId" type="hidden" th:field="*{addGameDataTypeId}"></input>
 			<input id="removeGameDataTypeId" type="hidden" th:field="*{removeGameDataTypeId}"></input>
 			<input id="forwardingUrl" type="hidden" th:field="*{forwardingUrl}"></input>
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-9">
-					<span th:text="#{createOrganizationType.description}">description</span>
+					<span th:text="#{editOrganizationType.description}">description</span>
 				</div>
 			</div>
 			<div class="row">
@@ -93,7 +82,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createOrganization.organizationTypeName}">Name</label>
+					<label class="input-margin" th:text="#{editOrganization.organizationType}">Name</label>
 				</div>
 				<div class="col-md-8">
 					<input class="input-margin" th:field="*{organizationType.name}"></input>
@@ -102,7 +91,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-1">
-					<label class="input-margin" th:text="#{createOrganizationType.organizationTypeDescription}">Desc</label>
+					<label class="input-margin" th:text="#{editOrganizationType.organizationTypeDescription}">Desc</label>
 				</div>
 				<div class="col-md-8">
 					<textarea rows="8" cols="100" class="input-margin" th:field="*{organizationType.description}"></textarea>

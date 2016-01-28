@@ -67,7 +67,7 @@ public class OrganizationTypeController {
 		}
 		organizationTypeService.initOrganizationTypeCreator(organizationTypeId, organizationTypeCreator, campaignId, ControllerHelper.EDIT_ORGANIZATION);
 		
-		return "/gamemaster/createOrganizationType";
+		return "/gamemaster/editOrganizationType";
 	}
 	
 	@RequestMapping(value = "/editOrganizationType", method = RequestMethod.POST)

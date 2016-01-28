@@ -217,7 +217,7 @@
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>
-	<div th:fragment="createOrganizationRank">
+	<div th:fragment="editOrganizationRank">
 		<br></br>
 
 		<div class="row">
@@ -268,7 +268,7 @@
 			<div class="row">
 				<div class="col-md-1"></div>
 				<div class="col-md-9">
-					<span th:text="#{createOrganizationRank.description}">description</span>
+					<span th:text="#{editOrganizationRank.description}">description</span>
 				</div>
 			</div>
 
@@ -318,7 +318,7 @@
 	    					Select Organization Rank<span class="caret"></span>
 	  					</button>
 		  				<ul id="organizationRankList" class="dropdown-menu" role="menu">
-		    				<li th:each="organizationRank : *{organizationRanksInOrganization}"><a th:id="${organizationRank.id}" class="selectOrgRank" th:text="${organizationRank.name}" onclick="alert('hi');">Action</a></li>
+		    				<li th:each="organizationRank : *{organizationRanksInOrganization}"><a th:id="${organizationRank.id}" class="selectOrgRank" th:text="${organizationRank.name}" onclick="alert('You must select an organization first');">Action</a></li>
 		  				</ul>
 					</div>				
 				</div>

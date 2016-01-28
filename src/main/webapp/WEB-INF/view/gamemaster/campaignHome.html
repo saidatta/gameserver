@@ -194,7 +194,7 @@
 			var name = $(target).attr('name');
 			var addTT = $("#addGameDataTypeId");
 			addTT.attr("value", id);		
-			var form = $("#createLocationTypeForm");
+			var form = $("#editLocationTypeForm");
 			form.attr("action", "/gameserver/gamemaster/addLocationTypeToCampaign");
 			form.submit();
 		});
@@ -204,7 +204,7 @@
 			var id = $(target).attr('id');
 			var name = $(target).attr('name');
 			var removeTT = $("#removeGameDataTypeId");
-			var form = $("#createLocationTypeForm");
+			var form = $("#editLocationTypeForm");
 			removeTT.attr("value", id);		
 			form.attr("action", "/gameserver/gamemaster/removeLocationTypeFromCampaign");
 			form.submit();
@@ -216,7 +216,7 @@
 			var name = $(target).attr('name');
 			var addTT = $("#addGameDataTypeId");
 			addTT.attr("value", id);		
-			var form = $("#createOrganizationForm");
+			var form = $("#editOrganizationForm");
 			form.attr("action", "/gameserver/gamemaster/addOrganizationTypeToCampaign");
 			form.submit();
 		});
@@ -226,7 +226,7 @@
 			var id = $(target).attr('id');
 			var name = $(target).attr('name');
 			var removeTT = $("#removeGameDataTypeId");
-			var form = $("#createOrganizationForm");
+			var form = $("#editOrganizationForm");
 			removeTT.attr("value", id);		
 			form.attr("action", "/gameserver/gamemaster/removeOrganizationTypeFromCampaign");
 			form.submit();
@@ -267,7 +267,7 @@
 			    </div>
 			    <div id="one" class="collapse">
 			      <div class="accordion-inner outline">
-			        <div th:include="/gamemaster/createLocationType :: createLocationType"></div>	
+			        <div th:include="/gamemaster/editLocationType :: editLocationType"></div>	
 			      </div>
 			    </div>
 			  </div>
@@ -286,7 +286,7 @@
 			    </div>
 			    <div id="two" class="collapse">
 			      <div class="accordion-inner outline">
-			        <div th:include="/gamemaster/createLocation :: createLocation"></div>	
+			        <div th:include="/gamemaster/editLocation :: editLocation"></div>	
 			      </div>
 			    </div>
 			  </div>
@@ -305,7 +305,7 @@
 			    </div>
 			    <div id="three" class="collapse">
 			      <div class="accordion-inner outline">
-			        <div th:include="/gamemaster/createOrganizationType :: createOrganizationType"></div>	
+			        <div th:include="/gamemaster/editOrganizationType :: editOrganizationType"></div>	
 			      </div>
 			    </div>
 			  </div>
@@ -324,7 +324,7 @@
 			    </div>
 			    <div id="four" class="collapse">
 			      <div class="accordion-inner outline">
-			        <div th:include="/gamemaster/createOrganization :: createOrganization"></div>	
+			        <div th:include="/gamemaster/editOrganization :: editOrganization"></div>	
 			      </div>
 			    </div>
 			  </div>

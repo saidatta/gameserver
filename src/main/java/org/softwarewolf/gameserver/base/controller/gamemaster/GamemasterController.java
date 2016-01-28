@@ -81,6 +81,7 @@ public class GamemasterController {
 
 		Folio folio = folioService.findAll().get(0);
 		folioService.initFolioCreator(folioCreator, folio);
+		feFeedback.setInfo2("You are editing " + folio.getTitle());
 		return ControllerHelper.EDIT_FOLIO;
 	}
 	

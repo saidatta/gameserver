@@ -72,6 +72,12 @@ hr {
 	font-size: 1.4em; 
 }
 
+#folioStatus {
+	margin-left: 10px;
+	margin-top: 5 px;
+	margin-bottom: 5px;	
+}
+
 .gs-accordian-panel {
 	border: 1px, solid, transparent;
 	border0radius: 4px;

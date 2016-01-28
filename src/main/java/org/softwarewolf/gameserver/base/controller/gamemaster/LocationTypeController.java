@@ -51,7 +51,7 @@ public class LocationTypeController {
 
 	private static final String CAMPAIGN_ID = "campaignId";
 	
-	@RequestMapping(value = "/createLocationType", method = RequestMethod.GET)
+	@RequestMapping(value = "/editLocationType", method = RequestMethod.GET)
 	@Secured({"GAMEMASTER"})
 	public String createLocationType(HttpSession session, final LocationTypeCreator locationTypeCreator,
 			final LocationCreator locationCreator, final OrganizationCreator organizationCreator, 
@@ -69,7 +69,7 @@ public class LocationTypeController {
 		return ControllerHelper.EDIT_LOCATION_TYPE;
 	}
 	
-	@RequestMapping(value = "/createLocationType", method = RequestMethod.POST)
+	@RequestMapping(value = "/editLocationType", method = RequestMethod.POST)
 	@Secured({"GAMEMASTER"})
 	public String postLocationType(HttpSession session, final LocationTypeCreator locationTypeCreator,
 			final LocationCreator locationCreator, final FeFeedback feFeedback) {

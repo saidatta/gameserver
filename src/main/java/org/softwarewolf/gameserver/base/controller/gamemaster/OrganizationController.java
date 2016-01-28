@@ -144,7 +144,8 @@ public class OrganizationController {
 			String organizationId = org.getId();
 			organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, organizationCreator.getForwardingUrl());
 			organizationRankService.initOrganizationRankCreator(organizationId, null, organizationRankCreator, campaignId, organizationCreator.getForwardingUrl());
-			feFeedback.setInfo("Success, you've created " + organization.getName());
+			feFeedback.setInfo("Success, you've edited " + organization.getName());
+			feFeedback.setInfo2("You are editing " + org.getName());
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return ControllerHelper.EDIT_ORGANIZATION;
