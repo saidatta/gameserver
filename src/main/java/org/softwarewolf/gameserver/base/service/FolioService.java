@@ -173,10 +173,33 @@ public class FolioService implements Serializable {
 	public void initSelectFolioCreator(String campaignId, SelectFolioCreator selectFolioCreator) {
 		List<ObjectTag> excludeTags = new ArrayList<>();
 		Map<String, ObjectTag> allTags = objectTagService.createTagList(campaignId, excludeTags);
-		List<ObjectTag> unselectedTags = new ArrayList<>();
-		for(ObjectTag tag: allTags.values()) {
-			unselectedTags.add(tag);
+		List<ObjectTag> unselectedTags = selectFolioCreator.getUnselectedTagList();
+		List<ObjectTag> selectedTags = selectFolioCreator.getSelectedTagList();
+		if (unselectedTags == null) {
+			unselectedTags = new ArrayList<>();
 		}
-		selectFolioCreator.setUnselectedTagList(unselectedTags);
+		if (selectedTags == null) {
+			selectedTags = new ArrayList<>();
+		}
+		ObjectTag addTag = null;
+		ObjectTag removeTag = null;
+		boolean initUnselectedTags = unselectedTags.isEmpty() && selectedTags.isEmpty();
+		for(ObjectTag tag: allTags.values()) {
+			if (tag.getObjectId().equals(selectFolioCreator.getAddTagId())) {
+				addTag = tag;
+			} else if (tag.getObjectId().equals(selectFolioCreator.getRemoveTagId())) {
+				removeTag = tag;
+			}
+			if (initUnselectedTags) {
+				unselectedTags.add(tag);
+				selectFolioCreator.setUnselectedTagList(unselectedTags);
+			}
+		}
+		if (addTag != null) {
+			selectFolioCreator.addToSelectedTagList(addTag);
+		}
+		if (removeTag != null) {
+			selectFolioCreator.addToUnselectedTagList(removeTag);
+		}
 	}
 }

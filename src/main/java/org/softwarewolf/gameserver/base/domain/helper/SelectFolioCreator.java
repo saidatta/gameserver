@@ -1,13 +1,19 @@
 package org.softwarewolf.gameserver.base.domain.helper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SelectFolioCreator {
 	private List<ObjectTag> unselectedTagList;
 	private List<ObjectTag> selectedTagList;
-	private String removeTag;
+	private String addTagId;
+	private String addTagClassName;
+	private String removeTagId;
+	private String removeTagClassName;
 	
 	public SelectFolioCreator() {
+		unselectedTagList = new ArrayList<>();
+		selectedTagList = new ArrayList<>();
 	}
 	
 	public List<ObjectTag> getUnselectedTagList() {
@@ -44,11 +50,32 @@ public class SelectFolioCreator {
 		return selectedTagList;
 	}
 	
-	public String getRemoveTag() {
-		return removeTag;
+	public String getAddTagId() {
+		return addTagId;
 	}
-	public void setRemoveTag(String removeTag) {
-		this.removeTag = removeTag;
+	public void setAddTagId(String addTagId) {
+		this.addTagId = addTagId;
+	}
+	
+	public String getAddTagClassName() {
+		return addTagClassName;
+	}
+	public void setAddTagClassName(String addTagClassName) {
+		this.addTagClassName = addTagClassName;
+	}
+	
+	public String getRemoveTagId() {
+		return removeTagId;
+	}
+	public void setRemoveTagId(String removeTagId) {
+		this.removeTagId = removeTagId;
+	}
+	
+	public String getRemoveTagClassName() {
+		return removeTagClassName;
+	}
+	public void setRemoveTagClassName(String removeTagClassName) {
+		this.removeTagClassName = removeTagClassName;
 	}
 }
 

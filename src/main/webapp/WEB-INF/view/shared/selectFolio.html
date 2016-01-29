@@ -20,6 +20,9 @@
 	<script th:inline="javascript">
 	function addTag(className, objectId) {
 		alert("className: " + className + "\nobjectId: " + objectId);
+		$("#selectFolioForm").attr("action", "/gameserver/shared/folio/addTagToSearch");
+		$("#selectFolioForm").attr("method", "post");
+		$("#selectFolioForm").submit();
 	}
 	</script>
 </head>
@@ -34,25 +37,41 @@
 		</div>
 	</div>
 
-	<form id="selectFolioForm" th:object="${selectFolioCreator}" action="#" th:action="@{/shared/selectFolio}" method="post">
+	<form id="selectFolioForm" th:object="${selectFolioCreator}" action="#" th:action="@{/shared/selectFolio}" method="get">
+		<input type="hidden" id="tagId" th:field="*{tagId}"></input>
+		<input type="hidden" id="tagClassName" th:field="*{tagClassName}"></input>
 		
-	<div class="row">
-		<div class="col-md-1"></div>		        	
-		<div id="availableTags" class="row col-md-10">
-			<span th:each="tag : ${selectFolioCreator.unselectedTagList}"><button class="btn btn-default" type="button" th:id="${tag.objectId}" data-th-attr="className=${tag.className}" th:text="${tag.tagName}" th:onclick="'addTag(\'' + ${tag.className} + '\', \'' + ${tag.objectId} + '\');'">tagName</button></span>
-		</div>	
-	</div>	        	
-
-	<div class="row">
-		<div class="col-md-1"></div>		        	
-		<div class="col-md-10">		        	
-			<div id="selectedTags" class="btn-toolbar">
-			    <button class="btn btn-default" type="button">Left 1</button>
-			    <button class="btn btn-default" type="button">Left 2</button>
-			    <button class="btn btn-default" type="button">Left 3</button>
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin" th:text="#{selectFolio.unselectedTags}">Tags</label>	  
 			</div>
 		</div>
-	</div>
+		
+		<div class="row">   
+			<div class="col-md-1"></div>   	
+			<div id="unselectedTags" class="row col-md-10">
+				<span th:each="tag : ${selectFolioCreator.unselectedTagList}"><button class="btn btn-default" type="button" th:id="${tag.objectId}" data-th-attr="className=${tag.className}" th:text="${tag.tagName}" th:onclick="'addTag(\'' + ${tag.className} + '\', \'' + ${tag.objectId} + '\');'">tagName</button></span>
+			</div>	
+		</div>	        	
+	
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin" th:text="#{selectFolio.selectedTags}">Tags</label>	  
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-1"></div>		        	
+			<div class="col-md-10">		        	
+				<div id="selectedTags" class="btn-toolbar">
+				    <button class="btn btn-default" type="button">Left 1</button>
+				    <button class="btn btn-default" type="button">Left 2</button>
+				    <button class="btn btn-default" type="button">Left 3</button>
+				</div>
+			</div>
+		</div>
 				
 	</form>
 </body>
