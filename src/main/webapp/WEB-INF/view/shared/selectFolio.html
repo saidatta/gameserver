@@ -31,6 +31,19 @@
 			    buttons += button;
 			});
 			$("#unselectedTagSpan").html(buttons);
+
+			var selectedList = $("#selectedTags")[0].value;
+			var selectedTagList = jQuery.parseJSON(selectedList);
+			
+			var buttons = "";
+			$.each(selectedTagList, function(i, item) {
+				var className = item["className"];
+				var objectId = item["objectId"];
+			    var button = '<button class="btn btn-default remove-btn" id="'+item['objectId']+'" className="'+item['className']+'" onclick="removeTag(\''+className+'\', \''+objectId+'\')">'+item['tagName']+'</button>';
+			    buttons += button;
+			});
+			$("#selectedTagSpan").html(buttons);
+		
 		});		
 
 		$(".add-btn").click(function(event) {
@@ -41,18 +54,36 @@
 			var className = $(target).attr("className");
 			addTag(className, objectId);
 		});
+
+		$(".remove-btn").click(function(event) {
+			event.preventDefault();
+			// Get the data out of the event
+			var target = $(event.target);
+			var objectId = $(target).attr('objectId');
+			var className = $(target).attr("className");
+			removeTag(className, objectId);
+		});
+	
 	});	
 </script>	
 <script th:inline="javascript">
 	function addTag(className, objectId) {
-//		alert("className: " + className + "\nobjectId: " + objectId);
 		$("#selectFolioForm").attr("action", "/gameserver/shared/folio/addTagToSearch");
 		$("#selectFolioForm").attr("method", "post");
 		$("#addTagId").val(objectId);
 		$("#addTagClassName").val(className);
 		$("#selectFolioForm").submit();
 	}
-	</script>
+
+	function removeTag(className, objectId) {
+		$("#selectFolioForm").attr("action", "/gameserver/shared/folio/removeTagFromSearch");
+		$("#selectFolioForm").attr("method", "post");
+		$("#removeTagId").val(objectId);
+		$("#removeTagClassName").val(className);
+		$("#selectFolioForm").submit();
+	}
+	
+</script>
 </head>
 <body>
 	<div th:include="/public/navbar :: navbar"></div>

@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 @RequestMapping("/gamemaster")
 public class CampaignController {
-	private static final String CAMPAIGN_ID = "campaignId";
-	
 	@Autowired
 	protected UserRepository userRepository;
 	

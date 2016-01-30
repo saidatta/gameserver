@@ -186,38 +186,51 @@ public class FolioService implements Serializable {
 			selectedTags = "";
 		}
 		ObjectMapper mapper = new ObjectMapper();
-		JavaType type = mapper.getTypeFactory().constructCollectionType(List.class, ObjectTag.class);
-		List<ObjectTag> unselectedTagList = new ArrayList<>();
-		List<ObjectTag> selectedTagList = new ArrayList<>();
+		JavaType listOfObjectTagsType = mapper.getTypeFactory().constructCollectionType(List.class, ObjectTag.class);
+		List<ObjectTag> unselectedTagList = null;
+		List<ObjectTag> selectedTagList = null;
+		try {
+			if (unselectedTags.isEmpty()) {
+				unselectedTagList = new ArrayList<>();
+			} else {
+				unselectedTagList = mapper.readValue(unselectedTags, listOfObjectTagsType);
+			}
+			if (selectedTags.isEmpty()) {
+				selectedTagList = new ArrayList<>();
+			} else {
+				selectedTagList = mapper.readValue(selectedTags, listOfObjectTagsType);
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		ObjectTag addTag = null;
 		ObjectTag removeTag = null;
 		boolean initUnselectedTags = (unselectedTags.isEmpty() && selectedTags.isEmpty());
+		
 		for(ObjectTag tag: allTags) {
 			if (tag.getObjectId().equals(selectFolioCreator.getAddTagId())) {
 				addTag = tag;
+				selectFolioCreator.setAddTagId(null);
+				selectFolioCreator.setAddTagClassName(null);
 			} else if (tag.getObjectId().equals(selectFolioCreator.getRemoveTagId())) {
 				removeTag = tag;
+				selectFolioCreator.setRemoveTagId(null);
+				selectFolioCreator.setRemoveTagClassName(null);
 			}
-			unselec
 		}
-		try {
-			unselectedTagList = mapper.readValue(unselectedTags, type);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (initUnselectedTags) {
+			unselectedTagList = allTags;
 		}
 		
-		if (initUnselectedTags) {
-			selectFolioCreator.setUnselectedTags(unselectedTags);
-		}
 		if (addTag != null) {
-			selectFolioCreator.removeFromUnselectedTagList(addTag);
-			selectFolioCreator.addToSelectedTagList(addTag);
+			unselectedTagList.remove(addTag);
+			selectedTagList.add(addTag);
 		}
 		if (removeTag != null) {
-			selectFolioCreator.addToUnselectedTagList(removeTag);
-			selectFolioCreator.removeFromSelectedTagList(removeTag);
+			unselectedTagList.add(removeTag);
+			selectedTagList.remove(removeTag);
 		}
 		try {
 			selectFolioCreator.setUnselectedTags(mapper.writeValueAsString(unselectedTagList));
