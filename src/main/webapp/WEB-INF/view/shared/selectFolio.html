@@ -17,11 +17,39 @@
 
 	<title th:text="#{selectFolio.title}">Title</title>
 	
-	<script th:inline="javascript">
+<script th:inline="javascript">
+	$(document).ready(function() {
+		$( window ).load(function() {
+			var unselectedList = $("#unselectedTags")[0].value;
+			var unselectedTagList = jQuery.parseJSON(unselectedList);
+			
+			var buttons = "";
+			$.each(unselectedTagList, function(i, item) {
+				var className = item["className"];
+				var objectId = item["objectId"];
+			    var button = '<button class="btn btn-default add-btn" id="'+item['objectId']+'" className="'+item['className']+'" onclick="addTag(\''+className+'\', \''+objectId+'\')">'+item['tagName']+'</button>';
+			    buttons += button;
+			});
+			$("#unselectedTagSpan").html(buttons);
+		});		
+
+		$(".add-btn").click(function(event) {
+			event.preventDefault();
+			// Get the data out of the event
+			var target = $(event.target);
+			var objectId = $(target).attr('objectId');
+			var className = $(target).attr("className");
+			addTag(className, objectId);
+		});
+	});	
+</script>	
+<script th:inline="javascript">
 	function addTag(className, objectId) {
-		alert("className: " + className + "\nobjectId: " + objectId);
+//		alert("className: " + className + "\nobjectId: " + objectId);
 		$("#selectFolioForm").attr("action", "/gameserver/shared/folio/addTagToSearch");
 		$("#selectFolioForm").attr("method", "post");
+		$("#addTagId").val(objectId);
+		$("#addTagClassName").val(className);
 		$("#selectFolioForm").submit();
 	}
 	</script>
@@ -38,9 +66,13 @@
 	</div>
 
 	<form id="selectFolioForm" th:object="${selectFolioCreator}" action="#" th:action="@{/shared/selectFolio}" method="get">
-		<input type="hidden" id="tagId" th:field="*{tagId}"></input>
-		<input type="hidden" id="tagClassName" th:field="*{tagClassName}"></input>
-		
+		<input type="hidden" id="addTagId" th:field="*{addTagId}"></input>
+		<input type="hidden" id="addTagClassName" th:field="*{addTagClassName}"></input>
+		<input type="hidden" id="removeTagId" th:field="*{removeTagId}"></input>
+		<input type="hidden" id="removeTagClassName" th:field="*{removeTagClassName}"></input>
+		<input type="hidden" id="unselectedTags" th:field="*{unselectedTags}"></input>
+		<input type="hidden" id="selectedTags" th:field="*{selectedTags}"></input>
+						
 		<div class="row">
 			<div class="col-md-1"></div>
 			<div class="col-md-1">
@@ -50,8 +82,9 @@
 		
 		<div class="row">   
 			<div class="col-md-1"></div>   	
-			<div id="unselectedTags" class="row col-md-10">
-				<span th:each="tag : ${selectFolioCreator.unselectedTagList}"><button class="btn btn-default" type="button" th:id="${tag.objectId}" data-th-attr="className=${tag.className}" th:text="${tag.tagName}" th:onclick="'addTag(\'' + ${tag.className} + '\', \'' + ${tag.objectId} + '\');'">tagName</button></span>
+			<div class="row col-md-10">
+				<span id="unselectedTagSpan"></span>
+<!-- 				<span th:each="tag : ${selectFolioCreator.unselectedTagList}"><button class="btn btn-default" type="button" th:id="${tag.objectId}" data-th-attr="className=${tag.className}" th:text="${tag.tagName}" th:onclick="'addTag(\'' + ${tag.className} + '\', \'' + ${tag.objectId} + '\');'">tagName</button></span>  -->
 			</div>	
 		</div>	        	
 	
@@ -62,16 +95,12 @@
 			</div>
 		</div>
 		
-		<div class="row">
-			<div class="col-md-1"></div>		        	
-			<div class="col-md-10">		        	
-				<div id="selectedTags" class="btn-toolbar">
-				    <button class="btn btn-default" type="button">Left 1</button>
-				    <button class="btn btn-default" type="button">Left 2</button>
-				    <button class="btn btn-default" type="button">Left 3</button>
-				</div>
-			</div>
-		</div>
+		<div class="row">   
+			<div class="col-md-1"></div>   	
+			<div id="selectedTagSpan" class="row col-md-10">
+<!-- 				<span th:each="tag : ${selectFolioCreator.selectedTagList}"><button class="btn btn-default" type="button" th:id="${tag.objectId}" data-th-attr="className=${tag.className}" th:text="${tag.tagName}" th:onclick="'addTag(\'' + ${tag.className} + '\', \'' + ${tag.objectId} + '\');'">tagName</button></span>  -->
+			</div>	
+		</div>	        	
 				
 	</form>
 </body>

@@ -29,7 +29,18 @@ public class FolioController {
 	}
 
 	@RequestMapping(value = "/folio/addTagToSearch", method = RequestMethod.POST)
-	public String addTagSearch(HttpSession session, SelectFolioCreator selectFolioCreator, final FeFeedback feFeedback) {
+	public String addTagToSearch(HttpSession session, SelectFolioCreator selectFolioCreator, final FeFeedback feFeedback) {
+		String campaignId = (String)session.getAttribute(ControllerHelper.CAMPAIGN_ID);
+		if (campaignId == null) {
+			return ControllerHelper.USER_MENU;
+		}		
+		
+		folioService.initSelectFolioCreator(campaignId, selectFolioCreator); 
+		return ControllerHelper.SELECT_FOLIO;
+	}
+
+	@RequestMapping(value = "/folio/removeTagFromSearch", method = RequestMethod.POST)
+	public String removeTagFromSearch(HttpSession session, SelectFolioCreator selectFolioCreator, final FeFeedback feFeedback) {
 		String campaignId = (String)session.getAttribute(ControllerHelper.CAMPAIGN_ID);
 		if (campaignId == null) {
 			return ControllerHelper.USER_MENU;

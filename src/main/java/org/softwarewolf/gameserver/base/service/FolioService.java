@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.JavaType;
 import org.softwarewolf.gameserver.base.domain.Folio;
 import org.softwarewolf.gameserver.base.domain.Location;
 import org.softwarewolf.gameserver.base.domain.LocationType;
@@ -21,6 +22,8 @@ import org.softwarewolf.gameserver.base.domain.helper.SelectFolioCreator;
 import org.softwarewolf.gameserver.base.repository.FolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 @Service
 public class FolioService implements Serializable {
@@ -92,7 +95,7 @@ public class FolioService implements Serializable {
 			folioCreator.setSelectedTags("{}");
 		}
 
-		Map<String, ObjectTag> unselectedTagMap = objectTagService.createTagList(campaignId, selectedTags);
+		Map<String, ObjectTag> unselectedTagMap = objectTagService.createTagMap(campaignId, selectedTags);
 		Map<String, Object> unassignedTags = new HashMap<>();
 		try {
 			unassignedTags = objectTagService.createObjectTagTree(unselectedTagMap, campaignId);
@@ -172,34 +175,56 @@ public class FolioService implements Serializable {
 	
 	public void initSelectFolioCreator(String campaignId, SelectFolioCreator selectFolioCreator) {
 		List<ObjectTag> excludeTags = new ArrayList<>();
-		Map<String, ObjectTag> allTags = objectTagService.createTagList(campaignId, excludeTags);
-		List<ObjectTag> unselectedTags = selectFolioCreator.getUnselectedTagList();
-		List<ObjectTag> selectedTags = selectFolioCreator.getSelectedTagList();
+		List<ObjectTag> allTags = objectTagService.createTagList(campaignId, excludeTags);
+		
+		String unselectedTags = selectFolioCreator.getUnselectedTags();
 		if (unselectedTags == null) {
-			unselectedTags = new ArrayList<>();
+			unselectedTags = "";
 		}
+		String selectedTags = selectFolioCreator.getSelectedTags();
 		if (selectedTags == null) {
-			selectedTags = new ArrayList<>();
+			selectedTags = "";
 		}
+		ObjectMapper mapper = new ObjectMapper();
+		JavaType type = mapper.getTypeFactory().constructCollectionType(List.class, ObjectTag.class);
+		List<ObjectTag> unselectedTagList = new ArrayList<>();
+		List<ObjectTag> selectedTagList = new ArrayList<>();
+
 		ObjectTag addTag = null;
 		ObjectTag removeTag = null;
-		boolean initUnselectedTags = unselectedTags.isEmpty() && selectedTags.isEmpty();
-		for(ObjectTag tag: allTags.values()) {
+		boolean initUnselectedTags = (unselectedTags.isEmpty() && selectedTags.isEmpty());
+		for(ObjectTag tag: allTags) {
 			if (tag.getObjectId().equals(selectFolioCreator.getAddTagId())) {
 				addTag = tag;
 			} else if (tag.getObjectId().equals(selectFolioCreator.getRemoveTagId())) {
 				removeTag = tag;
 			}
-			if (initUnselectedTags) {
-				unselectedTags.add(tag);
-				selectFolioCreator.setUnselectedTagList(unselectedTags);
-			}
+			unselec
+		}
+		try {
+			unselectedTagList = mapper.readValue(unselectedTags, type);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (initUnselectedTags) {
+			selectFolioCreator.setUnselectedTags(unselectedTags);
 		}
 		if (addTag != null) {
+			selectFolioCreator.removeFromUnselectedTagList(addTag);
 			selectFolioCreator.addToSelectedTagList(addTag);
 		}
 		if (removeTag != null) {
 			selectFolioCreator.addToUnselectedTagList(removeTag);
+			selectFolioCreator.removeFromSelectedTagList(removeTag);
+		}
+		try {
+			selectFolioCreator.setUnselectedTags(mapper.writeValueAsString(unselectedTagList));
+			selectFolioCreator.setSelectedTags(mapper.writeValueAsString(selectedTagList));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

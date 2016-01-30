@@ -1,53 +1,28 @@
 package org.softwarewolf.gameserver.base.domain.helper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SelectFolioCreator {
-	private List<ObjectTag> unselectedTagList;
-	private List<ObjectTag> selectedTagList;
+	private String unselectedTags;
+	private String selectedTags;
 	private String addTagId;
 	private String addTagClassName;
 	private String removeTagId;
 	private String removeTagClassName;
 	
 	public SelectFolioCreator() {
-		unselectedTagList = new ArrayList<>();
-		selectedTagList = new ArrayList<>();
 	}
 	
-	public List<ObjectTag> getUnselectedTagList() {
-		return unselectedTagList;
+	public String getUnselectedTags() {
+		return unselectedTags;
 	}
-	public void setUnselectedTagList(List<ObjectTag> unselectedTagList) {
-		this.unselectedTagList = unselectedTagList;
+	public void setUnselectedTags(String unselectedTags) {
+		this.unselectedTags = unselectedTags;
 	}
-	public List<ObjectTag> addToUnselectedTagList(ObjectTag addTag) {
-		if (!unselectedTagList.contains(addTag)) {
-			unselectedTagList.add(addTag);
-		}
-		return unselectedTagList;
+	
+	public String getSelectedTags() {
+		return selectedTags;
 	}
-	public List<ObjectTag> removeFromUnselectedTagList(ObjectTag removeTag) {
-		unselectedTagList.remove(removeTag);
-		return unselectedTagList;
-	}
-
-	public List<ObjectTag> getSelectedTagList() {
-		return selectedTagList;
-	}
-	public void setSelectedTagList(List<ObjectTag> selectedTagList) {
-		this.selectedTagList = selectedTagList;
-	}
-	public List<ObjectTag> addToSelectedTagList(ObjectTag addTag) {
-		if (!selectedTagList.contains(addTag)) {
-			selectedTagList.add(addTag);
-		}
-		return selectedTagList;
-	}
-	public List<ObjectTag> removeFromSelectedTagList(ObjectTag removeTag) {
-		selectedTagList.remove(removeTag);
-		return selectedTagList;
+	public void setSelectedTags(String selectedTags) {
+		this.selectedTags = selectedTags;
 	}
 	
 	public String getAddTagId() {

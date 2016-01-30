@@ -31,13 +31,8 @@ public class ObjectTagService {
 	@Autowired
 	private LocationTypeService locationTypeService;
 	
-	/**
-	 * This is not scalable. I need a better way to do this.
-	 * @param campaignId
-	 * @param excludeTags
-	 * @return
-	 */
-	public Map<String, ObjectTag> createTagList(String campaignId, List<ObjectTag> excludeTags) {
+	
+	public List<ObjectTag> createTagList(String campaignId, List<ObjectTag> excludeTags) {
 		if (excludeTags == null) {
 			excludeTags = new ArrayList<>();
 		}
@@ -85,11 +80,24 @@ public class ObjectTagService {
 			allTags.put(tag.getClassName(), tag);
 		}
 */		
-		List<ObjectTag> locationTags = createLocationTags(locationTypeList, locationList);
+		List<ObjectTag> tags = createLocationTags(locationTypeList, locationList);
 		List<ObjectTag> organizationTags = createOrganizationTags(orgTypeList, orgList, orgRankList);
-		locationTags.addAll(organizationTags);
+		tags.addAll(organizationTags);
+
+		return tags;
+	}
+	
+	/**
+	 * This is not scalable. I need a better way to do this.
+	 * @param campaignId
+	 * @param excludeTags
+	 * @return
+	 */
+	public Map<String, ObjectTag> createTagMap(String campaignId, List<ObjectTag> excludeTags) {
+		List<ObjectTag> tagList = createTagList(campaignId, excludeTags);
+
 		Map<String, ObjectTag> newMap = new HashMap<>();
-		for (ObjectTag tag : locationTags) {
+		for (ObjectTag tag : tagList) {
 			newMap.put(tag.getObjectId(), tag);
 		}
 		return newMap;
