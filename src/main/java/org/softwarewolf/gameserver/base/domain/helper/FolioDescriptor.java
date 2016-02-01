@@ -2,6 +2,12 @@ package org.softwarewolf.gameserver.base.domain.helper;
 
 import java.util.List;
 
+/**
+ * Folios can be assembled into collections for multiple purposes. This abbreviated object
+ * is for use when creating those collections. A folio knows how to create a descriptor.
+ * @author tmanchester
+ *
+ */
 public class FolioDescriptor {
 	String folioTitle;
 	String folioId;

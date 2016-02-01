@@ -52,5 +52,6 @@ public class SelectFolioCreator {
 	public void setRemoveTagClassName(String removeTagClassName) {
 		this.removeTagClassName = removeTagClassName;
 	}
+
 }
 

@@ -27,9 +27,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 @Service
 public class FolioService implements Serializable {
+	private final String ADD = "add";
+	private final String REMOVE = "remove";
+	
 	@Autowired
 	private FolioRepository folioRepository;
-
 	@Autowired
 	private OrganizationService organizationService;
 	@Autowired
@@ -173,6 +175,12 @@ public class FolioService implements Serializable {
 		return folioRepository.findOne(id);
 	}
 	
+	/**
+	 * In order to communicate with the back-end the SelectFolioCreator stores the list of selected 
+	 * and unselected ObjectTags as a JSON String. They need to be converted back to be manipulated. 
+	 * @param campaignId
+	 * @param selectFolioCreator
+	 */
 	public void initSelectFolioCreator(String campaignId, SelectFolioCreator selectFolioCreator) {
 		List<ObjectTag> excludeTags = new ArrayList<>();
 		List<ObjectTag> allTags = objectTagService.createTagList(campaignId, excludeTags);
@@ -185,40 +193,82 @@ public class FolioService implements Serializable {
 		if (selectedTags == null) {
 			selectedTags = "";
 		}
-		ObjectMapper mapper = new ObjectMapper();
-		JavaType type = mapper.getTypeFactory().constructCollectionType(List.class, ObjectTag.class);
-		List<ObjectTag> unselectedTagList = new ArrayList<>();
-		List<ObjectTag> selectedTagList = new ArrayList<>();
 
 		ObjectTag addTag = null;
 		ObjectTag removeTag = null;
 		boolean initUnselectedTags = (unselectedTags.isEmpty() && selectedTags.isEmpty());
-		for(ObjectTag tag: allTags) {
-			if (tag.getObjectId().equals(selectFolioCreator.getAddTagId())) {
-				addTag = tag;
-			} else if (tag.getObjectId().equals(selectFolioCreator.getRemoveTagId())) {
-				removeTag = tag;
+		if (initUnselectedTags) {
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				unselectedTags = mapper.writeValueAsString(allTags);
+				selectFolioCreator.setUnselectedTags(unselectedTags);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			unselec
-		}
-		try {
-			unselectedTagList = mapper.readValue(unselectedTags, type);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
-		if (initUnselectedTags) {
-			selectFolioCreator.setUnselectedTags(unselectedTags);
+		if (selectFolioCreator.getAddTagId() != null && selectFolioCreator.getRemoveTagId() != null) {
+			for(ObjectTag tag: allTags) {
+				if (tag.getObjectId().equals(selectFolioCreator.getAddTagId())) {
+					addTag = tag;
+				} else if (tag.getObjectId().equals(selectFolioCreator.getRemoveTagId())) {
+					removeTag = tag;
+				}
+			}
 		}
+
 		if (addTag != null) {
-			selectFolioCreator.removeFromUnselectedTagList(addTag);
-			selectFolioCreator.addToSelectedTagList(addTag);
+			createTagList(ADD, selectFolioCreator, addTag);
 		}
 		if (removeTag != null) {
-			selectFolioCreator.addToUnselectedTagList(removeTag);
-			selectFolioCreator.removeFromSelectedTagList(removeTag);
+			createTagList(REMOVE, selectFolioCreator, removeTag);
 		}
+	}
+	
+	private void createTagList(String operation, SelectFolioCreator selectFolioCreator, ObjectTag tag) {
+		if (!ADD.equals(operation) && !REMOVE.equals(operation)) {
+			throw new IllegalArgumentException("Only 'add' and remove' are allowable operations.");
+		}
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JavaType type = mapper.getTypeFactory().constructCollectionType(List.class, ObjectTag.class);
+		List<ObjectTag> unselectedTagList = null;
+		List<ObjectTag> selectedTagList = null;
+
+		if (selectFolioCreator.getUnselectedTags().isEmpty()) {
+			unselectedTagList = new ArrayList<>();
+		} else {
+			try {
+				unselectedTagList = mapper.readValue(selectFolioCreator.getUnselectedTags(), type);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (selectFolioCreator.getSelectedTags().isEmpty()) {
+			selectedTagList = new ArrayList<>();
+		} else {
+			try {
+				selectedTagList = mapper.readValue(selectFolioCreator.getSelectedTags(), type);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}		
+
+		if (ADD.equals(operation)) {
+			if (!selectedTagList.contains(tag)) {
+				selectedTagList.add(tag);
+			}
+			unselectedTagList.remove(tag);
+		} else {
+			if (!unselectedTagList.contains(tag)) {
+				unselectedTagList.add(tag);
+			}
+			selectedTagList.remove(tag);
+		}
+		
 		try {
 			selectFolioCreator.setUnselectedTags(mapper.writeValueAsString(unselectedTagList));
 			selectFolioCreator.setSelectedTags(mapper.writeValueAsString(selectedTagList));
@@ -226,5 +276,5 @@ public class FolioService implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}	
 }

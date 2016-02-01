@@ -21,7 +21,20 @@
 	$(document).ready(function() {
 		$( window ).load(function() {
 			var unselectedList = $("#unselectedTags")[0].value;
-			var unselectedTagList = jQuery.parseJSON(unselectedList);
+			var unselectedTagList = null;
+			if (unselectedList.length > 0) {
+				unselectedTagList = jQuery.parseJSON(unselectedList);
+			} else {
+				unselectedTagList= [];
+			}
+			
+			var selectedList = $("#selectedTags")[0].value;
+			var selectedTagList = null;
+			if (selectedList.length > 0) {
+				selectedTagList = jQuery.parseJSON(selectedList);
+			} else {
+				selectedTagList = [];
+			}
 			
 			var buttons = "";
 			$.each(unselectedTagList, function(i, item) {
@@ -31,6 +44,16 @@
 			    buttons += button;
 			});
 			$("#unselectedTagSpan").html(buttons);
+
+			buttons = "";
+			$.each(selectedTagList, function(i, item) {
+				var className = item["className"];
+				var objectId = item["objectId"];
+			    var button = '<button class="btn btn-default add-btn" id="'+item['objectId']+'" className="'+item['className']+'" onclick="removeTag(\''+className+'\', \''+objectId+'\')">'+item['tagName']+'</button>';
+			    buttons += button;
+			});
+			$("#selectedTagSpan").html(buttons);
+		
 		});		
 
 		$(".add-btn").click(function(event) {
