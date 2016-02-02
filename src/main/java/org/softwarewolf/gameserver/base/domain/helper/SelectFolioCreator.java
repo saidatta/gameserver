@@ -8,8 +8,16 @@ public class SelectFolioCreator {
 	private String removeTagId;
 	private String removeTagClassName;
 	private String folioDescriptorList;
+	private String forwardingUrl;
 	
 	public SelectFolioCreator() {
+		unselectedTags = "";
+		selectedTags = "";
+		addTagId = "";
+		addTagClassName = "";
+		removeTagId = "";
+		removeTagClassName = "";
+		folioDescriptorList = "";
 	}
 	
 	public String getUnselectedTags() {
@@ -59,6 +67,13 @@ public class SelectFolioCreator {
 	}
 	public void setFolioDescriptorList(String folioDescriptorList) {
 		this.folioDescriptorList = folioDescriptorList;
+	}
+
+	public String getForwardingUrl() {
+		return forwardingUrl;
+	}
+	public void setForwardingUrl(String forwardingUrl) {
+		this.forwardingUrl = forwardingUrl;
 	}
 }
 

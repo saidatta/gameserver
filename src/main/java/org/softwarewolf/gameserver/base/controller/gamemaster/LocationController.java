@@ -66,7 +66,7 @@ public class LocationController {
 			location = locationService.findOne(location.getId());
 		} else {
 			location = new Location();
-			feFeedback.setInfo2("You are creating a new location");
+			feFeedback.setUserStatus("You are creating a new location");
 		}
 		locationService.initLocationCreator(location, locationCreator, campaignId, ControllerHelper.EDIT_LOCATION);
 		return ControllerHelper.EDIT_LOCATION;
@@ -97,10 +97,10 @@ public class LocationController {
 		// id = 0 is add a new location
 		if ("0".equals(locationId) || locationId == null) {
 			location = new Location();
-			feFeedback.setInfo2("You are creating a new location");
+			feFeedback.setUserStatus("You are creating a new location");
 		} else if (!("".equals(locationId))) {
 			location = locationService.findOne(locationId);
-			feFeedback.setInfo2("You are editing " + location.getName());
+			feFeedback.setUserStatus("You are editing " + location.getName());
 		}
 		// ToDo: Add error handling for no location found
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -142,12 +142,12 @@ public class LocationController {
 			String locationId = null;
 			locationService.initLocationCreator(locationId, locationCreator, campaignId, locationCreator.getForwardingUrl());
 			feFeedback.setInfo("Success, you've created " + location.getName());
-			feFeedback.setInfo2("You are creating a new location");
+			feFeedback.setUserStatus("You are creating a new location");
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			String locationId = null;
 			locationService.initLocationCreator(locationId, locationCreator, campaignId, locationCreator.getForwardingUrl());
-			feFeedback.setInfo2("You are creating a new location");
+			feFeedback.setUserStatus("You are creating a new location");
 			return ControllerHelper.EDIT_LOCATION;
 		}
 		return locationCreator.getForwardingUrl();

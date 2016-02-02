@@ -75,8 +75,11 @@ public class FolioService implements Serializable {
 		return folioRepository.findAll();
 	}
 	
-	public void initFolioCreator(FolioCreator folioCreator, Folio folio) {
-		String campaignId = folio.getCampaignId();
+	public void initFolioCreator(FolioCreator folioCreator, Folio folio, String campaignId) {
+		if (folio == null) {
+			folio = new Folio();
+			folio.setCampaignId(campaignId);
+		}
 
 		folioCreator.setFolio(folio);
 		List<ObjectTag> selectedTags = folio.getTags();

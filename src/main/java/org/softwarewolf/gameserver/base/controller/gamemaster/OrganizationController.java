@@ -85,10 +85,10 @@ public class OrganizationController {
 		// organization id 0 = add new organization;
 		if ("0".equals(organizationId) || organizationId == null) {
 			organizationId = null;
-			feFeedback.setInfo2("You are editing a new organization");
+			feFeedback.setUserStatus("You are editing a new organization");
 		} else {
 			Organization org = organizationService.findOne(organizationId);
-			feFeedback.setInfo2("You are editing " + org.getName());
+			feFeedback.setUserStatus("You are editing " + org.getName());
 		}
 		organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, ControllerHelper.EDIT_ORGANIZATION);
 		
@@ -145,7 +145,7 @@ public class OrganizationController {
 			organizationService.initOrganizationCreator(organizationId, organizationCreator, campaignId, organizationCreator.getForwardingUrl());
 			organizationRankService.initOrganizationRankCreator(organizationId, null, organizationRankCreator, campaignId, organizationCreator.getForwardingUrl());
 			feFeedback.setInfo("Success, you've edited " + organization.getName());
-			feFeedback.setInfo2("You are editing " + org.getName());
+			feFeedback.setUserStatus("You are editing " + org.getName());
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return ControllerHelper.EDIT_ORGANIZATION;

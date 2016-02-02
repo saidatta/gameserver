@@ -62,13 +62,6 @@ public class GamemasterController {
 	@Autowired
 	protected FolioService folioService;
 	
-	@RequestMapping(value = "/ckeditor", method = RequestMethod.GET)
-	@Secured({"USER"})
-	public String ckeditor() {
-
-		return "/gamemaster/ckeditor";
-	}
-
 	@RequestMapping(value = "/editFolio", method = RequestMethod.GET)
 	@Secured({"USER"})
 	public String editFolio(HttpSession session, FolioCreator folioCreator, final FeFeedback feFeedback) {
@@ -77,9 +70,9 @@ public class GamemasterController {
 			return ControllerHelper.USER_MENU;
 		}		
 
-		Folio folio = folioService.findAll().get(0);
-		folioService.initFolioCreator(folioCreator, folio);
-		feFeedback.setInfo2("You are editing " + folio.getTitle());
+		folioService.initFolioCreator(folioCreator, null, campaignId);
+		folioCreator.setForwardingUrl(ControllerHelper.EDIT_FOLIO);
+		feFeedback.setUserStatus("You are creating a new folio");
 		return ControllerHelper.EDIT_FOLIO;
 	}
 	
@@ -93,8 +86,8 @@ public class GamemasterController {
 		}		
 
 		Folio folio = folioService.findOne(folioId);
-		folioService.initFolioCreator(folioCreator, folio);
-		feFeedback.setInfo2("You are editing '" + folio.getTitle() + "'");
+		folioService.initFolioCreator(folioCreator, folio, campaignId);
+		feFeedback.setUserStatus("You are editing '" + folio.getTitle() + "'");
 		return ControllerHelper.EDIT_FOLIO;
 	}
 		
@@ -108,7 +101,7 @@ public class GamemasterController {
 		}		
 
 		Folio folio = folioService.removeTagFromFolio(folioId, tagId);
-		folioService.initFolioCreator(folioCreator, folio);
+		folioService.initFolioCreator(folioCreator, folio, campaignId);
 		feFeedback.setInfo("You have modified folio " + folio.getTitle());
 		return ControllerHelper.EDIT_FOLIO;
 	}
@@ -138,12 +131,12 @@ public class GamemasterController {
 			} catch (Exception e) {
 				String errorMessage = e.getMessage();
 				feFeedback.setError(errorMessage);
-				folioService.initFolioCreator(folioCreator, folio);
+				folioService.initFolioCreator(folioCreator, folio, campaignId);
 				return ControllerHelper.EDIT_FOLIO;
 			}
 		}
 		folio = folioService.addTagToFolio(folio.getId(), className, tagId);
-		folioService.initFolioCreator(folioCreator, folio);
+		folioService.initFolioCreator(folioCreator, folio, campaignId);
 		feFeedback.setInfo("You have modified folio " + folio.getTitle());
 
 		return ControllerHelper.EDIT_FOLIO;
@@ -176,11 +169,11 @@ public class GamemasterController {
 				folio.setTags(objectTagList);
 			}
 			folio = folioService.save(folio);
-			folioService.initFolioCreator(folioCreator, folio);
+			folioService.initFolioCreator(folioCreator, folio, campaignId);
 		} catch (Exception e) {
 			String errorMessage = e.getMessage();
 			feFeedback.setError(errorMessage);
-			folioService.initFolioCreator(folioCreator, folio);
+			folioService.initFolioCreator(folioCreator, folio, campaignId);
 			return ControllerHelper.EDIT_FOLIO;
 		}
 		

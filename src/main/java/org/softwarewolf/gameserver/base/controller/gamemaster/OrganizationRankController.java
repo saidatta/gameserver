@@ -70,10 +70,10 @@ public class OrganizationRankController {
 		String organizationId = null;
 		// organizationRank id 0 = add new organizationRank;
 		if ("0".equals(organizationRankId) || organizationRankId == null) {
-			feFeedback.setInfo2("You are editing a new organization rank");
+			feFeedback.setUserStatus("You are editing a new organization rank");
 		} else {
 			String name = organizationRankCreator.getOrganizationRank().getName();
-			feFeedback.setInfo2("You are editing " + name);
+			feFeedback.setUserStatus("You are editing " + name);
 		}
 		
 		OrganizationRank orgRank = organizationRankCreator.getOrganizationRank();
@@ -188,7 +188,7 @@ public class OrganizationRankController {
 			organizationRankService.initOrganizationRankCreator(null, null, 
 					organizationRankCreator, campaignId, organizationRankCreator.getForwardingUrl());
 			feFeedback.setInfo("Success, you have added organization rank " + organizationRank.getName());
-			feFeedback.setInfo2("You are creating a new organization rank");
+			feFeedback.setUserStatus("You are creating a new organization rank");
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return ControllerHelper.EDIT_ORGANIZATION_RANK;

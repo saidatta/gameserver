@@ -89,7 +89,7 @@ public class LocationTypeController {
 			String locationId = location.getId();
 			locationService.initLocationCreator(locationId, locationCreator, campaignId, locationCreator.getForwardingUrl());
 			feFeedback.setInfo("Success, you have created a location type");
-			feFeedback.setInfo2("You are editing a new location");
+			feFeedback.setUserStatus("You are editing a new location");
 		} catch (IllegalArgumentException e) {
 			feFeedback.setError(e.getMessage());
 			return forwardingUrl;

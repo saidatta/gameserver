@@ -9,7 +9,8 @@ public class FolioCreator {
 	private String unassignedTags;
 	private String selectedTags;
 	private String removeTag;
-	List<FolioDescriptor> folioDescriptorList;
+	private List<FolioDescriptor> folioDescriptorList;
+	private String forwardingUrl;
 	
 	public FolioCreator() {
 		folio = new Folio();
@@ -48,5 +49,12 @@ public class FolioCreator {
 	}
 	public void setFolioDescriptorList(List<FolioDescriptor> folioDescriptorList) {
 		this.folioDescriptorList = folioDescriptorList;
+	}
+
+	public String getForwardingUrl() {
+		return forwardingUrl;
+	}
+	public void setForwardingUrl(String forwardingUrl) {
+		this.forwardingUrl = forwardingUrl;
 	}
 }

@@ -40,7 +40,7 @@
 			$.each(unselectedTagList, function(i, item) {
 				var className = item["className"];
 				var objectId = item["objectId"];
-			    var button = '<button class="btn btn-default add-btn" id="'+item['objectId']+'" className="'+item['className']+'" onclick="addTag(\''+className+'\', \''+objectId+'\')">'+item['tagName']+'</button>';
+			    var button = '<button class="btn btn-default add-btn" id="'+item['objectId']+'" className="'+item['className']+'" onclick="addTag(\''+className+'\', \''+objectId+'\'); return false;">'+item['tagName']+'</button>';
 			    buttons += button;
 			});
 			$("#unselectedTagSpan").html(buttons);
@@ -49,7 +49,7 @@
 			$.each(selectedTagList, function(i, item) {
 				var className = item["className"];
 				var objectId = item["objectId"];
-			    var button = '<button class="btn btn-default add-btn" id="'+item['objectId']+'" className="'+item['className']+'" onclick="removeTag(\''+className+'\', \''+objectId+'\')">'+item['tagName']+'</button>';
+			    var button = '<button class="btn btn-default remove-btn" id="'+item['objectId']+'" className="'+item['className']+'" onclick="removeTag(\''+className+'\', \''+objectId+'\'); return false;">'+item['tagName']+'</button>';
 			    buttons += button;
 			});
 			$("#selectedTagSpan").html(buttons);
@@ -65,21 +65,39 @@
 			$.each(folioDescriptorList, function(i, item) {
 				var folioTitle = item["folioTitle"];
 				var folioId = item["folioId"];
-			    var button = '<button class="btn btn-default add-btn" id="'+folioId+'" >'+folioTitle+'</button>';
+			    var button = '<button class="btn btn-default select-btn" id="'+folioId+'"  onclick="selectFolio(\''+folioId+'\'); return false;">'+folioTitle+'</button>';
 			    buttons += button;
 			});
 			$("#folios").html(buttons);
 
 		});		
 
-		$(".add-btn").click(function(event) {
-			event.preventDefault();
-			// Get the data out of the event
-			var target = $(event.target);
-			var objectId = $(target).attr('objectId');
-			var className = $(target).attr("className");
-			addTag(className, objectId);
-		});
+//		$(".add-btn").click(function(event) {
+//			event.preventDefault();
+//			// Get the data out of the event
+//			var target = $(event.target);
+//			var objectId = $(target).attr('objectId');
+//			var className = $(target).attr("className");
+//			addTag(className, objectId);
+//		});
+
+//		$(".remove-btn").click(function(event) {
+//			event.preventDefault();
+//			// Get the data out of the event
+//			var target = $(event.target);
+//			var objectId = $(target).attr('objectId');
+//			var className = $(target).attr("className");
+//			removeTag(className, objectId);
+//		});
+
+//		$(".select-btn").click(function(event) {
+//			event.preventDefault();
+//			// Get the data out of the event
+//			var target = $(event.target);
+//			var objectId = $(target).attr('id');
+//			selectFolio(idd);
+//		});
+	
 	});	
 </script>	
 <script th:inline="javascript">
@@ -98,6 +116,12 @@
 		$("#removeTagClassName").val(className);
 		$("#selectFolioForm").submit();
 	}	
+	
+	function selectFolio(id) {
+		var toUrl = $("#forwardingUrl").val();
+		$("#getFolioForm").attr("action", "/gameserver" + toUrl + "/" + id);
+		$("#getFolioForm").submit();
+	}
 	</script>
 </head>
 <body>
@@ -111,6 +135,7 @@
 		</div>
 	</div>
 
+	<form id="getFolioForm" th:object="${selectFolioCreator}" action="#" th:action="@{/gamemaster/getFolio}" method="get"></form>
 	<form id="selectFolioForm" th:object="${selectFolioCreator}" action="#" th:action="@{/shared/selectFolio}" method="get">
 		<input type="hidden" id="addTagId" th:field="*{addTagId}"></input>
 		<input type="hidden" id="addTagClassName" th:field="*{addTagClassName}"></input>
@@ -119,6 +144,7 @@
 		<input type="hidden" id="unselectedTags" th:field="*{unselectedTags}"></input>
 		<input type="hidden" id="selectedTags" th:field="*{selectedTags}"></input>
 		<input type="hidden" id="folioDescriptors" th:field="*{folioDescriptorList}"></input>
+		<input type="hidden" id="forwardingUrl" th:field="*{forwardingUrl}"></input>
 						
 		<div class="row">
 			<div class="col-md-1"></div>

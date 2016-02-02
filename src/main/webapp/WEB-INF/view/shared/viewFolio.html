@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <link rel="icon" href="/gameserver/resources/werewolf-512.png"></link>
+   	<link rel="stylesheet" href="/resources/css/style.css" type="text/css" th:href="@{/resources/css/style.css}"></link>	
+    <!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"></link>
+	<link rel="stylesheet" href="/gameserver/resources/css/font-awesome.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+	<title th:text="#{selectFolio.title}">Title</title>
+	
+<script th:inline="javascript">
+	$(document).ready(function() {
+		$( window ).load(function() {
+			// placeholder
+		});
+
+		$(".select-folio-btn").click(function(event) {
+			event.preventDefault();
+			// Get the data out of the event
+//			var target = $(event.target);
+			$("#viewFolioForm").attr("action", "/gameserver/shared/selectFolio");
+			$("#viewFolioForm").submit();
+
+		});
+	});	
+</script>	
+<script>
+</script>
+</head>
+<body>
+	<div th:include="/public/navbar :: navbar"></div>
+
+	<br></br>
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<h1 th:text="#{viewFolio.title}">View</h1>
+		</div>
+	</div>
+
+	<form id="viewFolioForm" th:object="${viewFolioCreator}" action="#" th:action="@{/shared/viewFolio}" method="get">
+						
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-1">
+				<label class="input-margin" th:text="#{editFolio.selectFolio}">Select</label>
+			</div>
+			<div class="col-md-8">
+				<div class="btn-group">
+  					<button type="button" class="btn btn-default select-folio-btn" th:utext="#{editFolio.selectFolio}" >Select Folio</button>
+				</div>				
+			</div>
+		</div>
+
+	
+	</form>
+</body>
+</html>
