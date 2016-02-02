@@ -7,6 +7,7 @@ public class SelectFolioCreator {
 	private String addTagClassName;
 	private String removeTagId;
 	private String removeTagClassName;
+	private String folioDescriptorList;
 	
 	public SelectFolioCreator() {
 	}
@@ -53,5 +54,11 @@ public class SelectFolioCreator {
 		this.removeTagClassName = removeTagClassName;
 	}
 
+	public String getFolioDescriptorList() {
+		return folioDescriptorList;
+	}
+	public void setFolioDescriptorList(String folioDescriptorList) {
+		this.folioDescriptorList = folioDescriptorList;
+	}
 }
 

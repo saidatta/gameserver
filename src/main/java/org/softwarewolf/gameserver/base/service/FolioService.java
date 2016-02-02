@@ -23,8 +23,6 @@ import org.softwarewolf.gameserver.base.repository.FolioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-
 @Service
 public class FolioService implements Serializable {
 	private final String ADD = "add";
@@ -212,8 +210,12 @@ public class FolioService implements Serializable {
 			for(ObjectTag tag: allTags) {
 				if (tag.getObjectId().equals(selectFolioCreator.getAddTagId())) {
 					addTag = tag;
+					selectFolioCreator.setAddTagId(null);
+					selectFolioCreator.setAddTagClassName(null);
 				} else if (tag.getObjectId().equals(selectFolioCreator.getRemoveTagId())) {
 					removeTag = tag;
+					selectFolioCreator.setRemoveTagId(null);
+					selectFolioCreator.setRemoveTagClassName(null);
 				}
 			}
 		}
@@ -224,6 +226,7 @@ public class FolioService implements Serializable {
 		if (removeTag != null) {
 			createTagList(REMOVE, selectFolioCreator, removeTag);
 		}
+		
 	}
 	
 	private void createTagList(String operation, SelectFolioCreator selectFolioCreator, ObjectTag tag) {
@@ -276,5 +279,28 @@ public class FolioService implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}	
+		
+		List<FolioDescriptor> folioDescriptorList = new ArrayList<>();
+		List<Folio> folioList = findFoliosByTags(selectedTagList);
+		for (Folio folio : folioList) {
+			folioDescriptorList.add(folio.createDescriptor());
+		}
+		String folioDescriptors = null;
+		try {
+			folioDescriptors = mapper.writeValueAsString(folioDescriptorList);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		selectFolioCreator.setFolioDescriptorList(folioDescriptors);
+	}
+	
+	public List<Folio> findFoliosByTags(List<ObjectTag> selectedTags) {
+		List<Object> objectIds = new ArrayList<>();
+		for (ObjectTag tag : selectedTags) {
+			objectIds.add(tag.getObjectId());
+		}
+		List<Folio> folioList = folioRepository.findAllByKeyValues("tags.objectId", objectIds.toArray());
+		return folioList;
+	}
 }
